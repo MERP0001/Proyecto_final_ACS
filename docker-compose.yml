@@ -1,0 +1,135 @@
+version: '3.8'
+
+services:
+  # ===================================================================
+  # BASE DE DATOS POSTGRESQL
+  # ===================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: inventario-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: inventario_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - inventario-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d inventario_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ===================================================================
+  # APLICACIÓN SPRING BOOT
+  # ===================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: inventario-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://postgres:5432/inventario_db
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres123
+      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      JWT_EXPIRATION: 3600000
+      JWT_REFRESH_EXPIRATION: 86400000
+      JAVA_OPTS: -Xmx1024m -Xms512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+    ports:
+      - "8080:8080"
+    networks:
+      - inventario-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    volumes:
+      - app_logs:/app/logs
+
+  # ===================================================================
+  # PGADMIN (ADMINISTRACIÓN DE BASE DE DATOS)
+  # ===================================================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: inventario-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@inventario.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - inventario-network
+    depends_on:
+      - postgres
+
+  # ===================================================================
+  # MONITORING OPCIONAL (DESCOMENTARLO SI SE NECESITA)
+  # ===================================================================
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: inventario-prometheus
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - prometheus_data:/prometheus
+  #   networks:
+  #     - inventario-network
+
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: inventario-grafana
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     GF_SECURITY_ADMIN_PASSWORD: admin123
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #   networks:
+  #     - inventario-network
+
+# ===================================================================
+# VOLÚMENES PERSISTENTES
+# ===================================================================
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  app_logs:
+    driver: local
+  # prometheus_data:
+  #   driver: local
+  # grafana_data:
+  #   driver: local
+
+# ===================================================================
+# RED PERSONALIZADA
+# ===================================================================
+networks:
+  inventario-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16 
