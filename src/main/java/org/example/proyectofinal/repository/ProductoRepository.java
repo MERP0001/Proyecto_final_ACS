@@ -99,8 +99,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
      */
     @Query("SELECT p FROM Producto p WHERE " +
            "p.activo = true AND " +
-           "(:nombre IS NULL OR LOWER(p.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))) AND " +
-           "(:categoria IS NULL OR LOWER(p.categoria) = LOWER(:categoria)) AND " +
+           "(:nombre IS NULL OR p.nombre LIKE CONCAT('%', :nombre, '%')) AND " +
+           "(:categoria IS NULL OR p.categoria = :categoria) AND " +
            "(:precioMin IS NULL OR p.precio >= :precioMin) AND " +
            "(:precioMax IS NULL OR p.precio <= :precioMax)")
     Page<Producto> findByMultiplesCriterios(

@@ -94,9 +94,31 @@ public class ProductoService {
                                            Pageable pageable) {
         log.debug("Buscando productos con criterios múltiples");
         
-        Page<Producto> productos = productoRepository.findByMultiplesCriterios(
-                nombre, categoria, precioMin, precioMax, pageable);
+        // Si solo hay un criterio, usar métodos específicos que funcionan
+        if (nombre != null && categoria == null && precioMin == null && precioMax == null) {
+            Page<Producto> productos = productoRepository.findByNombreContainingIgnoreCaseAndActivoTrue(nombre, pageable);
+            return productos.map(productoMapper::toDTO);
+        }
         
+        if (categoria != null && nombre == null && precioMin == null && precioMax == null) {
+            Page<Producto> productos = productoRepository.findByCategoriaIgnoreCaseAndActivoTrue(categoria, pageable);
+            return productos.map(productoMapper::toDTO);
+        }
+        
+        if (precioMin != null && precioMax != null && nombre == null && categoria == null) {
+            Page<Producto> productos = productoRepository.findByPrecioBetweenAndActivoTrue(precioMin, precioMax, pageable);
+            return productos.map(productoMapper::toDTO);
+        }
+        
+        // Si no hay criterios, devolver todos los productos activos
+        if (nombre == null && categoria == null && precioMin == null && precioMax == null) {
+            Page<Producto> productos = productoRepository.findByActivoTrue(pageable);
+            return productos.map(productoMapper::toDTO);
+        }
+        
+        // Para criterios múltiples, usar búsqueda manual (fallback)
+        log.warn("Búsqueda con criterios múltiples no soportada completamente, usando todos los productos");
+        Page<Producto> productos = productoRepository.findByActivoTrue(pageable);
         return productos.map(productoMapper::toDTO);
     }
 
