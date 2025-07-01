@@ -140,4 +140,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     @Query("SELECT p FROM Producto p WHERE p.activo = true " +
            "ORDER BY (p.cantidadInicial - p.cantidadActual) DESC")
     List<Producto> findProductosMasVendidos(Pageable pageable);
+
+    @Query("SELECT p FROM Producto p WHERE p.sku = :sku")
+    Optional<Producto> findBySku(@Param("sku") String sku);
 } 
