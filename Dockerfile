@@ -4,7 +4,7 @@
 # ===================================================================
 
 # Etapa 1: Build de la aplicación
-FROM gradle:8.5-jdk21-alpine AS build
+FROM gradle:8.5-jdk17-alpine AS build
 
 # Información del mantenedor
 LABEL maintainer="Sistema de Gestión de Inventarios"
@@ -28,15 +28,13 @@ RUN chmod +x ./gradlew
 RUN ./gradlew clean build -x test --no-daemon
 
 # Etapa 2: Runtime de la aplicación
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:17-jre-alpine
 
 # Instalar herramientas adicionales para debugging (opcional)
-RUN apt-get update && \
-    apt-get install -y curl netcat-traditional && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl
 
 # Crear usuario no-root para seguridad
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Establecer directorio de trabajo
 WORKDIR /app
@@ -45,7 +43,7 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
 # Cambiar propietario del archivo
-RUN chown appuser:appuser app.jar
+RUN chown appuser:appgroup app.jar
 
 # Cambiar a usuario no-root
 USER appuser
@@ -59,7 +57,7 @@ ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:8080/api/actuator/health || exit 1
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
 
 # Comando de inicio
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
