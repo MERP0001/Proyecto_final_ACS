@@ -10,6 +10,7 @@ import org.example.proyectofinal.service.UserService;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -32,45 +33,68 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
          @NonNull HttpServletResponse response,
          @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-      if (request.getServletPath().contains("/auth")) {
+      final String requestURI = request.getRequestURI();
+
+      // Skip authentication for public endpoints
+      if (requestURI.contains("/auth")) {
+         log.trace("Skipping authentication for public endpoint: {}", requestURI);
          filterChain.doFilter(request, response);
          return;
       }
 
       final String authHeader = request.getHeader("Authorization");
-      final String jwt;
-      final String username;
 
+      // If no Authorization header or not a Bearer token, continue without
+      // authentication
       if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+         log.debug("No token found in request to: {}", requestURI);
          filterChain.doFilter(request, response);
          return;
       }
 
-      jwt = authHeader.substring(7);
+      // Extract token (remove "Bearer " prefix)
+      final String jwt = authHeader.substring(7);
 
       try {
-         username = jwtService.extractUsername(jwt);
+         // Extract username from token
+         final String username = jwtService.extractUsername(jwt);
 
-         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+         // If username is null or authentication is already set, continue without
+         // further processing
+         Authentication existingAuth = SecurityContextHolder.getContext().getAuthentication();
+         if (username == null) {
+            log.warn("Could not extract username from token for request to: {}", requestURI);
+            filterChain.doFilter(request, response);
+            return;
+         }
 
-         if (username != null && authentication == null) {
+         // If no authentication exists yet and username was found in token
+         if (existingAuth == null) {
+            // Load user details
             UserDetails userDetails = this.userService.loadUserByUsername(username);
 
+            // Validate token
             if (jwtService.isTokenValid(jwt, userDetails)) {
+               // Create authentication token
                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                      userDetails,
                      null,
                      userDetails.getAuthorities());
                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-               SecurityContextHolder.getContext().setAuthentication(authToken);
 
-               log.debug("Usuario autenticado: {}", username);
+               // Set authentication in context
+               SecurityContextHolder.getContext().setAuthentication(authToken);
+               log.debug("Authenticated user '{}' for request to: {}", username, requestURI);
             } else {
-               log.warn("Token inválido para usuario: {}", username);
+               log.warn("Invalid token for user: {} accessing: {}", username, requestURI);
             }
          }
+      } catch (AuthenticationException e) {
+         log.error("Authentication exception processing token: {}", e.getMessage());
+         SecurityContextHolder.clearContext();
       } catch (Exception e) {
-         log.error("Error al procesar token JWT: {}", e.getMessage());
+         log.error("Error processing JWT token: {}", e.getMessage());
+         SecurityContextHolder.clearContext();
       }
 
       filterChain.doFilter(request, response);

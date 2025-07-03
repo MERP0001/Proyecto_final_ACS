@@ -23,7 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Package, LogIn } from "lucide-react";
-import { authService } from "@/services/auth";
+import { useAuth } from "@/contexts/auth-context";
 
 const loginSchema = z.object({
   username: z.string().min(1, "El nombre de usuario es requerido"),
@@ -34,8 +34,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { login, error, isLoading, clearError } = useAuth();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -46,18 +45,12 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
-    setError("");
-    
     try {
-      const response = await authService.login(data);
-      authService.setAuthData(response);
+      await login(data);
       router.push("/dashboard");
-    } catch (error: unknown) {
+    } catch (error) {
       console.error("Error al iniciar sesión:", error);
-      setError("Credenciales inválidas. Por favor, intenta de nuevo.");
-    } finally {
-      setIsLoading(false);
+      // El error ya se maneja en el contexto de autenticación
     }
   };
 
@@ -102,6 +95,10 @@ export default function LoginPage() {
                         <Input 
                           placeholder="Ingresa tu nombre de usuario" 
                           {...field} 
+                          onChange={(e) => {
+                            clearError();
+                            field.onChange(e);
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -120,6 +117,10 @@ export default function LoginPage() {
                           type="password"
                           placeholder="Ingresa tu contraseña" 
                           {...field} 
+                          onChange={(e) => {
+                            clearError();
+                            field.onChange(e);
+                          }}
                         />
                       </FormControl>
                       <FormMessage />

@@ -21,7 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 /**
- * Configuración de seguridad con JWT para Fase 2.
+ * Configuración de seguridad con JWT.
  * Implementa autenticación basada en tokens JWT con roles.
  */
 @Configuration
@@ -57,8 +57,15 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
-                  // TEMPORAL: Permitir todo para debugging
-                  .anyRequest().permitAll())
+                  // Rutas públicas
+                  .requestMatchers("/api/auth/**").permitAll()
+                  .requestMatchers("/api/auth/login").permitAll()
+                  .requestMatchers("/api/auth/generate-hash").permitAll()
+                  .requestMatchers("/api/auth/test").permitAll()
+                  .requestMatchers("/api/auth/debug").permitAll()
+                  // Rutas protegidas
+                  .requestMatchers("/api/productos/**").authenticated()
+                  .anyRequest().authenticated())
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -1,20 +1,26 @@
 package org.example.proyectofinal.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.proyectofinal.dto.ErrorResponse;
 import org.example.proyectofinal.dto.LoginRequest;
 import org.example.proyectofinal.dto.LoginResponse;
 import org.example.proyectofinal.entity.User;
 import org.example.proyectofinal.config.JwtService;
 import org.example.proyectofinal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,7 +104,7 @@ public class AuthController {
    }
 
    @PostMapping("/login")
-   public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+   public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
       try {
          log.info("=== LOGIN ATTEMPT: {} ===", loginRequest.getUsername());
 
@@ -108,12 +114,15 @@ public class AuthController {
                      loginRequest.getUsername(),
                      loginRequest.getPassword()));
 
-         log.info("=== AUTENTICACIÓN EXITOSA ===");
-
          // Obtener detalles del usuario autenticado
          UserDetails userDetails = (UserDetails) authentication.getPrincipal();
          String token = jwtService.generateToken(userDetails);
          User user = (User) userService.loadUserByUsername(loginRequest.getUsername());
+
+         // Actualizar último acceso
+         userService.updateLastAccess(user.getId());
+
+         log.info("=== AUTENTICACIÓN EXITOSA PARA: {} ===", user.getUsername());
 
          return ResponseEntity.ok(LoginResponse.builder()
                .token(token)
@@ -124,9 +133,42 @@ public class AuthController {
                .expiresAt(jwtService.getExpirationDateTime())
                .build());
 
+      } catch (BadCredentialsException e) {
+         log.error("=== ERROR DE CREDENCIALES: {} ===", e.getMessage());
+         return ResponseEntity
+               .status(HttpStatus.UNAUTHORIZED)
+               .body(ErrorResponse.builder()
+                     .message("Credenciales inválidas")
+                     .status(HttpStatus.UNAUTHORIZED.value())
+                     .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                     .build());
+      } catch (DisabledException e) {
+         log.error("=== CUENTA DESACTIVADA: {} ===", e.getMessage());
+         return ResponseEntity
+               .status(HttpStatus.FORBIDDEN)
+               .body(ErrorResponse.builder()
+                     .message("Cuenta desactivada")
+                     .status(HttpStatus.FORBIDDEN.value())
+                     .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+                     .build());
+      } catch (UsernameNotFoundException e) {
+         log.error("=== USUARIO NO ENCONTRADO: {} ===", e.getMessage());
+         return ResponseEntity
+               .status(HttpStatus.UNAUTHORIZED)
+               .body(ErrorResponse.builder()
+                     .message("Usuario no encontrado")
+                     .status(HttpStatus.UNAUTHORIZED.value())
+                     .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                     .build());
       } catch (Exception e) {
          log.error("=== ERROR EN LOGIN: {} ===", e.getMessage());
-         return ResponseEntity.status(401).build();
+         return ResponseEntity
+               .status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body(ErrorResponse.builder()
+                     .message("Error en el servidor")
+                     .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                     .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                     .build());
       }
    }
 }

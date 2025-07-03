@@ -3,6 +3,7 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { UserAuthNav } from "@/components/auth/user-auth-nav"
 
 export default function DashboardLayout({
   children,
@@ -18,6 +19,7 @@ export default function DashboardLayout({
           <div className="flex-1">
             <h1 className="font-semibold">Sistema de Gestión de Inventarios</h1>
           </div>
+          <UserAuthNav />
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
           {children}

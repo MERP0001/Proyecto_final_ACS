@@ -10,6 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -248,6 +254,63 @@ public class GlobalExceptionHandler {
             .build();
 
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+   }
+
+   /**
+    * Maneja excepciones de autenticación.
+    */
+   @ExceptionHandler(AuthenticationException.class)
+   public ResponseEntity<ErrorResponse> handleAuthenticationException(
+         AuthenticationException ex, HttpServletRequest request) {
+
+      log.warn("Error de autenticación: {}", ex.getMessage());
+
+      HttpStatus status = HttpStatus.UNAUTHORIZED;
+      String message = "Error de autenticación";
+      String details = ex.getMessage();
+
+      if (ex instanceof BadCredentialsException) {
+         message = "Credenciales inválidas";
+         details = "El nombre de usuario o contraseña son incorrectos";
+      } else if (ex instanceof UsernameNotFoundException) {
+         message = "Usuario no encontrado";
+      } else if (ex instanceof DisabledException) {
+         message = "Cuenta desactivada";
+         details = "La cuenta de usuario está desactivada";
+      } else if (ex instanceof InsufficientAuthenticationException) {
+         message = "Autenticación insuficiente";
+         details = "Se requiere autenticación completa para acceder a este recurso";
+      }
+
+      ErrorResponse errorResponse = ErrorResponse.builder()
+            .status(status.value())
+            .error(status.getReasonPhrase())
+            .message(message)
+            .details(details)
+            .path(request.getRequestURI())
+            .build();
+
+      return ResponseEntity.status(status).body(errorResponse);
+   }
+
+   /**
+    * Maneja excepciones de acceso denegado.
+    */
+   @ExceptionHandler(AccessDeniedException.class)
+   public ResponseEntity<ErrorResponse> handleAccessDeniedException(
+         AccessDeniedException ex, HttpServletRequest request) {
+
+      log.warn("Acceso denegado: {}", ex.getMessage());
+
+      ErrorResponse errorResponse = ErrorResponse.builder()
+            .status(HttpStatus.FORBIDDEN.value())
+            .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+            .message("Acceso denegado")
+            .details("No tienes permisos suficientes para acceder a este recurso")
+            .path(request.getRequestURI())
+            .build();
+
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
    }
 
    /**
