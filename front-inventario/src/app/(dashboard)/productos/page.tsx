@@ -179,8 +179,8 @@ export default function ProductosPage() {
                   <TableCell>${producto.precio.toFixed(2)}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <span>{producto.cantidadInicial} {producto.unidadMedida}</span>
-                      {getStockBadge(producto.cantidadInicial)}
+                      <span>{producto.cantidadActual} {producto.unidadMedida}</span>
+                      {getStockBadge(producto.cantidadActual)}
                     </div>
                   </TableCell>
                   <TableCell>{producto.unidadMedida}</TableCell>

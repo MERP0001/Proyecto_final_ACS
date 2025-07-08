@@ -159,8 +159,8 @@ export default function ActualizarStockPage({ params }: { params: { id: string }
             <div>
               <h3 className="font-medium">Stock Actual</h3>
               <div className="flex items-center gap-2 mt-1">
-                <p className="text-2xl font-bold">{producto.cantidadInicial} {producto.unidadMedida}</p>
-                {getStockBadge(producto.cantidadInicial)}
+                <p className="text-2xl font-bold">{producto.cantidadActual} {producto.unidadMedida}</p>
+                {getStockBadge(producto.cantidadActual)}
               </div>
             </div>
             <div>

@@ -39,6 +39,7 @@ export interface ProductoDTO {
     categoria: string;
     precio: number;
     cantidadInicial: number;
+    cantidadActual: number;
     unidadMedida: string;
     activo?: boolean;
     fechaCreacion?: string;
