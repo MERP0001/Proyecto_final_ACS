@@ -1,73 +1,79 @@
 // Tipos basados en las entidades del backend Spring Boot
 
 export interface User {
-  id: number;
-  username: string;
-  email: string;
-  nombreCompleto: string;
-  role: 'ADMINISTRADOR';
-  activo: boolean;
-  fechaCreacion: string;
-  ultimoAcceso?: string;
+    id: number;
+    username: string;
+    email: string;
+    nombreCompleto: string;
+    role: 'ADMINISTRADOR';
+    activo: boolean;
+    fechaCreacion: string;
+    ultimoAcceso?: string;
 }
 
-export interface LoginRequest {
-  username: string;
-  password: string;
+export interface AuthRequest {
+    username: string;
+    password: string;
 }
 
-export interface LoginResponse {
-  token: string;
-  type: string;
-  username: string;
-  email?: string;
-  nombreCompleto?: string;
-  role?: string;
-  expiresAt?: string;
+export interface AuthResponse {
+    accessToken: string;
+    refreshToken: string;
+    tokenType: string;
+    expiresAt: string;
+    username: string;
+    email: string;
+    nombreCompleto: string;
+    role: string;
+    message?: string;
+}
+
+export interface RefreshTokenRequest {
+    refreshToken: string;
 }
 
 export interface ProductoDTO {
-  id?: number;
-  nombre: string;
-  descripcion?: string;
-  categoria: string;
-  precio: number;
-  cantidadInicial: number;
-  unidadMedida: string;
-  activo?: boolean;
-  fechaCreacion?: string;
-  fechaActualizacion?: string;
+    id?: number;
+    nombre: string;
+    descripcion?: string;
+    categoria: string;
+    precio: number;
+    cantidadInicial: number;
+    unidadMedida: string;
+    activo?: boolean;
+    fechaCreacion?: string;
+    fechaActualizacion?: string;
 }
 
 export interface ProductoForm {
-  nombre: string;
-  descripcion: string;
-  categoria: string;
-  precio: number;
-  cantidadInicial: number;
-  unidadMedida: string;
+    nombre: string;
+    descripcion: string;
+    categoria: string;
+    precio: number;
+    cantidadInicial: number;
+    unidadMedida: string;
 }
 
 export interface ProductoFilters {
-  nombre?: string;
-  categoria?: string;
-  precioMin?: number;
-  precioMax?: number;
+    nombre?: string;
+    categoria?: string;
+    precioMin?: number;
+    precioMax?: number;
 }
 
 export interface PaginatedResponse<T> {
-  content: T[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  first: boolean;
-  last: boolean;
+    content: T[];
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    number: number;
+    first: boolean;
+    last: boolean;
 }
 
 export interface ErrorResponse {
-  message: string;
-  status: number;
-  timestamp: string;
-  path: string;
+    message: string;
+    status: number;
+    timestamp: string;
+    path: string;
 } 

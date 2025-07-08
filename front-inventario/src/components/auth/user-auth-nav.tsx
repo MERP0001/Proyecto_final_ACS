@@ -28,7 +28,8 @@ export function UserAuthNav() {
         .toUpperCase()
         .substring(0, 2);
     }
-    return user.username.substring(0, 2).toUpperCase();
+    // Usar username si está disponible, o "U" como fallback
+    return (user.username || "U").substring(0, 2).toUpperCase();
   };
 
   return (
@@ -44,7 +45,7 @@ export function UserAuthNav() {
         <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <div className="flex flex-col space-y-1 leading-none p-2">
-          <p className="font-medium">{user.nombreCompleto || user.username}</p>
+          <p className="font-medium">{user.nombreCompleto || user.username || "Usuario"}</p>
           {user.email && (
             <p className="text-xs text-muted-foreground">{user.email}</p>
           )}

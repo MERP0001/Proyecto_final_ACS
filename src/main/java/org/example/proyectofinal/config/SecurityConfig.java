@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -18,58 +19,61 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import java.util.Arrays;
 
-/**
- * Configuración de seguridad con JWT.
- * Implementa autenticación basada en tokens JWT con roles.
- */
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-   private final JwtAuthenticationFilter jwtAuthenticationFilter;
+   private final JwtAuthenticationFilter jwtAuthFilter;
    private final UserService userService;
    private final PasswordEncoder passwordEncoder;
 
    @Bean
+   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+      http
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .authorizeHttpRequests(auth -> auth
+                  .requestMatchers("/api/auth/**").permitAll()
+                  .requestMatchers("/api/public/**").permitAll()
+                  .requestMatchers("/error").permitAll()
+                  .requestMatchers("/api/productos/**").authenticated()
+                  .anyRequest().authenticated())
+            .sessionManagement(session -> session
+                  .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+      return http.build();
+   }
+
+   @Bean
    public CorsConfigurationSource corsConfigurationSource() {
       CorsConfiguration configuration = new CorsConfiguration();
-      configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+      configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Frontend URL
       configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-      configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept",
-            "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
-      configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
+      configuration.setAllowedHeaders(Arrays.asList(
+            "Authorization",
+            "Content-Type",
+            "X-Requested-With",
+            "Accept",
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"));
+      configuration.setExposedHeaders(List.of(
+            "Access-Control-Allow-Origin",
+            "Access-Control-Allow-Credentials"));
       configuration.setAllowCredentials(true);
       configuration.setMaxAge(3600L);
 
       UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
       source.registerCorsConfiguration("/**", configuration);
       return source;
-   }
-
-   @Bean
-   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-      http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(authz -> authz
-                  // Rutas públicas
-                  .requestMatchers("/api/auth/**").permitAll()
-                  .requestMatchers("/api/auth/login").permitAll()
-                  .requestMatchers("/api/auth/generate-hash").permitAll()
-                  .requestMatchers("/api/auth/test").permitAll()
-                  .requestMatchers("/api/auth/debug").permitAll()
-                  // Rutas protegidas
-                  .requestMatchers("/api/productos/**").authenticated()
-                  .anyRequest().authenticated())
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-      return http.build();
    }
 
    @Bean

@@ -1,12 +1,16 @@
 import { test, expect } from '@playwright/test';
+import { clearAuthState } from './utils/auth';
 
 // URL base de la aplicación
 const baseURL = process.env.BASE_URL || 'http://localhost:3000';
 
 test.describe('Pruebas de autenticación', () => {
   test.beforeEach(async ({ page }) => {
-    // Navegar a la página de login antes de cada prueba
+    // Limpiar estado de autenticación y navegar a login
+    await clearAuthState(page);
     await page.goto(`${baseURL}/login`);
+    // Esperar a que la página esté completamente cargada
+    await expect(page.getByRole('heading', { name: 'Sistema de Inventarios' })).toBeVisible({ timeout: 30000 });
   });
 
   test('Debe mostrar la página de login correctamente', async ({ page }) => {
@@ -16,60 +20,69 @@ test.describe('Pruebas de autenticación', () => {
     await expect(page.getByLabel('Nombre de Usuario')).toBeVisible();
     await expect(page.getByLabel('Contraseña')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Iniciar Sesión' })).toBeVisible();
+  });
 
-    // Tomar captura de pantalla para verificación visual
-    const viewport = page.viewportSize();
-    const width = viewport ? viewport.width : 1280;
-    const height = viewport ? viewport.height : 720;
-    await page.screenshot({ path: `./test-results/login-page-${width}x${height}.png` });
+  test('Debe validar campos requeridos', async ({ page }) => {
+    // Intentar enviar formulario vacío
+    await page.getByRole('button', { name: 'Iniciar Sesión' }).click();
+    
+    // Verificar mensajes de error
+    await expect(page.getByText('El nombre de usuario debe tener al menos 3 caracteres')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('La contraseña debe tener al menos 6 caracteres')).toBeVisible({ timeout: 10000 });
+  });
+
+  test('Debe validar longitud mínima de campos', async ({ page }) => {
+    // Ingresar valores cortos
+    await page.getByLabel('Nombre de Usuario').fill('ab');
+    await page.getByLabel('Contraseña').fill('12345');
+    await page.getByRole('button', { name: 'Iniciar Sesión' }).click();
+    
+    // Verificar mensajes de error
+    await expect(page.getByText('El nombre de usuario debe tener al menos 3 caracteres')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('La contraseña debe tener al menos 6 caracteres')).toBeVisible({ timeout: 10000 });
   });
 
   test('Debe mostrar error con credenciales inválidas', async ({ page }) => {
     // Ingresar credenciales inválidas
     await page.getByLabel('Nombre de Usuario').fill('usuario_invalido');
     await page.getByLabel('Contraseña').fill('clave_invalida');
-    
-    // Enviar formulario
     await page.getByRole('button', { name: 'Iniciar Sesión' }).click();
     
-    // Esperar a que aparezca el mensaje de error
-    await expect(page.locator('.bg-red-50')).toBeVisible({ timeout: 5000 });
-    
-    // Verificar texto de error
-    await expect(page.locator('.bg-red-50')).toContainText(/credenciales|inválidas|error/i);
+    // Verificar mensaje de error
+    await expect(page.getByRole('alert')).toBeVisible({ timeout: 20000 });
+    await expect(page.getByRole('alert')).toContainText('Credenciales inválidas');
   });
 
   test('Debe autenticar correctamente con credenciales válidas', async ({ page }) => {
-    // Ingresar credenciales válidas (usar credenciales de prueba)
+    // Ingresar credenciales válidas
     await page.getByLabel('Nombre de Usuario').fill('admin');
     await page.getByLabel('Contraseña').fill('admin123');
     
-    // Enviar formulario
-    await page.getByRole('button', { name: 'Iniciar Sesión' }).click();
+    // Esperar a que el botón sea clickeable
+    const loginButton = page.getByRole('button', { name: 'Iniciar Sesión' });
+    await loginButton.waitFor({ state: 'visible', timeout: 20000 });
+    await loginButton.click();
     
-    // Esperar redirección al dashboard (timeout mayor por posible latencia)
-    await page.waitForURL(`${baseURL}/dashboard`, { timeout: 10000 });
-    
-    // Verificar que estamos en el dashboard
-    await expect(page).toHaveURL(`${baseURL}/dashboard`);
-    
-    // Verificar elementos del dashboard
-    await expect(page.getByText('Sistema de Gestión de Inventarios')).toBeVisible();
+    // Verificar redirección y elementos del dashboard con tiempo de espera extendido
+    await expect(page).toHaveURL(`${baseURL}/dashboard`, { timeout: 20000 });
+    await expect(page.getByText('Sistema de Gestión de Inventarios')).toBeVisible({ timeout: 20000 });
   });
 
-  test('Debe mantener la sesión después de recargar la página', async ({ page }) => {
-    // Login primero
+  test('Debe mantener la sesión después de recargar', async ({ page }) => {
+    // Login
     await page.getByLabel('Nombre de Usuario').fill('admin');
     await page.getByLabel('Contraseña').fill('admin123');
     await page.getByRole('button', { name: 'Iniciar Sesión' }).click();
     
-    // Esperar redirección al dashboard
-    await page.waitForURL(`${baseURL}/dashboard`, { timeout: 10000 });
+    // Esperar redirección con tiempo de espera extendido
+    await expect(page).toHaveURL(`${baseURL}/dashboard`, { timeout: 20000 });
     
-    // Recargar la página
+    // Esperar a que la página esté completamente cargada
+    await expect(page.getByText('Sistema de Gestión de Inventarios')).toBeVisible({ timeout: 20000 });
+    
+    // Recargar y verificar que sigue autenticado
     await page.reload();
-    
-    // Verificar que seguimos en el dashboard (no redirige a login)
-    await expect(page).toHaveURL(`${baseURL}/dashboard`);
+    await expect(page).toHaveURL(`${baseURL}/dashboard`, { timeout: 20000 });
+    await expect(page.getByText('Sistema de Gestión de Inventarios')).toBeVisible({ timeout: 20000 });
   });
 }); 

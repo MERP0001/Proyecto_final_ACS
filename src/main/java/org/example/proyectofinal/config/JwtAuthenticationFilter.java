@@ -1,5 +1,7 @@
 package org.example.proyectofinal.config;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.proyectofinal.service.UserService;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -27,76 +29,71 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
    private final JwtService jwtService;
    private final UserService userService;
 
+   // Lista de paths públicos que no requieren autenticación
+   private static final List<String> PUBLIC_PATHS = Arrays.asList(
+         "/api/auth/login",
+         "/api/auth/register",
+         "/api/auth/refresh-token",
+         "/api/auth/validate-token");
+
    @Override
    protected void doFilterInternal(
          @NonNull HttpServletRequest request,
          @NonNull HttpServletResponse response,
          @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-      final String requestURI = request.getRequestURI();
+      final String path = request.getServletPath();
 
-      // Skip authentication for public endpoints
-      if (requestURI.contains("/auth")) {
-         log.trace("Skipping authentication for public endpoint: {}", requestURI);
+      // Si es una ruta pública, continuamos sin verificar autenticación
+      if (isPublicPath(path)) {
          filterChain.doFilter(request, response);
          return;
       }
 
       final String authHeader = request.getHeader("Authorization");
-
-      // If no Authorization header or not a Bearer token, continue without
-      // authentication
       if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-         log.debug("No token found in request to: {}", requestURI);
-         filterChain.doFilter(request, response);
+         log.debug("No token found or invalid token format for path: {}", path);
+         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+         response.getWriter().write("No authentication token provided");
          return;
       }
 
-      // Extract token (remove "Bearer " prefix)
       final String jwt = authHeader.substring(7);
-
       try {
-         // Extract username from token
-         final String username = jwtService.extractUsername(jwt);
-
-         // If username is null or authentication is already set, continue without
-         // further processing
-         Authentication existingAuth = SecurityContextHolder.getContext().getAuthentication();
-         if (username == null) {
-            log.warn("Could not extract username from token for request to: {}", requestURI);
-            filterChain.doFilter(request, response);
-            return;
-         }
-
-         // If no authentication exists yet and username was found in token
-         if (existingAuth == null) {
-            // Load user details
-            UserDetails userDetails = this.userService.loadUserByUsername(username);
-
-            // Validate token
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-               // Create authentication token
-               UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                     userDetails,
-                     null,
-                     userDetails.getAuthorities());
-               authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-               // Set authentication in context
-               SecurityContextHolder.getContext().setAuthentication(authToken);
-               log.debug("Authenticated user '{}' for request to: {}", username, requestURI);
-            } else {
-               log.warn("Invalid token for user: {} accessing: {}", username, requestURI);
-            }
-         }
-      } catch (AuthenticationException e) {
-         log.error("Authentication exception processing token: {}", e.getMessage());
-         SecurityContextHolder.clearContext();
+         processToken(jwt, request);
+         filterChain.doFilter(request, response);
+      } catch (ExpiredJwtException e) {
+         log.warn("Token expired for path: {}", path);
+         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+         response.getWriter().write("Token expired");
+      } catch (JwtException e) {
+         log.error("Invalid token for path: {}", path);
+         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+         response.getWriter().write("Invalid token");
       } catch (Exception e) {
-         log.error("Error processing JWT token: {}", e.getMessage());
-         SecurityContextHolder.clearContext();
+         log.error("Authentication error for path: {}", path, e);
+         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+         response.getWriter().write("Authentication error occurred");
       }
+   }
 
-      filterChain.doFilter(request, response);
+   private void processToken(String token, HttpServletRequest request) {
+      final String username = jwtService.extractUsername(token);
+      if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+         UserDetails userDetails = userService.loadUserByUsername(username);
+         if (jwtService.isTokenValid(token, userDetails)) {
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                  userDetails,
+                  null,
+                  userDetails.getAuthorities());
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+            log.debug("Authenticated user '{}' for path: {}", username, request.getServletPath());
+         }
+      }
+   }
+
+   private boolean isPublicPath(String path) {
+      return PUBLIC_PATHS.stream().anyMatch(path::startsWith);
    }
 }

@@ -21,7 +21,7 @@ CREATE INDEX idx_usuarios_activo ON usuarios(activo);
 INSERT INTO usuarios (username, password, email, nombre_completo, role, activo) 
 VALUES (
     'admin', 
-    '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iYqiSfFiO5fKyTMR7Ux8cNy1Rjcr', 
+    '$2a$12$uXUuZYdkOxgaCGFZ3/2CPOx2Kg1wNeO8DnZGqM4N8m5WFi4bJAwGS', 
     'admin@inventarios.com', 
     'Administrador del Sistema', 
     'ADMINISTRADOR', 
