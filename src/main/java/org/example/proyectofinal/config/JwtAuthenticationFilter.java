@@ -29,7 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
    private final JwtService jwtService;
    private final UserService userService;
 
-   // Lista de paths públicos que no requieren autenticación
    private static final List<String> PUBLIC_PATHS = Arrays.asList(
          "/api/auth/login",
          "/api/auth/register",
@@ -44,7 +43,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
       final String path = request.getServletPath();
 
-      // Si es una ruta pública, continuamos sin verificar autenticación
       if (isPublicPath(path)) {
          filterChain.doFilter(request, response);
          return;
