@@ -9,6 +9,7 @@ import org.example.proyectofinal.entity.Producto;
 import org.example.proyectofinal.mapper.ProductoMapper;
 import org.example.proyectofinal.service.ProductoService;
 import org.example.proyectofinal.repository.ProductoRepository;
+import org.example.proyectofinal.filter.ProductoFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.data.domain.Page;
@@ -98,8 +99,9 @@ public class ProductoSteps {
 
     @Cuando("busco productos con nombre {string}")
     public void buscoProductosConNombre(String nombre) {
-        productosEncontrados = productoService.buscarProductos(
-            nombre, null, null, null, PageRequest.of(0, 10));
+        ProductoFilter filter = new ProductoFilter();
+        filter.setNombre(nombre);
+        productosEncontrados = productoService.buscarProductos(filter, PageRequest.of(0, 10));
     }
 
     @Entonces("debo obtener una lista de productos")

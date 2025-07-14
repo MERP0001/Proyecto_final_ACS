@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.proyectofinal.dto.ProductoDTO;
+import org.example.proyectofinal.filter.ProductoFilter;
+import org.example.proyectofinal.response.ApiResponse;
 import org.example.proyectofinal.service.ProductoService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,24 +42,20 @@ public class ProductoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductoDTO>> listarProductos(Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<ProductoDTO>>> listarProductos(Pageable pageable) {
         log.debug("Listando productos");
         Page<ProductoDTO> productos = productoService.listarProductosActivos(pageable);
-        return ResponseEntity.ok(productos);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Productos listados", productos));
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<Page<ProductoDTO>> buscarProductos(
-            @RequestParam(required = false) String nombre,
-            @RequestParam(required = false) String categoria,
-            @RequestParam(required = false) BigDecimal precioMin,
-            @RequestParam(required = false) BigDecimal precioMax,
+    public ResponseEntity<ApiResponse<Page<ProductoDTO>>> buscarProductos(
+            ProductoFilter filter,
             Pageable pageable) {
         
         log.debug("Buscando productos");
-        Page<ProductoDTO> productos = productoService.buscarProductos(
-                nombre, categoria, precioMin, precioMax, pageable);
-        return ResponseEntity.ok(productos);
+        Page<ProductoDTO> productos = productoService.buscarProductos(filter, pageable);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Productos encontrados", productos));
     }
 
     @PutMapping("/{id}")

@@ -6,6 +6,7 @@ import io.cucumber.java.es.Entonces;
 import org.example.proyectofinal.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.example.proyectofinal.filter.ProductoFilter;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -23,7 +24,9 @@ public class ProductoSimpleSteps {
     @Cuando("solicito la lista de productos")
     public void solicitoLaListaDeProductos() {
         try {
-            productoService.listarProductosActivos(PageRequest.of(0, 10));
+            ProductoFilter filter = new ProductoFilter();
+            filter.setNombre("Producto"); // Assuming a default name for the filter
+            productoService.buscarProductos(filter, PageRequest.of(0, 10));
             respuestaObtenida = true;
         } catch (Exception e) {
             respuestaObtenida = false;

@@ -10,9 +10,9 @@ group = 'org.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
+    // toolchain {
+    //     languageVersion = JavaLanguageVersion.of(21)
+    // }
 }
 
 repositories {
@@ -54,6 +54,8 @@ dependencies {
     testImplementation 'com.microsoft.playwright:playwright:1.40.0'
     testImplementation 'org.testng:testng:7.8.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 }
 
 tasks.named('test') {
@@ -62,7 +64,7 @@ tasks.named('test') {
 }
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.11"
 }
 
 jacocoTestReport {

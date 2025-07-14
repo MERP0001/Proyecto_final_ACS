@@ -7,8 +7,11 @@ import org.example.proyectofinal.entity.Producto;
 import org.example.proyectofinal.exception.BusinessValidationException;
 import org.example.proyectofinal.exception.ProductoAlreadyExistsException;
 import org.example.proyectofinal.exception.ProductoNotFoundException;
+import org.example.proyectofinal.filter.ProductoFilter;
 import org.example.proyectofinal.mapper.ProductoMapper;
 import org.example.proyectofinal.repository.ProductoRepository;
+import org.example.proyectofinal.specification.ProductoSpecification;
+import org.example.proyectofinal.validator.ProductoValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,7 @@ public class ProductoService {
 
     private final ProductoRepository productoRepository;
     private final ProductoMapper productoMapper;
+    private final ProductoValidator productoValidator;
 
     /**
      * Crear un nuevo producto.
@@ -82,43 +86,14 @@ public class ProductoService {
 
     /**
      * Buscar productos por múltiples criterios.
-     * @param nombre nombre del producto (opcional)
-     * @param categoria categoría del producto (opcional)
-     * @param precioMin precio mínimo (opcional)
-     * @param precioMax precio máximo (opcional)
+     * @param filter filtros para la búsqueda
      * @param pageable información de paginación
      * @return página de productos que coinciden con los criterios
      */
-    public Page<ProductoDTO> buscarProductos(String nombre, String categoria, 
-                                           BigDecimal precioMin, BigDecimal precioMax, 
-                                           Pageable pageable) {
-        log.debug("Buscando productos con criterios múltiples");
-        
-        // Si solo hay un criterio, usar métodos específicos que funcionan
-        if (nombre != null && categoria == null && precioMin == null && precioMax == null) {
-            Page<Producto> productos = productoRepository.findByNombreContainingIgnoreCaseAndActivoTrue(nombre, pageable);
-            return productos.map(productoMapper::toDTO);
-        }
-        
-        if (categoria != null && nombre == null && precioMin == null && precioMax == null) {
-            Page<Producto> productos = productoRepository.findByCategoriaIgnoreCaseAndActivoTrue(categoria, pageable);
-            return productos.map(productoMapper::toDTO);
-        }
-        
-        if (precioMin != null && precioMax != null && nombre == null && categoria == null) {
-            Page<Producto> productos = productoRepository.findByPrecioBetweenAndActivoTrue(precioMin, precioMax, pageable);
-            return productos.map(productoMapper::toDTO);
-        }
-        
-        // Si no hay criterios, devolver todos los productos activos
-        if (nombre == null && categoria == null && precioMin == null && precioMax == null) {
-            Page<Producto> productos = productoRepository.findByActivoTrue(pageable);
-            return productos.map(productoMapper::toDTO);
-        }
-        
-        // Para criterios múltiples, usar búsqueda manual (fallback)
-        log.warn("Búsqueda con criterios múltiples no soportada completamente, usando todos los productos");
-        Page<Producto> productos = productoRepository.findByActivoTrue(pageable);
+    public Page<ProductoDTO> buscarProductos(ProductoFilter filter, Pageable pageable) {
+        log.debug("Buscando productos con filtros dinámicos");
+        var spec = ProductoSpecification.conFiltros(filter);
+        Page<Producto> productos = productoRepository.findAll(spec, pageable);
         return productos.map(productoMapper::toDTO);
     }
 
@@ -143,8 +118,9 @@ public class ProductoService {
             throw ProductoAlreadyExistsException.porSku(productoDTO.getSku());
         }
         
-        Producto productoActualizado = productoMapper.updateEntity(productoExistente, productoDTO);
-        Producto productoGuardado = productoRepository.save(productoActualizado);
+        // Cambiar updateEntity por updateEntityFromDto de MapStruct
+        productoMapper.updateEntityFromDto(productoDTO, productoExistente);
+        Producto productoGuardado = productoRepository.save(productoExistente);
         
         log.info("Producto actualizado exitosamente");
         return productoMapper.toDTO(productoGuardado);
@@ -223,24 +199,6 @@ public class ProductoService {
     // Métodos de validación privados
 
     private void validarDatosProducto(ProductoDTO productoDTO) {
-        if (productoDTO == null) {
-            throw new BusinessValidationException("Los datos del producto no pueden ser nulos");
-        }
-        
-        if (!StringUtils.hasText(productoDTO.getNombre())) {
-            throw new BusinessValidationException("El nombre del producto es obligatorio");
-        }
-        
-        if (!StringUtils.hasText(productoDTO.getCategoria())) {
-            throw new BusinessValidationException("La categoría del producto es obligatoria");
-        }
-        
-        if (productoDTO.getPrecio() == null || productoDTO.getPrecio().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new BusinessValidationException("El precio debe ser mayor que 0");
-        }
-        
-        if (productoDTO.getCantidadInicial() == null || productoDTO.getCantidadInicial() < 0) {
-            throw new BusinessValidationException("La cantidad inicial no puede ser negativa");
-        }
+        productoValidator.validar(productoDTO);
     }
 } 
