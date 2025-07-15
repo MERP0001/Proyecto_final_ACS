@@ -29,12 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
    private final JwtService jwtService;
    private final UserService userService;
 
-   private static final List<String> PUBLIC_PATHS = Arrays.asList(
-         "/api/auth/login",
-         "/api/auth/register",
-         "/api/auth/refresh-token",
-         "/api/auth/validate-token");
-
    @Override
    protected void doFilterInternal(
          @NonNull HttpServletRequest request,
@@ -43,16 +37,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
       final String path = request.getServletPath();
 
-      if (isPublicPath(path)) {
-         filterChain.doFilter(request, response);
-         return;
-      }
-
       final String authHeader = request.getHeader("Authorization");
       if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-         log.debug("No token found or invalid token format for path: {}", path);
-         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-         response.getWriter().write("No authentication token provided");
+         filterChain.doFilter(request, response);
          return;
       }
 
@@ -91,7 +78,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       }
    }
 
-   private boolean isPublicPath(String path) {
-      return PUBLIC_PATHS.stream().anyMatch(path::startsWith);
-   }
 }
