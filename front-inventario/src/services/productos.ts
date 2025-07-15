@@ -5,7 +5,7 @@ export const productosService = {
   // Obtener todos los productos con paginación
   getProductos: async (page = 0, size = 10): Promise<PaginatedResponse<ProductoDTO>> => {
     const response = await api.get(`/productos?page=${page}&size=${size}`);
-    return response.data;
+    return response.data.data; // Extraer los datos de paginación
   },
 
   // Buscar productos con filtros
@@ -24,7 +24,7 @@ export const productosService = {
     });
 
     const response = await api.get(`/productos/buscar?${params}`);
-    return response.data;
+    return response.data.data; // Extraer los datos de paginación
   },
 
   // Obtener producto por ID

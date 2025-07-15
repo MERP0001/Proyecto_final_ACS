@@ -39,13 +39,15 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                  .requestMatchers("/api/auth/**", "/api/public/**", "/error").permitAll()
                   .requestMatchers(
+                          "/api/auth/**",
                           "/v3/api-docs/**",
                           "/swagger-ui/**",
-                          "/swagger-ui.html"
+                          "/swagger-ui.html",
+                          "/error"
                   ).permitAll()
-                  .anyRequest().authenticated())
+                  .requestMatchers("/api/**").authenticated() // Autenticar todas las demás rutas de /api
+                  .anyRequest().permitAll()) // Permitir otras peticiones (ej. estáticos)
             .sessionManagement(session -> session
                   .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())

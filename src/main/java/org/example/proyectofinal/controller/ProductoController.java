@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/productos")
+@RequestMapping("/productos")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Gestión de Productos", description = "Operaciones para la gestión de productos en el inventario.")

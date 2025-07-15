@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -35,47 +33,48 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
          @NonNull HttpServletResponse response,
          @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-      final String path = request.getServletPath();
-
       final String authHeader = request.getHeader("Authorization");
+
       if (authHeader == null || !authHeader.startsWith("Bearer ")) {
          filterChain.doFilter(request, response);
          return;
       }
 
-      final String jwt = authHeader.substring(7);
       try {
-         processToken(jwt, request);
-         filterChain.doFilter(request, response);
-      } catch (ExpiredJwtException e) {
-         log.warn("Token expired for path: {}", path);
-         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-         response.getWriter().write("Token expired");
-      } catch (JwtException e) {
-         log.error("Invalid token for path: {}", path);
-         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-         response.getWriter().write("Invalid token");
-      } catch (Exception e) {
-         log.error("Authentication error for path: {}", path, e);
-         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-         response.getWriter().write("Authentication error occurred");
-      }
-   }
+         final String jwt = authHeader.substring(7);
+         final String username = jwtService.extractUsername(jwt);
 
-   private void processToken(String token, HttpServletRequest request) {
-      final String username = jwtService.extractUsername(token);
-      if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-         UserDetails userDetails = userService.loadUserByUsername(username);
-         if (jwtService.isTokenValid(token, userDetails)) {
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                  userDetails,
-                  null,
-                  userDetails.getAuthorities());
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-            log.debug("Authenticated user '{}' for path: {}", username, request.getServletPath());
+         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userService.loadUserByUsername(username);
+
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+               UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                     userDetails,
+                     null,
+                     userDetails.getAuthorities());
+               authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+               SecurityContextHolder.getContext().setAuthentication(authToken);
+               log.debug("User '{}' authenticated successfully for path: {}", username, request.getServletPath());
+            }
          }
+         
+         filterChain.doFilter(request, response);
+
+      } catch (ExpiredJwtException e) {
+         log.warn("JWT Token has expired for path: {}", request.getServletPath());
+         sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token expirado");
+      } catch (JwtException e) {
+         log.error("Invalid JWT Token for path: {}. Reason: {}", request.getServletPath(), e.getMessage());
+         sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
+      } catch (Exception e) {
+         log.error("Authentication error for path: {}", request.getServletPath(), e);
+         sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error de autenticación");
       }
    }
-
+   
+   private void sendErrorResponse(HttpServletResponse response, int status, String message) throws IOException {
+      response.setStatus(status);
+      response.setContentType("application/json");
+      response.getWriter().write(String.format("{\"error\": \"%s\"}", message));
+   }
 }
