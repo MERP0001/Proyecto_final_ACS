@@ -7,6 +7,7 @@ import org.example.proyectofinal.config.JwtService;
 import org.example.proyectofinal.dto.AuthRequest;
 import org.example.proyectofinal.dto.AuthResponse;
 import org.example.proyectofinal.dto.RefreshTokenRequest;
+import org.example.proyectofinal.dto.RegisterRequest;
 import org.example.proyectofinal.entity.User;
 import org.example.proyectofinal.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,51 @@ public class AuthController {
    private final AuthenticationManager authenticationManager;
    private final UserService userService;
    private final JwtService jwtService;
+
+   @PostMapping("/register")
+   public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+      try {
+         log.debug("Intento de registro para usuario: {}", request.getUsername());
+
+         User newUser = userService.createUser(
+                 request.getUsername(),
+                 request.getPassword(),
+                 request.getEmail(),
+                 request.getNombreCompleto(),
+                 User.Role.USER);
+
+         Authentication authentication = authenticationManager.authenticate(
+                 new UsernamePasswordAuthenticationToken(
+                         request.getUsername(),
+                         request.getPassword()));
+
+         User user = (User) authentication.getPrincipal();
+         String accessToken = jwtService.generateAccessToken(user);
+         String refreshToken = jwtService.generateRefreshToken(user);
+
+         Instant expiresAt = Instant.now().plus(jwtService.getAccessTokenExpiration(), ChronoUnit.MILLIS);
+
+         userService.updateLastAccess(user.getId());
+
+         log.info("Registro y login exitoso para usuario: {}", user.getUsername());
+
+         return ResponseEntity.ok(AuthResponse.success(
+                 accessToken,
+                 refreshToken,
+                 expiresAt,
+                 user.getUsername(),
+                 user.getEmail(),
+                 user.getNombreCompleto(),
+                 user.getRole().name()));
+
+      } catch (IllegalArgumentException e) {
+         log.warn("Error en el registro para {}: {}", request.getUsername(), e.getMessage());
+         return ResponseEntity.badRequest().body(AuthResponse.error(e.getMessage()));
+      } catch (Exception e) {
+         log.error("Error en registro para usuario: {}", request.getUsername(), e);
+         return ResponseEntity.internalServerError().body(AuthResponse.error("Error en el servidor durante el registro"));
+      }
+   }
 
    @PostMapping("/login")
    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {

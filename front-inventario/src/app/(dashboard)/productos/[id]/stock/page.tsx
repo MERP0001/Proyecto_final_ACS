@@ -33,7 +33,12 @@ interface StockUpdateForm {
   cantidad: number;
 }
 
-export default function ActualizarStockPage({ params }: { params: { id: string } }) {
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+export default function ActualizarStockPage({ params }: Props) {
+  const { id: idString } = use(params);
   const router = useRouter();
   const [producto, setProducto] = useState<ProductoDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +47,7 @@ export default function ActualizarStockPage({ params }: { params: { id: string }
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [formData, setFormData] = useState<StockUpdateForm | null>(null);
 
-  const id = parseInt(params.id);
+  const id = parseInt(idString);
 
   const form = useForm<StockUpdateForm>({
     defaultValues: {

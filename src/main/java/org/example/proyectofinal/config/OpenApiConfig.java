@@ -36,7 +36,7 @@ public class OpenApiConfig {
     public GroupedOpenApi privateApi() {
         return GroupedOpenApi.builder()
                 .group("springshop-private")
-                .pathsToMatch("/api/productos/**")
+                .pathsToMatch("/productos/**")
                 .build();
     }
 } 

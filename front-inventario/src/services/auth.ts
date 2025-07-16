@@ -7,6 +7,15 @@ const REFRESH_TOKEN_KEY = 'refreshToken';
 const USER_KEY = 'user';
 
 export const authService = {
+    register: async (credentials: AuthRequest): Promise<void> => {
+        try {
+            await api.post('/api/auth/register', credentials);
+        } catch (error: any) {
+            console.error('Error durante el registro:', error.response?.data || error.message);
+            throw error;
+        }
+    },
+
     login: async (credentials: AuthRequest): Promise<AuthResponse> => {
         try {
             const response = await api.post<AuthResponse>('/api/auth/login', credentials);

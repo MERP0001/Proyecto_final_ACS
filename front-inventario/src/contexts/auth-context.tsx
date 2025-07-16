@@ -11,6 +11,7 @@ interface AuthContextType {
     isLoading: boolean;
     login: (credentials: AuthRequest) => Promise<void>;
     logout: () => Promise<void>;
+    register: (credentials: AuthRequest) => Promise<void>; // Añadir register
     error: string | null;
     clearError: () => void;
 }
@@ -48,6 +49,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         initAuth();
     }, []);
+
+    const register = async (credentials: AuthRequest) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            await authService.register(credentials);
+            // Opcional: podrías loguear al usuario directamente después del registro
+            // o simplemente dejar que sea redirigido a la página de login.
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message ||
+                               "Error durante el registro. Inténtalo de nuevo.";
+            setError(errorMessage);
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const login = async (credentials: AuthRequest) => {
         setIsLoading(true);
@@ -92,6 +110,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         login,
         logout,
+        register, // Añadir register al value
         error,
         clearError
     };

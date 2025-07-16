@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { productosService } from "@/services/productos";
@@ -33,7 +33,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
-import { use } from "react";
 
 const categorias = [
   "Electrónicos",
@@ -56,14 +55,19 @@ const unidadesMedida = [
   "paquete"
 ];
 
-export default function EditarProductoPage({ params }: { params: { id: string } }) {
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+export default function EditarProductoPage({ params }: Props) {
+  const { id: idString } = use(params);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [producto, setProducto] = useState<ProductoDTO | null>(null);
 
-  const id = parseInt(params.id);
+  const id = parseInt(idString, 10);
 
   const form = useForm<ProductoForm>({
     defaultValues: {
