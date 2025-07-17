@@ -30,9 +30,9 @@
   - Autenticación OAuth2/JWT
 
 ### 2.3 Funcionalidades Excluidas
-- ❌ Control de Stock (no requerido)
-- ❌ Interfaz de Usuario web (no requerido)
-- ❌ Roles Empleado/Invitado (no requerido)
+- ❌ Control de Stock (-)
+- ❌ Interfaz de Usuario web (-)
+- ❌ Roles Empleado/Invitado (-)
 
 ## 3. Entregables
 
