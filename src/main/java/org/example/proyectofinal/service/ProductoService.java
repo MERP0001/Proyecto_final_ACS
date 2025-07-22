@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.proyectofinal.dto.ProductoDTO;
 import org.example.proyectofinal.entity.Producto;
+import org.example.proyectofinal.entity.TipoMovimiento;
+import org.example.proyectofinal.entity.User;
 import org.example.proyectofinal.exception.BusinessValidationException;
 import org.example.proyectofinal.exception.ProductoAlreadyExistsException;
 import org.example.proyectofinal.exception.ProductoNotFoundException;
 import org.example.proyectofinal.filter.ProductoFilter;
 import org.example.proyectofinal.mapper.ProductoMapper;
 import org.example.proyectofinal.repository.ProductoRepository;
+import org.example.proyectofinal.repository.UserRepository;
 import org.example.proyectofinal.specification.ProductoSpecification;
 import org.example.proyectofinal.validator.ProductoValidator;
 import org.springframework.data.domain.Page;
@@ -33,6 +36,8 @@ public class ProductoService {
 
     private final ProductoRepository productoRepository;
     private final ProductoValidator productoValidator;
+    private final MovimientoHistorialService movimientoHistorialService;
+    private final UserRepository userRepository;
 
     /**
      * Crear un nuevo producto.
@@ -51,6 +56,16 @@ public class ProductoService {
         }
 
         Producto productoGuardado = productoRepository.save(producto);
+        
+        // Registrar movimiento de entrada inicial
+        // FIXME: Obtener el usuario autenticado desde el contexto de seguridad.
+        User adminUser = userRepository.findByUsername("admin").orElseThrow(() -> new RuntimeException("Usuario admin no encontrado"));
+        movimientoHistorialService.registrarMovimiento(
+            productoGuardado, 
+            adminUser, 
+            TipoMovimiento.ENTRADA, 
+            productoGuardado.getCantidadActual()
+        );
 
         log.info("Producto creado exitosamente con ID: {}", productoGuardado.getId());
         return productoGuardado;
@@ -143,13 +158,36 @@ public class ProductoService {
 
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException(id));
-
+        
         if (!producto.getActivo()) {
             throw new BusinessValidationException("No se puede actualizar stock de un producto inactivo");
         }
 
+        int cantidadAnterior = producto.getCantidadActual();
+        int diferencia = nuevaCantidad - cantidadAnterior;
+
+        if (diferencia == 0) {
+            log.warn("La nueva cantidad es la misma que la actual. No se realiza ninguna operación.");
+            return producto; // No hay cambios
+        }
+
+        TipoMovimiento tipo = diferencia > 0 ? TipoMovimiento.AJUSTE_POSITIVO : TipoMovimiento.AJUSTE_NEGATIVO;
+        int cantidadMovimiento = Math.abs(diferencia);
+        
         producto.setCantidadActual(nuevaCantidad);
-        return productoRepository.save(producto);
+        Producto productoGuardado = productoRepository.save(producto);
+        
+        // Registrar el ajuste de stock
+        // FIXME: Obtener el usuario autenticado desde el contexto de seguridad.
+        User adminUser = userRepository.findByUsername("admin").orElseThrow(() -> new RuntimeException("Usuario admin no encontrado"));
+        movimientoHistorialService.registrarMovimiento(
+            productoGuardado, 
+            adminUser,
+            tipo, 
+            cantidadMovimiento
+        );
+        
+        return productoGuardado;
     }
 
     /**

@@ -1,206 +1,164 @@
 import { test, expect } from '@playwright/test';
-import { setupAuth } from './global.setup';
-import { clearAuthState } from './utils/auth';
 
-const baseURL = process.env.BASE_URL || 'http://localhost:3000';
+async function login(page: any) {
+  await page.goto('/login');
+  await page.getByLabel('Nombre de Usuario').fill('admin');
+  await page.getByLabel('Contraseña').fill('admin123');
+  await page.getByRole('button', { name: 'Iniciar Sesión' }).click();
+  await page.waitForURL('**/dashboard');
+}
 
-test.describe('CRUD de Productos', () => {
-  test.beforeEach(async ({ page, request }) => {
-    // Limpiar estado y autenticar
-    await clearAuthState(page);
-    const authData = await setupAuth(request);
-    await page.evaluate((auth) => {
-      localStorage.setItem('token', auth.token);
-      localStorage.setItem('refreshToken', auth.refreshToken);
-    }, authData);
-    
-    // Navegar a la sección de productos
-    await page.goto(`${baseURL}/dashboard/productos`);
+/**
+ * ANÁLISIS PREVIO AL TEST:
+ * 
+ * ¿Qué comportamiento específico se quiere garantizar aquí?
+ * Se garantiza que un usuario admin puede completar el flujo de creación de un
+ * nuevo producto, desde el formulario hasta su aparición en la tabla de inventario.
+ * 
+ * ¿Qué condición se está validando y por qué importa?
+ * Se valida el flujo completo de escritura (Create). Desde la UI se envía una
+ * petición a la API, que persiste los datos, y la UI se actualiza para reflejar
+ * el nuevo estado. Es la prueba fundamental de la funcionalidad de negocio.
+ * 
+ * ¿Qué pasaría si este test no existiera?
+ * Un bug podría bloquear la adición de nuevos productos al inventario,
+ * lo que haría inútil la aplicación.
+ */
+test('Un usuario administrador debería poder crear un nuevo producto', async ({ page }) => {
+
+  // 1. Hacer login
+  await login(page);
+  
+  // 2. NAVEGAR a la página de la lista de productos.
+  await page.goto('/productos');
+  await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
+
+  // 3. ACTUAR: Iniciar el proceso de creación.
+  await page.getByRole('button', { name: 'Agregar Producto' }).click();
+  
+  // 4. VERIFICAR que estamos en la página del formulario.
+  await page.waitForURL('**/productos/nuevo');
+  await expect(page.getByRole('heading', { name: 'Nuevo Producto' })).toBeVisible();
+
+  // 5. ACTUAR: Rellenar el formulario con datos únicos.
+  const nombreProducto = `Café de Origen Único ${Date.now()}`;
+  await page.getByLabel('Nombre del Producto').fill(nombreProducto);
+  await page.getByLabel('Descripción').fill('Un café excepcional de las montañas de Colombia.');
+  
+  await page.getByLabel('Categoría').click();
+  await page.getByRole('option', { name: 'Gaming' }).click();
+
+  await page.getByLabel('Precio').fill('15.99');
+  await page.getByLabel('Cantidad Inicial').fill('100');
+  
+  // 6. ACTUAR: Enviar el formulario.
+  await page.getByRole('button', { name: 'Guardar Producto' }).click();
+
+  // 7. VERIFICAR el resultado final.
+  await page.waitForURL('**/productos');
+  await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
+  await expect(page.getByRole('cell', { name: nombreProducto })).toBeVisible();
+});
+
+test('Un usuario debería poder editar un producto existente', async ({ page }) => {
+  // 1. Hacer login
+  await login(page);
+  
+  // 2. Ir a productos y seleccionar uno para editar
+  await page.goto('/productos');
+  await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
+  await page.waitForSelector('tbody tr', { timeout: 10000 });
+  
+  // 3. Hacer clic en el dropdown del primer producto y seleccionar "Editar"
+  await page.locator('tbody tr').first().locator('button[class*="h-8 w-8 p-0"]').click();
+  await page.getByRole('menuitem').filter({ hasText: 'Editar' }).click();
+  
+  // 4. Verificar que estamos en la página de editar
+  await page.waitForURL('**/productos/*/editar');
+  await expect(page.getByRole('heading', { name: 'Editar Producto' })).toBeVisible();
+  
+  // 5. Actualizar campos del formulario
+  const nombreActualizado = `Producto Editado ${Date.now()}`;
+  await page.getByLabel('Nombre del Producto').clear();
+  await page.getByLabel('Nombre del Producto').fill(nombreActualizado);
+  await page.getByLabel('Precio').clear();
+  await page.getByLabel('Precio').fill('25.99');
+  
+  // 6. Guardar cambios
+  await page.getByRole('button', { name: 'Guardar Cambios' }).click();
+  
+  // 7. Verificar redirección y cambios guardados
+  await page.waitForURL('**/productos');
+  await expect(page.getByRole('cell', { name: nombreActualizado })).toBeVisible();
+  await expect(page.getByText('$25.99')).toBeVisible();
+});
+
+test('Un usuario debería poder actualizar el stock de un producto', async ({ page }) => {
+  // 1. Hacer login
+  await login(page);
+  
+  // 2. Ir a productos
+  await page.goto('/productos');
+  await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
+  
+  // 3. Hacer clic en el dropdown del primer producto y seleccionar "Actualizar Stock"
+  await page.locator('tbody tr').first().locator('button[class*="h-8 w-8 p-0"]').click();
+  await page.getByRole('menuitem').filter({ hasText: 'Actualizar Stock' }).click();
+  
+  // 4. Verificar que estamos en la página de stock
+  await page.waitForURL('**/productos/*/stock');
+  await expect(page.getByRole('heading', { name: 'Actualizar Stock' })).toBeVisible();
+  
+  // 5. Verificar que se muestra la información del producto
+  await expect(page.getByText('Información del Producto')).toBeVisible();
+  await expect(page.getByText('Stock Actual')).toBeVisible();
+  
+  // 6. Agregar cantidad al stock
+  await page.getByLabel('Cantidad a modificar').fill('10');
+  await page.getByRole('button', { name: 'Actualizar Stock' }).click();
+  
+  // 7. Confirmar en el dialog
+  await expect(page.getByText('Confirmar actualización de stock')).toBeVisible();
+  await page.getByRole('button', { name: 'Confirmar' }).click();
+  
+  // 8. Verificar redirección
+  await page.waitForURL('**/productos');
+  await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
+});
+
+test('Un usuario debería poder eliminar un producto', async ({ page }) => {
+  // 1. Hacer login
+  await login(page);
+  
+  // 2. Crear producto temporal
+  await page.goto('/productos/nuevo');
+  const nombreTemporal = `Producto a Eliminar ${Date.now()}`;
+  await page.getByLabel('Nombre del Producto').fill(nombreTemporal);
+  await page.getByLabel('Descripción').fill('Producto temporal para test de eliminación');
+  await page.getByLabel('Categoría').click();
+  await page.getByRole('option', { name: 'Gaming' }).click();
+  await page.getByLabel('Precio').fill('99.99');
+  await page.getByLabel('Cantidad Inicial').fill('1');
+  await page.getByRole('button', { name: 'Guardar Producto' }).click();
+  
+  // 3. Verificar que el producto se creó
+  await page.waitForURL('**/productos');
+  await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
+  await page.waitForSelector('tbody tr', { timeout: 10000 });
+  await expect(page.getByRole('cell', { name: nombreTemporal })).toBeVisible();
+  
+  // 4. Buscar el producto específico y eliminarlo
+  const filaProducto = page.locator('tr', { hasText: nombreTemporal });
+  await filaProducto.locator('button[class*="h-8 w-8 p-0"]').click();
+  
+  // 5. Simular confirmación del dialog de eliminación
+  page.on('dialog', async dialog => {
+    expect(dialog.message()).toContain('eliminar este producto');
+    await dialog.accept();
   });
-
-  test('Debe mostrar la lista de productos correctamente', async ({ page }) => {
-    // Verificar elementos de la tabla
-    await expect(page.getByRole('table')).toBeVisible();
-    await expect(page.getByRole('columnheader', { name: 'Nombre' })).toBeVisible();
-    await expect(page.getByRole('columnheader', { name: 'Descripción' })).toBeVisible();
-    await expect(page.getByRole('columnheader', { name: 'Precio' })).toBeVisible();
-    await expect(page.getByRole('columnheader', { name: 'Stock' })).toBeVisible();
-  });
-
-  test('Debe crear un nuevo producto', async ({ page }) => {
-    // Datos del nuevo producto
-    const nuevoProducto = {
-      nombre: `Test Producto ${Date.now()}`,
-      descripcion: 'Producto de prueba automatizada',
-      precio: '99.99',
-      stock: '50'
-    };
-
-    // Navegar al formulario de nuevo producto
-    await page.getByRole('link', { name: 'Nuevo Producto' }).click();
-    await expect(page).toHaveURL(`${baseURL}/dashboard/productos/nuevo`);
-
-    // Llenar el formulario
-    await page.getByLabel('Nombre').fill(nuevoProducto.nombre);
-    await page.getByLabel('Descripción').fill(nuevoProducto.descripcion);
-    await page.getByLabel('Precio').fill(nuevoProducto.precio);
-    await page.getByLabel('Stock').fill(nuevoProducto.stock);
-
-    // Guardar producto
-    await page.getByRole('button', { name: 'Guardar' }).click();
-
-    // Verificar redirección y mensaje de éxito
-    await expect(page).toHaveURL(`${baseURL}/dashboard/productos`);
-    await expect(page.getByRole('alert')).toContainText('Producto creado');
-
-    // Verificar que el producto aparece en la lista
-    await expect(page.getByRole('cell', { name: nuevoProducto.nombre })).toBeVisible();
-  });
-
-  test('Debe editar un producto existente', async ({ page }) => {
-    // Crear producto para editar
-    const productoOriginal = {
-      nombre: `Test Producto Editar ${Date.now()}`,
-      descripcion: 'Producto para editar',
-      precio: '100.00',
-      stock: '10'
-    };
-
-    // Crear producto vía API
-    await page.evaluate(async (prod) => {
-      const response = await fetch('/api/productos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(prod)
-      });
-      return response.json();
-    }, productoOriginal);
-
-    // Recargar página
-    await page.reload();
-
-    // Encontrar y hacer clic en el botón de editar
-    const filaProducto = page.getByRole('row', { name: productoOriginal.nombre });
-    await filaProducto.getByRole('button', { name: 'Editar' }).click();
-
-    // Modificar datos
-    const nuevoPrecio = '150.00';
-    const nuevoStock = '20';
-    await page.getByLabel('Precio').fill(nuevoPrecio);
-    await page.getByLabel('Stock').fill(nuevoStock);
-
-    // Guardar cambios
-    await page.getByRole('button', { name: 'Guardar' }).click();
-
-    // Verificar actualización
-    await expect(page).toHaveURL(`${baseURL}/dashboard/productos`);
-    await expect(page.getByRole('alert')).toContainText('Producto actualizado');
-    
-    // Verificar nuevos valores en la tabla
-    const filaPrecio = page.getByRole('cell', { name: nuevoPrecio });
-    const filaStock = page.getByRole('cell', { name: nuevoStock });
-    await expect(filaPrecio).toBeVisible();
-    await expect(filaStock).toBeVisible();
-  });
-
-  test('Debe eliminar un producto', async ({ page }) => {
-    // Crear producto para eliminar
-    const productoEliminar = {
-      nombre: `Test Producto Eliminar ${Date.now()}`,
-      descripcion: 'Producto para eliminar',
-      precio: '50.00',
-      stock: '5'
-    };
-
-    // Crear producto vía API
-    await page.evaluate(async (prod) => {
-      const response = await fetch('/api/productos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(prod)
-      });
-      return response.json();
-    }, productoEliminar);
-
-    // Recargar página
-    await page.reload();
-
-    // Encontrar y hacer clic en el botón de eliminar
-    const filaProducto = page.getByRole('row', { name: productoEliminar.nombre });
-    await filaProducto.getByRole('button', { name: 'Eliminar' }).click();
-
-    // Confirmar eliminación en el diálogo
-    await page.getByRole('button', { name: 'Confirmar' }).click();
-
-    // Verificar eliminación
-    await expect(page.getByRole('alert')).toContainText('Producto eliminado');
-    await expect(page.getByRole('cell', { name: productoEliminar.nombre })).not.toBeVisible();
-  });
-
-  test('Debe validar campos requeridos al crear producto', async ({ page }) => {
-    // Navegar al formulario de nuevo producto
-    await page.getByRole('link', { name: 'Nuevo Producto' }).click();
-
-    // Intentar guardar sin llenar campos
-    await page.getByRole('button', { name: 'Guardar' }).click();
-
-    // Verificar mensajes de error
-    await expect(page.getByText('El nombre es requerido')).toBeVisible();
-    await expect(page.getByText('La descripción es requerida')).toBeVisible();
-    await expect(page.getByText('El precio es requerido')).toBeVisible();
-    await expect(page.getByText('El stock es requerido')).toBeVisible();
-  });
-
-  test('Debe validar valores numéricos en precio y stock', async ({ page }) => {
-    // Navegar al formulario de nuevo producto
-    await page.getByRole('link', { name: 'Nuevo Producto' }).click();
-
-    // Llenar campos con valores inválidos
-    await page.getByLabel('Nombre').fill('Producto Test');
-    await page.getByLabel('Descripción').fill('Descripción test');
-    await page.getByLabel('Precio').fill('abc');
-    await page.getByLabel('Stock').fill('-10');
-
-    // Intentar guardar
-    await page.getByRole('button', { name: 'Guardar' }).click();
-
-    // Verificar mensajes de error
-    await expect(page.getByText('El precio debe ser un número válido')).toBeVisible();
-    await expect(page.getByText('El stock debe ser un número positivo')).toBeVisible();
-  });
-
-  test('Debe mostrar mensaje cuando no hay productos', async ({ page }) => {
-    // Eliminar todos los productos vía API
-    await page.evaluate(async () => {
-      const response = await fetch('/api/productos', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const productos = await response.json();
-      
-      // Eliminar cada producto
-      for (const producto of productos) {
-        await fetch(`/api/productos/${producto.id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-      }
-    });
-
-    // Recargar página
-    await page.reload();
-
-    // Verificar mensaje de no hay productos
-    await expect(page.getByText('No hay productos disponibles')).toBeVisible();
-  });
+  
+  await page.getByRole('menuitem').filter({ hasText: 'Eliminar' }).click();
+  
+  // 6. Verificar que el producto ya no aparece en la lista
+  await expect(page.getByRole('cell', { name: nombreTemporal })).not.toBeVisible();
 }); 

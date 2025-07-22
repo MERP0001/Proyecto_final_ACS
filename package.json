@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@opentelemetry/context-zone": "^2.0.1",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.203.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.203.0",
+    "@opentelemetry/sdk-trace-web": "^2.0.1"
+  }
+}

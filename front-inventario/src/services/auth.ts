@@ -1,5 +1,5 @@
 import api from '@/lib/api';
-import { AuthRequest, AuthResponse, RefreshTokenRequest } from '@/types';
+import { AuthRequest, AuthResponse, RefreshTokenRequest, RegisterRequest, LoginRequest } from '@/types';
 import { jwtDecode } from 'jwt-decode';
 
 const TOKEN_KEY = 'accessToken';
@@ -7,7 +7,7 @@ const REFRESH_TOKEN_KEY = 'refreshToken';
 const USER_KEY = 'user';
 
 export const authService = {
-    register: async (credentials: AuthRequest): Promise<void> => {
+    register: async (credentials: RegisterRequest): Promise<void> => {
         try {
             await api.post('/api/auth/register', credentials);
         } catch (error: any) {
@@ -16,7 +16,7 @@ export const authService = {
         }
     },
 
-    login: async (credentials: AuthRequest): Promise<AuthResponse> => {
+    login: async (credentials: LoginRequest): Promise<AuthResponse> => {
         try {
             const response = await api.post<AuthResponse>('/api/auth/login', credentials);
             const authData = response.data;

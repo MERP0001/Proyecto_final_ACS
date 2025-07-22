@@ -1,0 +1,22 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:3000",
+      "localStorage": [
+        {
+          "name": "accessToken",
+          "value": "eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJST0xFX0FETUlOSVNUUkFET1IiXSwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NTMyMDUwMjgsImV4cCI6MTc1MzIwODYyOH0.N8s25544I5YsqKboDBhHJg4w9bKmyiFyfpYdqkfeBAI"
+        },
+        {
+          "name": "user",
+          "value": "{\"username\":\"admin\",\"email\":\"admin@inventarios.com\",\"nombreCompleto\":\"Administrador del Sistema\",\"role\":\"ADMINISTRADOR\",\"expiresAt\":\"2025-07-22T18:23:48.629523923Z\"}"
+        },
+        {
+          "name": "refreshToken",
+          "value": "eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJST0xFX0FETUlOSVNUUkFET1IiXSwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NTMyMDUwMjgsImV4cCI6MTc1MzgwOTgyOH0.jaILrV3y7R9lsTj5-rwaIxm8WjZhuJRnGVlIW6VS90M"
+        }
+      ]
+    }
+  ]
+}

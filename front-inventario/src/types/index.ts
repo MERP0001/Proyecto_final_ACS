@@ -11,6 +11,18 @@ export interface User {
     ultimoAcceso?: string;
 }
 
+export interface LoginRequest {
+    username: string;
+    password?: string;
+}
+
+export interface RegisterRequest {
+    username: string;
+    password?: string;
+    email?: string;
+    nombreCompleto?: string;
+}
+
 export interface AuthRequest {
     username: string;
     password?: string; // Hacer opcional para el formulario de admin

@@ -47,4 +47,12 @@ public class OpenApiConfig {
                 .pathsToMatch("/users/**")
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi historialApi() {
+        return GroupedOpenApi.builder()
+                .group("privado-historial")
+                .pathsToMatch("/api/historial/**")
+                .build();
+    }
 } 
