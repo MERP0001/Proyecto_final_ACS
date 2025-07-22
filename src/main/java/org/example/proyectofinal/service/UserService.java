@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +54,37 @@ public class UserService implements UserDetailsService {
         User savedUser = userRepository.save(user);
         log.info("Usuario creado exitosamente: {}", username);
         return savedUser;
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Transactional
+    public User updateUser(Long id, User userDetails) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con id: " + id));
+
+        user.setUsername(userDetails.getUsername());
+        user.setEmail(userDetails.getEmail());
+        user.setNombreCompleto(userDetails.getNombreCompleto());
+        user.setRole(userDetails.getRole());
+        user.setActivo(userDetails.getActivo());
+
+        // No actualizamos la contraseña aquí, debería ser un método separado y más seguro
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con id: " + id));
+        user.setActivo(false);
+        userRepository.save(user);
     }
     
     @Transactional

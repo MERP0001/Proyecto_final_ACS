@@ -27,16 +27,24 @@ public class OpenApiConfig {
     @Bean
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
-                .group("springshop-public")
-                .pathsToMatch("/api/auth/**", "/api/public/**")
+                .group("público")
+                .pathsToMatch("/api/auth/**")
                 .build();
     }
 
     @Bean
-    public GroupedOpenApi privateApi() {
+    public GroupedOpenApi productosApi() {
         return GroupedOpenApi.builder()
-                .group("springshop-private")
+                .group("privado-productos")
                 .pathsToMatch("/productos/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi usersApi() {
+        return GroupedOpenApi.builder()
+                .group("privado-usuarios")
+                .pathsToMatch("/users/**")
                 .build();
     }
 } 

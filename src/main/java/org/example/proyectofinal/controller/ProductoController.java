@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.proyectofinal.dto.ProductoDTO;
 import org.example.proyectofinal.dto.ErrorResponse;
+import org.example.proyectofinal.entity.Producto;
 import org.example.proyectofinal.filter.ProductoFilter;
+import org.example.proyectofinal.mapper.ProductoMapper;
 import org.example.proyectofinal.response.ApiResponse;
 import org.example.proyectofinal.service.ProductoService;
 import org.springdoc.core.annotations.ParameterObject;
@@ -32,6 +34,7 @@ import java.util.List;
 public class ProductoController {
 
     private final ProductoService productoService;
+    private final ProductoMapper productoMapper;
 
     @PostMapping
     @Operation(summary = "Crear un nuevo producto", description = "Crea un nuevo producto en la base de datos.")
@@ -45,8 +48,9 @@ public class ProductoController {
     })
     public ResponseEntity<ProductoDTO> crearProducto(@Valid @RequestBody ProductoDTO productoDTO) {
         log.info("Creando producto: {}", productoDTO.getNombre());
-        ProductoDTO productoCreado = productoService.crearProducto(productoDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(productoCreado);
+        Producto producto = productoMapper.toEntity(productoDTO);
+        Producto productoCreado = productoService.crearProducto(producto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productoMapper.toDTO(productoCreado));
     }
 
     @GetMapping("/{id}")
@@ -62,16 +66,17 @@ public class ProductoController {
     public ResponseEntity<ProductoDTO> obtenerProducto(
             @Parameter(description = "ID del producto a obtener", required = true) @PathVariable Long id) {
         log.debug("Obteniendo producto ID: {}", id);
-        ProductoDTO producto = productoService.obtenerProductoPorId(id);
-        return ResponseEntity.ok(producto);
+        Producto producto = productoService.obtenerProductoPorId(id);
+        return ResponseEntity.ok(productoMapper.toDTO(producto));
     }
 
     @GetMapping
     @Operation(summary = "Listar productos paginados", description = "Lista todos los productos activos con paginación.")
     public ResponseEntity<ApiResponse<Page<ProductoDTO>>> listarProductos(@ParameterObject Pageable pageable) {
         log.debug("Listando productos");
-        Page<ProductoDTO> productos = productoService.listarProductosActivos(pageable);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Productos listados", productos));
+        Page<Producto> productosPage = productoService.listarProductosActivos(pageable);
+        Page<ProductoDTO> productosDTOPage = productosPage.map(productoMapper::toDTO);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Productos listados", productosDTOPage));
     }
 
     @GetMapping("/buscar")
@@ -80,8 +85,9 @@ public class ProductoController {
             @ParameterObject ProductoFilter filter,
             @ParameterObject Pageable pageable) {
         log.debug("Buscando productos");
-        Page<ProductoDTO> productos = productoService.buscarProductos(filter, pageable);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Productos encontrados", productos));
+        Page<Producto> productosPage = productoService.buscarProductos(filter, pageable);
+        Page<ProductoDTO> productosDTOPage = productosPage.map(productoMapper::toDTO);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Productos encontrados", productosDTOPage));
     }
 
     @PutMapping("/{id}")
@@ -98,8 +104,9 @@ public class ProductoController {
             @Parameter(description = "ID del producto a actualizar", required = true) @PathVariable Long id,
             @Valid @RequestBody ProductoDTO productoDTO) {
         log.info("Actualizando producto ID: {}", id);
-        ProductoDTO productoActualizado = productoService.actualizarProducto(id, productoDTO);
-        return ResponseEntity.ok(productoActualizado);
+        Producto producto = productoMapper.toEntity(productoDTO);
+        Producto productoActualizado = productoService.actualizarProducto(id, producto);
+        return ResponseEntity.ok(productoMapper.toDTO(productoActualizado));
     }
 
     @PatchMapping("/{id}/stock")
@@ -116,8 +123,8 @@ public class ProductoController {
             @Parameter(description = "ID del producto para actualizar stock", required = true) @PathVariable Long id,
             @Parameter(description = "Nueva cantidad de stock", required = true) @RequestParam Integer cantidad) {
         log.info("Actualizando stock del producto ID: {}", id);
-        ProductoDTO productoActualizado = productoService.actualizarStock(id, cantidad);
-        return ResponseEntity.ok(productoActualizado);
+        Producto productoActualizado = productoService.actualizarStock(id, cantidad);
+        return ResponseEntity.ok(productoMapper.toDTO(productoActualizado));
     }
 
     @DeleteMapping("/{id}")
@@ -140,8 +147,8 @@ public class ProductoController {
     public ResponseEntity<List<ProductoDTO>> obtenerProductosConStockBajo(
             @Parameter(description = "Cantidad mínima de stock para el filtro", required = true) @RequestParam Integer minimo) {
         log.debug("Obteniendo productos con stock bajo");
-        List<ProductoDTO> productos = productoService.obtenerProductosConStockBajo(minimo);
-        return ResponseEntity.ok(productos);
+        List<Producto> productos = productoService.obtenerProductosConStockBajo(minimo);
+        return ResponseEntity.ok(productoMapper.toDTOList(productos));
     }
 
     @GetMapping("/categorias")

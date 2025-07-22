@@ -32,44 +32,40 @@ import java.util.List;
 public class ProductoService {
 
     private final ProductoRepository productoRepository;
-    private final ProductoMapper productoMapper;
     private final ProductoValidator productoValidator;
 
     /**
      * Crear un nuevo producto.
-     * @param productoDTO datos del producto a crear
-     * @return ProductoDTO del producto creado
+     * @param producto datos del producto a crear
+     * @return Producto del producto creado
      */
     @Transactional
-    public ProductoDTO crearProducto(ProductoDTO productoDTO) {
-        log.info("Creando nuevo producto: {}", productoDTO.getNombre());
-        
-        validarDatosProducto(productoDTO);
-        
-        if (StringUtils.hasText(productoDTO.getSku()) && 
-            productoRepository.existsBySku(productoDTO.getSku())) {
-            throw ProductoAlreadyExistsException.porSku(productoDTO.getSku());
+    public Producto crearProducto(Producto producto) {
+        log.info("Creando nuevo producto: {}", producto.getNombre());
+
+        productoValidator.validar(producto);
+
+        if (StringUtils.hasText(producto.getSku()) &&
+            productoRepository.existsBySku(producto.getSku())) {
+            throw ProductoAlreadyExistsException.porSku(producto.getSku());
         }
-        
-        Producto producto = productoMapper.toEntity(productoDTO);
+
         Producto productoGuardado = productoRepository.save(producto);
-        
+
         log.info("Producto creado exitosamente con ID: {}", productoGuardado.getId());
-        return productoMapper.toDTO(productoGuardado);
+        return productoGuardado;
     }
 
     /**
      * Obtener producto por ID.
      * @param id ID del producto
-     * @return ProductoDTO del producto encontrado
+     * @return Producto del producto encontrado
      */
-    public ProductoDTO obtenerProductoPorId(Long id) {
+    public Producto obtenerProductoPorId(Long id) {
         log.debug("Buscando producto con ID: {}", id);
-        
-        Producto producto = productoRepository.findById(id)
+
+        return productoRepository.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException(id));
-        
-        return productoMapper.toDTO(producto);
     }
 
     /**
@@ -77,11 +73,10 @@ public class ProductoService {
      * @param pageable información de paginación
      * @return página de productos
      */
-    public Page<ProductoDTO> listarProductosActivos(Pageable pageable) {
+    public Page<Producto> listarProductosActivos(Pageable pageable) {
         log.debug("Listando productos activos");
-        
-        Page<Producto> productos = productoRepository.findByActivoTrue(pageable);
-        return productos.map(productoMapper::toDTO);
+
+        return productoRepository.findByActivoTrue(pageable);
     }
 
     /**
@@ -90,67 +85,71 @@ public class ProductoService {
      * @param pageable información de paginación
      * @return página de productos que coinciden con los criterios
      */
-    public Page<ProductoDTO> buscarProductos(ProductoFilter filter, Pageable pageable) {
+    public Page<Producto> buscarProductos(ProductoFilter filter, Pageable pageable) {
         log.debug("Buscando productos con filtros dinámicos");
         var spec = ProductoSpecification.conFiltros(filter);
-        Page<Producto> productos = productoRepository.findAll(spec, pageable);
-        return productos.map(productoMapper::toDTO);
+        return productoRepository.findAll(spec, pageable);
     }
 
     /**
      * Actualizar un producto existente.
      * @param id ID del producto a actualizar
-     * @param productoDTO datos actualizados del producto
-     * @return ProductoDTO del producto actualizado
+     * @param productoActualizado datos actualizados del producto
+     * @return Producto del producto actualizado
      */
     @Transactional
-    public ProductoDTO actualizarProducto(Long id, ProductoDTO productoDTO) {
+    public Producto actualizarProducto(Long id, Producto productoActualizado) {
         log.info("Actualizando producto con ID: {}", id);
-        
+
         Producto productoExistente = productoRepository.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException(id));
-        
-        validarDatosProducto(productoDTO);
-        
-        if (StringUtils.hasText(productoDTO.getSku()) && 
-            !productoDTO.getSku().equals(productoExistente.getSku()) &&
-            productoRepository.existsBySkuAndIdNot(productoDTO.getSku(), id)) {
-            throw ProductoAlreadyExistsException.porSku(productoDTO.getSku());
+
+        productoValidator.validar(productoActualizado);
+
+        if (StringUtils.hasText(productoActualizado.getSku()) &&
+            !productoActualizado.getSku().equals(productoExistente.getSku()) &&
+            productoRepository.existsBySkuAndIdNot(productoActualizado.getSku(), id)) {
+            throw ProductoAlreadyExistsException.porSku(productoActualizado.getSku());
         }
-        
-        // Cambiar updateEntity por updateEntityFromDto de MapStruct
-        productoMapper.updateEntityFromDto(productoDTO, productoExistente);
+
+        // Mapeo manual de campos actualizables
+        productoExistente.setSku(productoActualizado.getSku());
+        productoExistente.setNombre(productoActualizado.getNombre());
+        productoExistente.setDescripcion(productoActualizado.getDescripcion());
+        productoExistente.setPrecio(productoActualizado.getPrecio());
+        productoExistente.setCategoria(productoActualizado.getCategoria());
+        // La cantidad se maneja en su propio método (actualizarStock)
+        // El estado (activo) se maneja en eliminarProducto
+
         Producto productoGuardado = productoRepository.save(productoExistente);
-        
+
         log.info("Producto actualizado exitosamente");
-        return productoMapper.toDTO(productoGuardado);
+        return productoGuardado;
     }
 
     /**
      * Actualizar stock de un producto.
      * @param id ID del producto
      * @param nuevaCantidad nueva cantidad en stock
-     * @return ProductoDTO del producto actualizado
+     * @return Producto del producto actualizado
      */
     @Transactional
-    public ProductoDTO actualizarStock(Long id, Integer nuevaCantidad) {
+    public Producto actualizarStock(Long id, Integer nuevaCantidad) {
         log.info("Actualizando stock del producto ID: {}", id);
-        
+
         if (nuevaCantidad < 0) {
             throw new BusinessValidationException("La cantidad no puede ser negativa");
         }
-        
+
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException(id));
-        
+
         if (!producto.getActivo()) {
             throw new BusinessValidationException("No se puede actualizar stock de un producto inactivo");
         }
-        
+
         producto.setCantidadActual(nuevaCantidad);
-        Producto productoGuardado = productoRepository.save(producto);
-        
-        return productoMapper.toDTO(productoGuardado);
+        return productoRepository.save(producto);
     }
 
     /**
@@ -160,13 +159,13 @@ public class ProductoService {
     @Transactional
     public void eliminarProducto(Long id) {
         log.info("Eliminando producto con ID: {}", id);
-        
+
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException(id));
-        
+
         producto.setActivo(false);
         productoRepository.save(producto);
-        
+
         log.info("Producto eliminado exitosamente");
     }
 
@@ -175,9 +174,8 @@ public class ProductoService {
      * @param cantidadMinima cantidad mínima para considerar stock bajo
      * @return lista de productos con stock bajo
      */
-    public List<ProductoDTO> obtenerProductosConStockBajo(Integer cantidadMinima) {
-        List<Producto> productos = productoRepository.findProductosConStockBajo(cantidadMinima);
-        return productoMapper.toDTOList(productos);
+    public List<Producto> obtenerProductosConStockBajo(Integer cantidadMinima) {
+        return productoRepository.findProductosConStockBajo(cantidadMinima);
     }
 
     /**
@@ -196,9 +194,4 @@ public class ProductoService {
         return productoRepository.calcularValorTotalInventario();
     }
 
-    // Métodos de validación privados
-
-    private void validarDatosProducto(ProductoDTO productoDTO) {
-        productoValidator.validar(productoDTO);
-    }
 } 

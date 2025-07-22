@@ -40,14 +40,15 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                   .requestMatchers(
-                          "/api/auth/**",
+                          "/api/v1/auth/**",
                           "/v3/api-docs/**",
                           "/swagger-ui/**",
                           "/swagger-ui.html",
                           "/error"
                   ).permitAll()
-                  .requestMatchers("/api/**").authenticated() // Autenticar todas las demás rutas de /api
-                  .anyRequest().permitAll()) // Permitir otras peticiones (ej. estáticos)
+                    .requestMatchers("/api/v1/users/**").hasRole("ADMINISTRADOR")
+                    .requestMatchers("/api/v1/**").authenticated()
+                  .anyRequest().permitAll())
             .sessionManagement(session -> session
                   .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())
