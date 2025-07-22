@@ -32,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArrowLeft, Save } from "lucide-react";
+import { RoleGuard } from "@/components/auth/role-guard";
 
 const categorias = [
   "Electrónicos",
@@ -86,98 +87,52 @@ export default function NuevoProductoPage() {
   };
 
   return (
-    <div className="space-y-6">
-      {error && (
-        <div className="bg-destructive/15 text-destructive px-4 py-3 rounded-md">
-          {error}
+    <RoleGuard allowedRoles={["ADMINISTRADOR","USER"]}>
+      <div className="space-y-6">
+        {error && (
+          <div className="bg-destructive/15 text-destructive px-4 py-3 rounded-md">
+            {error}
+          </div>
+        )}
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight">Nuevo Producto</h2>
+            <p className="text-muted-foreground">
+              Agrega un nuevo producto al inventario
+            </p>
+          </div>
         </div>
-      )}
-      <div className="flex items-center gap-4">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Nuevo Producto</h2>
-          <p className="text-muted-foreground">
-            Agrega un nuevo producto al inventario
-          </p>
-        </div>
-      </div>
 
-      <div className="max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>Información del Producto</CardTitle>
-            <CardDescription>
-              Completa todos los campos requeridos para agregar un nuevo producto
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="nombre"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nombre del Producto</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ej: Laptop Dell XPS 13" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Nombre descriptivo y único del producto
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="descripcion"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Descripción</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Describe las características principales del producto..."
-                          className="resize-none"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Descripción detallada del producto y sus características
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-2 gap-4">
+        <div className="max-w-2xl">
+          <Card>
+            <CardHeader>
+              <CardTitle>Información del Producto</CardTitle>
+              <CardDescription>
+                Completa todos los campos requeridos para agregar un nuevo producto
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   <FormField
                     control={form.control}
-                    name="categoria"
+                    name="nombre"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Categoría</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecciona una categoría" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {categorias.map((categoria) => (
-                              <SelectItem key={categoria} value={categoria}>
-                                {categoria}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <FormLabel>Nombre del Producto</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Ej: Laptop Dell XPS 13" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          Nombre descriptivo y único del producto
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -185,103 +140,151 @@ export default function NuevoProductoPage() {
 
                   <FormField
                     control={form.control}
-                    name="precio"
+                    name="descripcion"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Precio</FormLabel>
+                        <FormLabel>Descripción</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            min="0.01"
-                            step="0.01"
-                            placeholder="0.00"
-                            onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                            value={field.value}
+                          <Textarea
+                            placeholder="Describe las características principales del producto..."
+                            className="resize-none"
+                            {...field}
                           />
                         </FormControl>
                         <FormDescription>
-                          Precio unitario del producto
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="cantidadInicial"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Cantidad Inicial</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min="0"
-                            step="1"
-                            placeholder="0"
-                            onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                            value={field.value}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Cantidad inicial en inventario
+                          Descripción detallada del producto y sus características
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="unidadMedida"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Unidad de Medida</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="categoria"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Categoría</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecciona una categoría" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {categorias.map((categoria) => (
+                                <SelectItem key={categoria} value={categoria}>
+                                  {categoria}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="precio"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Precio</FormLabel>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecciona una unidad" />
-                            </SelectTrigger>
+                            <Input
+                              type="number"
+                              min="0.01"
+                              step="0.01"
+                              placeholder="0.00"
+                              onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                              value={field.value}
+                            />
                           </FormControl>
-                          <SelectContent>
-                            {unidadesMedida.map((unidad) => (
-                              <SelectItem key={unidad} value={unidad}>
-                                {unidad}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          Unidad de medida del producto
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                          <FormDescription>
+                            Precio unitario del producto
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                <div className="flex gap-4">
-                  <Button
-                    type="submit"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <span>Guardando...</span>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4 mr-2" />
-                        <span>Guardar Producto</span>
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="cantidadInicial"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Cantidad Inicial</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min="0"
+                              step="1"
+                              placeholder="0"
+                              onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                              value={field.value}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Cantidad inicial en inventario
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="unidadMedida"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Unidad de Medida</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecciona una unidad" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {unidadesMedida.map((unidad) => (
+                                <SelectItem key={unidad} value={unidad}>
+                                  {unidad}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormDescription>
+                            Unidad de medida del producto
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <span>Guardando...</span>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4 mr-2" />
+                          <span>Guardar Producto</span>
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
+    </RoleGuard>
   );
 } 

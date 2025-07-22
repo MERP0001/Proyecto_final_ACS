@@ -5,15 +5,18 @@ export interface User {
     username: string;
     email: string;
     nombreCompleto: string;
-    role: 'ADMINISTRADOR';
+    role: 'ADMINISTRADOR' | 'USUARIO';
     activo: boolean;
-    fechaCreacion: string;
+    fechaCreacion?: string;
     ultimoAcceso?: string;
 }
 
 export interface AuthRequest {
     username: string;
-    password: string;
+    password?: string; // Hacer opcional para el formulario de admin
+    email?: string;
+    nombreCompleto?: string;
+    role?: 'ADMINISTRADOR' | 'USUARIO';
 }
 
 export interface AuthResponse {

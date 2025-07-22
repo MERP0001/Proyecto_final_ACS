@@ -1,225 +1,138 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Package, LogIn, AlertCircle, UserPlus } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
-
-const registerSchema = z
-    .object({
-        username: z
-            .string()
-            .min(3, "El nombre de usuario debe tener al menos 3 caracteres")
-            .max(50, "El nombre de usuario no puede exceder los 50 caracteres")
-            .regex(
-                /^[a-zA-Z0-9_]+$/,
-                "Solo se permiten letras, números y guiones bajos"
-            ),
-        password: z
-            .string()
-            .min(6, "La contraseña debe tener al menos 6 caracteres")
-            .max(50, "La contraseña no puede exceder los 50 caracteres"),
-        confirmPassword: z.string(),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-        message: "Las contraseñas no coinciden",
-        path: ["confirmPassword"],
-    });
-
-type RegisterFormData = z.infer<typeof registerSchema>;
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
 
 export default function RegisterPage() {
-    const router = useRouter();
     const { register, error, isLoading, clearError } = useAuth();
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-    const form = useForm<RegisterFormData>({
-        resolver: zodResolver(registerSchema),
-        defaultValues: {
-            username: "",
-            password: "",
-            confirmPassword: "",
-        },
-        mode: "onChange",
+    const router = useRouter();
+    const [formData, setFormData] = useState({
+        username: "",
+        email: "",
+        nombreCompleto: "",
+        password: "",
     });
+    const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
-    const onSubmit = async (data: RegisterFormData) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        clearError();
         try {
-            // La función de registro ahora solo necesita username y password
-            await register({ username: data.username, password: data.password });
-            // Si el registro es exitoso, redirigir al login
-            router.push("/login");
+            await register(formData);
+            setRegistrationSuccess(true);
         } catch (err) {
-            // El error se maneja en el AuthContext
-            console.error("Error en el formulario de registro:", err);
+            // El error ya se maneja en el AuthContext
+            console.error("Fallo el registro:", err);
         }
     };
 
+    if (registrationSuccess) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                <Card className="mx-auto max-w-sm">
+                    <CardHeader>
+                        <CardTitle className="text-2xl">¡Registro Exitoso!</CardTitle>
+                        <CardDescription>
+                            Tu cuenta ha sido creada. Ahora puedes iniciar sesión.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Button onClick={() => router.push("/login")} className="w-full">
+                            Ir a Iniciar Sesión
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
     return (
-        <div className="w-full min-h-screen lg:grid lg:grid-cols-2">
-            <div className="hidden bg-gray-100 lg:flex lg:items-center lg:justify-center p-12">
-                <div className="max-w-md text-center">
-                    <Package className="mx-auto h-24 w-24 text-primary" />
-                    <h2 className="mt-6 text-4xl font-bold tracking-tight text-gray-900">
-                        Sistema de Inventarios
-                    </h2>
-                    <p className="mt-4 text-lg text-gray-600">
-                        Crea una cuenta para empezar a gestionar tu inventario.
-                    </p>
-                </div>
-            </div>
-            <div className="flex items-center justify-center p-6 sm:p-12">
-                <div className="w-full max-w-sm space-y-6">
-                    <div className="text-center">
-                        <h1 className="text-3xl font-bold">Crear una cuenta</h1>
-                        <p className="text-balance text-gray-500">
-                            Ingresa tus datos para registrarte en el sistema
-                        </p>
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            <Card className="mx-auto max-w-sm">
+                <CardHeader>
+                    <CardTitle className="text-2xl">Crear una Cuenta</CardTitle>
+                    <CardDescription>
+                        Ingresa tus datos para registrarte en el sistema.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="grid gap-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="username">Nombre de usuario</Label>
+                            <Input
+                                id="username"
+                                name="username"
+                                type="text"
+                                placeholder="tu-usuario"
+                                required
+                                value={formData.username}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="m@ejemplo.com"
+                                required
+                                value={formData.email}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="nombreCompleto">Nombre Completo</Label>
+                            <Input
+                                id="nombreCompleto"
+                                name="nombreCompleto"
+                                type="text"
+                                placeholder="Tu Nombre Apellido"
+                                required
+                                value={formData.nombreCompleto}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="password">Contraseña</Label>
+                            <Input
+                                id="password"
+                                name="password"
+                                type="password"
+                                required
+                                value={formData.password}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        {error && (
+                            <Alert variant="destructive">
+                                <AlertTitle>Error de Registro</AlertTitle>
+                                <AlertDescription>{error}</AlertDescription>
+                            </Alert>
+                        )}
+                        <Button type="submit" className="w-full" disabled={isLoading}>
+                            {isLoading ? "Registrando..." : "Crear Cuenta"}
+                        </Button>
+                    </form>
+                    <div className="mt-4 text-center text-sm">
+                        ¿Ya tienes una cuenta?{" "}
+                        <Link href="/login" className="underline" onClick={clearError}>
+                            Inicia sesión
+                        </Link>
                     </div>
-                    <Card className="border-0 shadow-none sm:border sm:shadow-lg">
-                        <CardContent className="pt-6">
-                            <Form {...form}>
-                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                                    {error && (
-                                        <Alert variant="destructive">
-                                            <AlertCircle className="h-4 w-4" />
-                                            <AlertDescription>{error}</AlertDescription>
-                                        </Alert>
-                                    )}
-
-                                    <FormField
-                                        control={form.control}
-                                        name="username"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Nombre de Usuario</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        placeholder="Elige un nombre de usuario"
-                                                        autoComplete="username"
-                                                        onChange={(e) => {
-                                                            clearError();
-                                                            field.onChange(e);
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="password"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Contraseña</FormLabel>
-                                                <div className="relative">
-                                                    <FormControl>
-                                                        <Input
-                                                            {...field}
-                                                            type={showPassword ? "text" : "password"}
-                                                            placeholder="Crea una contraseña segura"
-                                                            autoComplete="new-password"
-                                                            onChange={(e) => {
-                                                                clearError();
-                                                                field.onChange(e);
-                                                            }}
-                                                        />
-                                                    </FormControl>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setShowPassword(!showPassword)}
-                                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 text-sm"
-                                                    >
-                                                        {showPassword ? "Ocultar" : "Mostrar"}
-                                                    </button>
-                                                </div>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="confirmPassword"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Confirmar Contraseña</FormLabel>
-                                                <div className="relative">
-                                                    <FormControl>
-                                                        <Input
-                                                            {...field}
-                                                            type={showConfirmPassword ? "text" : "password"}
-                                                            placeholder="Vuelve a escribir la contraseña"
-                                                            autoComplete="new-password"
-                                                            onChange={(e) => {
-                                                                clearError();
-                                                                field.onChange(e);
-                                                            }}
-                                                        />
-                                                    </FormControl>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 text-sm"
-                                                    >
-                                                        {showConfirmPassword ? "Ocultar" : "Mostrar"}
-                                                    </button>
-                                                </div>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <Button
-                                        type="submit"
-                                        disabled={isLoading || !form.formState.isValid}
-                                        className="w-full"
-                                    >
-                                        {isLoading ? (
-                                            <>
-                                                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
-                                                Creando cuenta...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <UserPlus className="mr-2 h-4 w-4" />
-                                                Crear Cuenta
-                                            </>
-                                        )}
-                                    </Button>
-                                </form>
-                            </Form>
-
-                            <div className="mt-6 text-center text-sm">
-                                ¿Ya tienes una cuenta?{" "}
-                                <Link href="/login" className="font-semibold text-primary hover:underline">
-                                    Inicia sesión aquí
-                                </Link>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
+                </CardContent>
+            </Card>
         </div>
     );
 }
