@@ -23,13 +23,13 @@
     * [cite_start]**Visualizar Productos**: Mostrar una lista de todos los productos en el inventario con opciones de búsqueda y filtrado. [cite: 8]
 
 2.  [cite_start]**Control de Stock** [cite: 9]
-    * [cite_start]No requerido. [cite: 9]
+    * [cite_start]-. [cite: 9]
 
 3.  [cite_start]**Integración con Otros Sistemas** [cite: 10]
     * [cite_start]**API de Integración**: Proporcionar una API para integrar el sistema con otras aplicaciones (por ejemplo, sistemas de contabilidad o puntos de venta). [cite: 10]
 
 4.  [cite_start]**Interfaz de Usuario Amigable** [cite: 11]
-    * [cite_start]No requerido. [cite: 11]
+    * [cite_start]-. [cite: 11]
 
 ### Roles y Niveles de Acceso
 
@@ -40,10 +40,10 @@
         * [cite_start]**Control de Stock**: Actualizar stock y visualizar historial de movimientos. [cite: 13]
 
 2.  [cite_start]**Empleado** [cite: 14]
-    * [cite_start]No requerido. [cite: 14]
+    * [cite_start]-. [cite: 14]
 
 3.  [cite_start]**Usuario Invitado/Cliente** [cite: 14]
-    * [cite_start]No requerido. [cite: 14]
+    * [cite_start]-. [cite: 14]
 
 | Funcionalidad         | Administrador | Empleado | Invitado |
 | :-------------------- | :------------ | :------- | :------- |
@@ -60,40 +60,40 @@
     * [cite_start]**Gestión de Riesgos**: Identificar y documentar los posibles riesgos y planificar estrategias de mitigación. [cite: 19]
 
 2.  [cite_start]**Pruebas de Calidad**: [cite: 16]
-    * [cite_start]**Pruebas de Seguridad**: No requerido. [cite: 20]
-    * [cite_start]**Pruebas de Usabilidad**: No requerido. [cite: 20]
+    * [cite_start]**Pruebas de Seguridad**: -. [cite: 20]
+    * [cite_start]**Pruebas de Usabilidad**: -. [cite: 20]
     * [cite_start]**Pruebas de Compatibilidad**: Asegurar que el sistema funcione correctamente en diferentes navegadores y dispositivos. [cite: 21]
-    * [cite_start]**Pruebas de Regresión**: No requerido. [cite: 22]
-    * [cite_start]**Pruebas de Estrés**: No requerido. [cite: 22]
+    * [cite_start]**Pruebas de Regresión**: -. [cite: 22]
+    * [cite_start]**Pruebas de Estrés**: -. [cite: 22]
     * [cite_start]**Pruebas de Aceptación**: Implementar pruebas de aceptación basadas en Cucumber para asegurar que el sistema cumple con los requisitos del usuario. [cite: 22]
     * [cite_start]**Pruebas de Navegadores**: Utilizar Playwright para realizar pruebas automatizadas en diferentes navegadores y dispositivos, asegurando la compatibilidad. [cite: 23]
 
 3.  [cite_start]**Documentación**: [cite: 16]
     * [cite_start]**Documentación de Requisitos**: Crear un documento detallado de requisitos funcionales y no funcionales. [cite: 24]
-    * [cite_start]**Documentación Técnica**: No requerido. [cite: 24]
+    * [cite_start]**Documentación Técnica**: -. [cite: 24]
     * [cite_start]**Guía de Pruebas**: Documentar los casos de prueba, los resultados y cualquier defecto encontrado. [cite: 25]
 
 4.  [cite_start]**Revisión y Validación**: [cite: 16]
-    * [cite_start]**Revisiones de Código**: No requerido. [cite: 26]
-    * [cite_start]**Validación de Requisitos**: No requerido. [cite: 26]
+    * [cite_start]**Revisiones de Código**: -. [cite: 26]
+    * [cite_start]**Validación de Requisitos**: -. [cite: 26]
 
 5.  [cite_start]**Integración Continua y Despliegue Continuo (CI/CD)**: [cite: 27]
-    * [cite_start]**Pipeline de CI/CD**: No requerido. [cite: 27]
-    * [cite_start]**Entorno de Pruebas**: No requerido. [cite: 27]
+    * [cite_start]**Pipeline de CI/CD**: -. [cite: 27]
+    * [cite_start]**Entorno de Pruebas**: -. [cite: 27]
     * [cite_start]**Contenedorización**: Utilizar herramientas como Docker o Podman para crear contenedores del sistema que faciliten la consistencia entre diferentes entornos de desarrollo, prueba y producción. [cite: 28]
     * [cite_start]**Migración de Base de Datos**: Implementar herramientas como Flyway o Liquibase para gestionar las migraciones de bases de datos de manera segura y automatizada. [cite: 29]
 
 6.  [cite_start]**Monitoreo y Mantenimiento**: [cite: 30]
-    * [cite_start]**Monitoreo en Producción**: No requerido. [cite: 30]
-    * [cite_start]**Observabilidad**: No requerido. [cite: 30]
+    * [cite_start]**Monitoreo en Producción**: -. [cite: 30]
+    * [cite_start]**Observabilidad**: -. [cite: 30]
     * [cite_start]**Mantenimiento y Actualizaciones**: Planificar un ciclo regular de mantenimiento y actualizaciones para asegurar que el sistema permanezca seguro y funcional. [cite: 31]
 
 7.  [cite_start]**Gestión de Calidad**: [cite: 32]
     * [cite_start]**Indicadores de Calidad**: Definir métricas de calidad del software (como cobertura de pruebas, densidad de defectos, tiempo de respuesta) y realizar un seguimiento de estas métricas. [cite: 32]
-    * [cite_start]**Mejora Continua**: No requerido. [cite: 33]
+    * [cite_start]**Mejora Continua**: -. [cite: 33]
 
 8.  [cite_start]**Evaluación Post-Implementación**: [cite: 32]
-    * [cite_start]**Revisión Post-Mortem**: No requerido. [cite: 32]
+    * [cite_start]**Revisión Post-Mortem**: -. [cite: 32]
 
 ### Tecnologías Sugeridas:
 
