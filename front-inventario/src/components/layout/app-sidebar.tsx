@@ -46,6 +46,11 @@ const navMain = [
     ],
   },
   {
+    title: "Historial",
+    url: "/historial",
+    icon: Search,
+  },
+  {
     title: "Reportes",
     url: "/reportes",
     icon: BarChart3,

@@ -41,5 +41,8 @@ front-inventario/playwright-report/
 front-inventario/test-results/
 front-inventario/.next/
 
+node_modules
+.next
+
 
 
