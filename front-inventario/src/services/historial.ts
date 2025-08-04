@@ -12,7 +12,7 @@ export interface GetHistorialParams {
 
 const getHistorial = async (params: GetHistorialParams = {}) => {
   const response = await apiClient.get<{ content: MovementHistory[] }>(
-    "/historial",
+    "/api/historial",
     { params }
   );
   return response.data;

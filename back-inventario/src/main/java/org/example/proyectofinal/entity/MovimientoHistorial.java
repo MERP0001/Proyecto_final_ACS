@@ -1,5 +1,6 @@
 package org.example.proyectofinal.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "movimientos_historial")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class MovimientoHistorial {
 
     @Id
@@ -23,10 +25,12 @@ public class MovimientoHistorial {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "producto_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Producto producto;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User usuario;
 
     @Enumerated(EnumType.STRING)

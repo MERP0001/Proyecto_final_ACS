@@ -93,3 +93,14 @@ export interface ErrorResponse {
     timestamp: string;
     path: string;
 } 
+
+// other type exports
+
+export interface MovementHistory {
+  // Define the properties according to your API response
+  id: number;
+  date: string;
+  action: string;
+  user: string;
+  // Add other relevant fields here
+}

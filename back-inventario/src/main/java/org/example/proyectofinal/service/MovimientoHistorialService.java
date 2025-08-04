@@ -30,6 +30,6 @@ public class MovimientoHistorialService {
 
     @Transactional(readOnly = true)
     public Page<MovimientoHistorial> obtenerHistorial(Pageable pageable) {
-        return movimientoHistorialRepository.findAll(pageable);
+        return movimientoHistorialRepository.findAllWithProductoAndUsuario(pageable);
     }
 } 

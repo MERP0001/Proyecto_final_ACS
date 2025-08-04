@@ -4,7 +4,7 @@
 # ===================================================================
 
 # Etapa 1: Build de la aplicación
-FROM gradle:8.5-jdk17-alpine AS build
+FROM gradle:8.5-jdk21 AS build
 
 # Información del mantenedor
 LABEL maintainer="Sistema de Gestión de Inventarios"
@@ -28,13 +28,13 @@ RUN chmod +x ./gradlew
 RUN ./gradlew clean build -x test --no-daemon
 
 # Etapa 2: Runtime de la aplicación
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre-jammy
 
 # Instalar herramientas adicionales para debugging (opcional)
-RUN apk add --no-cache curl
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 # Crear usuario no-root para seguridad
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN groupadd -r appgroup && useradd -r -g appgroup appuser
 
 # Establecer directorio de trabajo
 WORKDIR /app
