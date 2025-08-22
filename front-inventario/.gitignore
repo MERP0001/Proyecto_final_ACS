@@ -36,10 +36,10 @@ out/
 ### VS Code ###
 .vscode/
 
-front-inventario/node_modules/
-front-inventario/playwright-report/
-front-inventario/test-results/
-front-inventario/.next/
+node_modules/
+playwright-report/
+test-results/
+.next/
 
 node_modules
 .next
