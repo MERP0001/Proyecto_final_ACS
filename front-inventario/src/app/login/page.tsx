@@ -66,73 +66,48 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8">
-                <div className="text-center">
-                    <div className="flex justify-center items-center mb-6">
-                        <Package className="h-12 w-12 text-primary" />
-                    </div>
-                    <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+        <div className="w-full min-h-screen lg:grid lg:grid-cols-2">
+            <div className="hidden bg-gray-100 lg:flex lg:items-center lg:justify-center p-12">
+                <div className="max-w-md text-center">
+                    <Package className="mx-auto h-24 w-24 text-primary" />
+                    <h2 className="mt-6 text-4xl font-bold tracking-tight text-gray-900">
                         Sistema de Inventarios
                     </h2>
-                    <p className="mt-2 text-sm text-gray-600">
-                        Inicia sesión para acceder al sistema
+                    <p className="mt-4 text-lg text-gray-600">
+                        Gestiona tu inventario de forma eficiente y centralizada.
                     </p>
                 </div>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Iniciar Sesión</CardTitle>
-                        <CardDescription>
+            </div>
+            <div className="flex items-center justify-center p-6 sm:p-12">
+                <div className="w-full max-w-sm space-y-6">
+                    <div className="text-center">
+                        <h1 className="text-3xl font-bold">Iniciar Sesión</h1>
+                        <p className="text-balance text-gray-500">
                             Ingresa tus credenciales para acceder al sistema
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                                {error && (
-                                    <Alert variant="destructive">
-                                        <AlertCircle className="h-4 w-4" />
-                                        <AlertDescription>{error}</AlertDescription>
-                                    </Alert>
-                                )}
-
-                                <FormField
-                                    control={form.control}
-                                    name="username"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Nombre de Usuario</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    {...field}
-                                                    placeholder="Ingresa tu nombre de usuario"
-                                                    autoComplete="username"
-                                                    onChange={(e) => {
-                                                        clearError();
-                                                        field.onChange(e);
-                                                    }}
-                                                    className="px-4 py-2"
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                        </p>
+                    </div>
+                    <Card className="border-0 shadow-none sm:border sm:shadow-lg">
+                        <CardContent className="pt-6">
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                                    {error && (
+                                        <Alert variant="destructive">
+                                            <AlertCircle className="h-4 w-4" />
+                                            <AlertDescription>{error}</AlertDescription>
+                                        </Alert>
                                     )}
-                                />
 
-                                <FormField
-                                    control={form.control}
-                                    name="password"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Contraseña</FormLabel>
-                                            <div className="relative">
+                                    <FormField
+                                        control={form.control}
+                                        name="username"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Nombre de Usuario</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         {...field}
-                                                        type={showPassword ? "text" : "password"}
-                                                        placeholder="Ingresa tu contraseña"
-                                                        autoComplete="current-password"
+                                                        placeholder="Ingresa tu nombre de usuario"
+                                                        autoComplete="username"
                                                         onChange={(e) => {
                                                             clearError();
                                                             field.onChange(e);
@@ -140,50 +115,76 @@ export default function LoginPage() {
                                                         className="px-4 py-2"
                                                     />
                                                 </FormControl>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                                                >
-                                                    {showPassword ? "Ocultar" : "Mostrar"}
-                                                </button>
-                                            </div>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                <Button
-                                    type="submit"
-                                    disabled={isLoading || !form.formState.isValid}
-                                    className="w-full"
-                                >
-                                    {isLoading ? (
-                                        <>
-                                            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
-                                            Iniciando sesión...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <LogIn className="mr-2 h-4 w-4" />
-                                            Iniciar Sesión
-                                        </>
-                                    )}
-                                </Button>
-                            </form>
-                        </Form>
+                                    <FormField
+                                        control={form.control}
+                                        name="password"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Contraseña</FormLabel>
+                                                <div className="relative">
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            type={showPassword ? "text" : "password"}
+                                                            placeholder="Ingresa tu contraseña"
+                                                            autoComplete="current-password"
+                                                            onChange={(e) => {
+                                                                clearError();
+                                                                field.onChange(e);
+                                                            }}
+                                                            className="px-4 py-2"
+                                                        />
+                                                    </FormControl>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowPassword(!showPassword)}
+                                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                                    >
+                                                        {showPassword ? "Ocultar" : "Mostrar"}
+                                                    </button>
+                                                </div>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
 
-                        <div className="mt-6 text-center">
-                            <p className="text-sm text-gray-600">
-                                Credenciales de prueba:
-                            </p>
-                            <p className="text-sm font-mono bg-gray-100 p-2 rounded mt-2">
-                                Usuario: <strong>admin</strong><br />
-                                Contraseña: <strong>admin123</strong>
-                            </p>
-                        </div>
-                    </CardContent>
-                </Card>
+                                    <Button
+                                        type="submit"
+                                        disabled={isLoading || !form.formState.isValid}
+                                        className="w-full"
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                                                Iniciando sesión...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <LogIn className="mr-2 h-4 w-4" />
+                                                Iniciar Sesión
+                                            </>
+                                        )}
+                                    </Button>
+                                </form>
+                            </Form>
+
+                            <div className="mt-6 text-center">
+                                <p className="text-sm text-gray-600">
+                                    Credenciales de prueba:
+                                </p>
+                                <p className="text-sm font-mono bg-gray-100 p-2 rounded mt-2">
+                                    Usuario: <strong>admin</strong><br />
+                                    Contraseña: <strong>admin123</strong>
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     );

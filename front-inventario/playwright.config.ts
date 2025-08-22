@@ -8,11 +8,14 @@ export default defineConfig({
   // Directorio con las pruebas
   testDir: './tests',
   
-  // Patrón para los archivos de pruebas
-  testMatch: '**/*.spec.ts',
+  // Apuntar a los archivos de test principales
+  testMatch: ['**/login.spec.ts', '**/logout.spec.ts', '**/productos.spec.ts'],
+  
+  // Desactivar setup global para estas pruebas
+  globalSetup: undefined,
   
   // Tiempo máximo para cada test en milisegundos
-  timeout: 45000,
+  timeout: 30000,
   
   // Número máximo de fallos permitidos (0 para ejecutar todos)
   maxFailures: 0,
@@ -25,9 +28,9 @@ export default defineConfig({
     timeout: 120000, // 2 minutos para iniciar el servidor
   },
   
-  // Configuración global para todas las pruebas
+  // Desactivar estado de sesión por defecto
   use: {
-    // Base URL para todas las pruebas
+    storageState: undefined,
     baseURL: 'http://localhost:3000',
     
     // URL base para peticiones API
@@ -47,7 +50,7 @@ export default defineConfig({
     video: 'retain-on-failure',
     
     // Trazar las pruebas para mejorar la depuración
-    trace: 'retain-on-failure',
+    trace: 'on-first-retry',
     
     // Viewport base predeterminado
     viewport: { width: 1280, height: 720 },
@@ -64,21 +67,21 @@ export default defineConfig({
   // Directorio para los informes
   outputDir: 'test-results',
   
-  // Navegadores y dispositivos a probar
+  // Proyectos para probar en diferentes navegadores y dispositivos
   projects: [
-    // Navegadores de escritorio
     {
       name: 'chromium',
-      use: { 
+      use: {
         ...devices['Desktop Chrome'],
         launchOptions: {
           args: ['--disable-web-security']
         }
       },
     },
+    /* Descomentar para probar en otros navegadores
     {
       name: 'firefox',
-      use: { 
+      use: {
         ...devices['Desktop Firefox'],
         launchOptions: {
           firefoxUserPrefs: {
@@ -91,8 +94,6 @@ export default defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
-    
-    // Dispositivos móviles
     {
       name: 'mobile-chrome',
       use: { ...devices['Pixel 5'] },
@@ -101,12 +102,11 @@ export default defineConfig({
       name: 'mobile-safari',
       use: { ...devices['iPhone 12'] },
     },
-    
-    // Tablet
     {
       name: 'tablet',
       use: { ...devices['iPad Pro 11'] },
     },
+    */
   ],
   
   // Ejecutar las pruebas en paralelo

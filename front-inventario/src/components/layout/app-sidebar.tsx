@@ -8,6 +8,7 @@ import {
   AlertTriangle,
   BarChart3,
   Settings,
+  Users,
 } from "lucide-react"
 
 import { NavMain } from "@/components/layout/nav-main"
@@ -19,64 +20,83 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { useAuth } from "@/contexts/auth-context"
 
 // This is sample data.
-const data = {
-  user: {
-    name: "Admin",
-    email: "admin@inventarios.com",
-    avatar: "/avatars/shadcn.jpg",
+const navMain = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: Home,
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: Home,
-    },
-    {
-      title: "Productos",
-      url: "/productos",
-      icon: Package,
-      isActive: true,
-      items: [
-        {
-          title: "Lista de Productos",
-          url: "/productos",
-        },
-        {
-          title: "Agregar Producto",
-          url: "/productos/nuevo",
-        },
-        {
-          title: "Categorías",
-          url: "/productos/categorias",
-        },
-      ],
-    },
-    {
-      title: "Búsqueda",
-      url: "/buscar",
-      icon: Search,
-    },
-    {
-      title: "Stock Bajo",
-      url: "/stock-bajo",
-      icon: AlertTriangle,
-    },
-    {
-      title: "Reportes",
-      url: "/reportes",
-      icon: BarChart3,
-    },
-    {
-      title: "Configuración",
-      url: "/configuracion",
-      icon: Settings,
-    },
-  ],
-}
+  {
+    title: "Productos",
+    url: "/productos",
+    icon: Package,
+    items: [
+      {
+        title: "Lista de Productos",
+        url: "/productos",
+      },
+      {
+        title: "Agregar Producto",
+        url: "/productos/nuevo",
+        role: "ADMINISTRADOR",
+      },
+    ],
+  },
+  {
+    title: "Historial",
+    url: "/historial",
+    icon: Search,
+  },
+  {
+    title: "Reportes",
+    url: "/reportes",
+    icon: BarChart3,
+    items: [
+      {
+        title: "Stock Bajo",
+        url: "/reportes/stock-bajo",
+        role: "ADMINISTRADOR",
+      },
+    ],
+  },
+  {
+    title: "Usuarios",
+    url: "/usuarios",
+    icon: Users,
+    role: "ADMINISTRADOR",
+  },
+  {
+    title: "Configuración",
+    url: "/configuracion",
+    icon: Settings,
+  },
+]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth()
+
+  // Filtra los items del menú basados en el rol del usuario
+  const filteredNav = navMain.map(item => {
+    if (!item.items) {
+      return item;
+    }
+    return {
+      ...item,
+      items: item.items.filter(subItem => !subItem.role || subItem.role === user?.role)
+    };
+  }).filter(item => {
+    // Oculta las secciones principales si todos sus sub-items fueron filtrados
+    if (item.items && item.items.length === 0) {
+      // Excepción para "Productos", que siempre debe ser visible
+      return item.url === '/productos';
+    }
+    return true;
+  });
+
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -86,10 +106,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={filteredNav} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser
+          user={{
+            name: user?.nombreCompleto || "Usuario",
+            email: user?.email || "",
+          }}
+        />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

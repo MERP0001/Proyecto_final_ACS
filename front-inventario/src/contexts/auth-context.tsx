@@ -2,15 +2,16 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { authService } from "@/services/auth";
-import { AuthRequest, AuthResponse } from "@/types";
+import { LoginRequest, AuthResponse, RegisterRequest } from "@/types";
 import { useRouter } from "next/navigation";
 
 interface AuthContextType {
     user: Partial<AuthResponse> | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (credentials: AuthRequest) => Promise<void>;
+    login: (credentials: LoginRequest) => Promise<void>;
     logout: () => Promise<void>;
+    register: (credentials: RegisterRequest) => Promise<void>; // Añadir register
     error: string | null;
     clearError: () => void;
 }
@@ -34,8 +35,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                         if (isValid) {
                             setUser(currentUser);
                         } else {
-                            // Si el token no es válido y no se puede refrescar, hacer logout
-                            await logout();
+                            // ANTES: await logout(); (Causaba redirección)
+                            // AHORA: Limpiar el estado sin forzar redirección.
+                            // Esto estabiliza la carga inicial de la página.
+                            setUser(null);
+                            // Limpiamos manualmente el localStorage
+                            localStorage.removeItem('accessToken');
+                            localStorage.removeItem('refreshToken');
+                            localStorage.removeItem('user');
                         }
                     }
                 }
@@ -49,7 +56,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         initAuth();
     }, []);
 
-    const login = async (credentials: AuthRequest) => {
+    const register = async (credentials: RegisterRequest) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            // Primero, registramos al usuario
+            await authService.register(credentials);
+            // Inmediatamente después, iniciamos sesión con las mismas credenciales
+            await login({ username: credentials.username, password: credentials.password });
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message ||
+                               "Error durante el registro. Inténtalo de nuevo.";
+            setError(errorMessage);
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const login = async (credentials: LoginRequest) => {
         setIsLoading(true);
         setError(null);
         try {
@@ -92,6 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         login,
         logout,
+        register, // Añadir register al value
         error,
         clearError
     };

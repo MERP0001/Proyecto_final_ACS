@@ -30,45 +30,137 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Package } from "lucide-react";
 import { productosService } from "@/services/productos";
-import { ProductoDTO } from "@/types";
+import { ProductoDTO, PaginatedResponse, ProductoFilters } from "@/types";
+import { PaginationControls } from "@/components/ui/pagination-controls";
 
 export default function ProductosPage() {
   const router = useRouter();
-  const [productos, setProductos] = useState<ProductoDTO[]>([]);
+  const [paginatedData, setPaginatedData] = useState<PaginatedResponse<ProductoDTO>>({
+    content: [],
+    totalElements: 0,
+    totalPages: 0,
+    size: 10,
+    number: 0,
+    first: true,
+    last: false,
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filtroNombre, setFiltroNombre] = useState("");
+  const [filtroNombreDebounced, setFiltroNombreDebounced] = useState("");
   const [filtroCategoria, setFiltroCategoria] = useState("");
+  
+  // Estados de paginación
+  const [currentPage, setCurrentPage] = useState(1); // UI usa 1-based, API usa 0-based
+  const [pageSize, setPageSize] = useState(10);
 
+  // Estado para categorías disponibles
+  const [categorias, setCategorias] = useState<string[]>([]);
+
+  // Debouncing para el filtro de nombre (500ms de retraso)
   useEffect(() => {
-    const cargarProductos = async () => {
+    const timer = setTimeout(() => {
+      setFiltroNombreDebounced(filtroNombre);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [filtroNombre]);
+
+  // Cargar categorías al inicializar
+  useEffect(() => {
+    const cargarCategorias = async () => {
       try {
-        const response = await productosService.getProductos();
-        setProductos(response.content);
-        setError(null);
+        const categoriasData = await productosService.getCategorias();
+        setCategorias(categoriasData);
       } catch (err) {
-        console.error("Error al cargar productos:", err);
-        setError("Error al cargar los productos. Por favor, intente nuevamente.");
-      } finally {
-        setIsLoading(false);
+        console.error("Error al cargar categorías:", err);
       }
     };
-
-    cargarProductos();
+    
+    cargarCategorias();
   }, []);
 
-  const productosFiltrados = productos.filter((producto) => {
-    const coincideNombre = producto.nombre.toLowerCase().includes(filtroNombre.toLowerCase());
-    const coincideCategoria = filtroCategoria === "" || producto.categoria === filtroCategoria;
-    return coincideNombre && coincideCategoria;
-  });
+  // Función para cargar productos
+  const cargarProductos = async (page: number, size: number, filters?: ProductoFilters) => {
+    setIsLoading(true);
+    try {
+      let response: PaginatedResponse<ProductoDTO>;
+      
+      if (filters && (filters.nombre || filters.categoria)) {
+        // Usar searchProductos si hay filtros activos
+        response = await productosService.searchProductos(filters, page - 1, size);
+      } else {
+        // Usar getProductos para carga normal
+        response = await productosService.getProductos(page - 1, size);
+      }
+      
+      setPaginatedData(response);
+      setError(null);
+    } catch (err) {
+      console.error("Error al cargar productos:", err);
+      setError("Error al cargar los productos. Por favor, intente nuevamente.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const categorias = Array.from(new Set(productos.map(p => p.categoria)));
+  // Efecto para cargar productos cuando cambian los parámetros
+  // Ahora usa filtroNombreDebounced en lugar de filtroNombre
+  useEffect(() => {
+    const filters: ProductoFilters = {};
+    
+    if (filtroNombreDebounced.trim()) {
+      filters.nombre = filtroNombreDebounced.trim();
+    }
+    if (filtroCategoria) {
+      filters.categoria = filtroCategoria;
+    }
+    
+    cargarProductos(currentPage, pageSize, filters);
+  }, [currentPage, pageSize, filtroNombreDebounced, filtroCategoria]);
+
+  // Handlers para paginación
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1); // Reset a la primera página cuando cambia el tamaño
+  };
+
+  // Handlers para filtros
+  const handleFiltroNombreChange = (value: string) => {
+    setFiltroNombre(value);
+    setCurrentPage(1); // Reset a la primera página cuando cambia el filtro
+  };
+
+  const handleFiltroCategoriaChange = (value: string) => {
+    setFiltroCategoria(value);
+    setCurrentPage(1); // Reset a la primera página cuando cambia el filtro
+  };
 
   const getStockBadge = (cantidad: number) => {
     if (cantidad <= 5) return <Badge variant="destructive">Stock Bajo</Badge>;
     if (cantidad <= 15) return <Badge variant="secondary">Stock Medio</Badge>;
     return <Badge variant="default">Stock Alto</Badge>;
+  };
+
+  const handleEliminarProducto = async (producto: ProductoDTO) => {
+    if (confirm("¿Está seguro de que desea eliminar este producto?")) {
+      try {
+        await productosService.deleteProducto(producto.id!);
+        // Recargar la página actual después de eliminar
+        const filters: ProductoFilters = {};
+        if (filtroNombreDebounced.trim()) filters.nombre = filtroNombreDebounced.trim();
+        if (filtroCategoria) filters.categoria = filtroCategoria;
+        
+        await cargarProductos(currentPage, pageSize, filters);
+      } catch (err) {
+        console.error("Error al eliminar producto:", err);
+        setError("Error al eliminar el producto");
+      }
+    }
   };
 
   if (isLoading) {
@@ -116,7 +208,7 @@ export default function ProductosPage() {
                 <Input
                   placeholder="Buscar por nombre..."
                   value={filtroNombre}
-                  onChange={(e) => setFiltroNombre(e.target.value)}
+                  onChange={(e) => handleFiltroNombreChange(e.target.value)}
                   className="pl-8"
                 />
               </div>
@@ -125,7 +217,7 @@ export default function ProductosPage() {
               <select
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 value={filtroCategoria}
-                onChange={(e) => setFiltroCategoria(e.target.value)}
+                onChange={(e) => handleFiltroCategoriaChange(e.target.value)}
                 aria-label="Filtrar por categoría"
               >
                 <option value="">Todas las categorías</option>
@@ -145,7 +237,7 @@ export default function ProductosPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Package className="h-5 w-5" />
-            Lista de Productos ({productosFiltrados.length})
+            Lista de Productos ({paginatedData.totalElements})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -163,7 +255,7 @@ export default function ProductosPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {productosFiltrados.map((producto) => (
+              {paginatedData.content.map((producto) => (
                 <TableRow key={producto.id}>
                   <TableCell>
                     <div>
@@ -216,18 +308,7 @@ export default function ProductosPage() {
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           className="text-destructive"
-                          onClick={() => {
-                            if (confirm("¿Está seguro de que desea eliminar este producto?")) {
-                              productosService.deleteProducto(producto.id!)
-                                .then(() => {
-                                  setProductos(productos.filter(p => p.id !== producto.id));
-                                })
-                                .catch((err) => {
-                                  console.error("Error al eliminar producto:", err);
-                                  alert("Error al eliminar el producto");
-                                });
-                            }
-                          }}
+                          onClick={() => handleEliminarProducto(producto)}
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
                           Eliminar
@@ -239,6 +320,18 @@ export default function ProductosPage() {
               ))}
             </TableBody>
           </Table>
+          
+          {/* Controles de paginación */}
+          <div className="mt-4">
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={paginatedData.totalPages}
+              totalElements={paginatedData.totalElements}
+              pageSize={pageSize}
+              onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
+            />
+          </div>
         </CardContent>
       </Card>
     </div>

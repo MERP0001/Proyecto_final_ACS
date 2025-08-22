@@ -5,15 +5,30 @@ export interface User {
     username: string;
     email: string;
     nombreCompleto: string;
-    role: 'ADMINISTRADOR';
+    role: 'ADMINISTRADOR' | 'USUARIO';
     activo: boolean;
-    fechaCreacion: string;
+    fechaCreacion?: string;
     ultimoAcceso?: string;
+}
+
+export interface LoginRequest {
+    username: string;
+    password?: string;
+}
+
+export interface RegisterRequest {
+    username: string;
+    password?: string;
+    email?: string;
+    nombreCompleto?: string;
 }
 
 export interface AuthRequest {
     username: string;
-    password: string;
+    password?: string; // Hacer opcional para el formulario de admin
+    email?: string;
+    nombreCompleto?: string;
+    role?: 'ADMINISTRADOR' | 'USUARIO';
 }
 
 export interface AuthResponse {
@@ -78,3 +93,14 @@ export interface ErrorResponse {
     timestamp: string;
     path: string;
 } 
+
+// other type exports
+
+export interface MovementHistory {
+  // Define the properties according to your API response
+  id: number;
+  date: string;
+  action: string;
+  user: string;
+  // Add other relevant fields here
+}
