@@ -34,31 +34,24 @@ public class AuthController {
 
    @PostMapping("/register")
    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+      log.debug("Intento de registro para usuario: {}", request.getUsername());
       try {
-         log.debug("Intento de registro para usuario: {}", request.getUsername());
-
          User newUser = userService.createUser(
                  request.getUsername(),
                  request.getPassword(),
                  request.getEmail(),
                  request.getNombreCompleto(),
                  User.Role.USER);
-
          Authentication authentication = authenticationManager.authenticate(
                  new UsernamePasswordAuthenticationToken(
                          request.getUsername(),
                          request.getPassword()));
-
          User user = (User) authentication.getPrincipal();
          String accessToken = jwtService.generateAccessToken(user);
          String refreshToken = jwtService.generateRefreshToken(user);
-
          Instant expiresAt = Instant.now().plus(jwtService.getAccessTokenExpiration(), ChronoUnit.MILLIS);
-
          userService.updateLastAccess(user.getId());
-
          log.info("Registro y login exitoso para usuario: {}", user.getUsername());
-
          return ResponseEntity.ok(AuthResponse.success(
                  accessToken,
                  refreshToken,
@@ -67,7 +60,6 @@ public class AuthController {
                  user.getEmail(),
                  user.getNombreCompleto(),
                  user.getRole().name()));
-
       } catch (IllegalArgumentException e) {
          log.warn("Error en el registro para {}: {}", request.getUsername(), e.getMessage());
          return ResponseEntity.badRequest().body(AuthResponse.error(e.getMessage()));
@@ -79,24 +71,18 @@ public class AuthController {
 
    @PostMapping("/login")
    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
+      log.debug("Intento de login para usuario: {}", request.getUsername());
       try {
-         log.debug("Intento de login para usuario: {}", request.getUsername());
-
          Authentication authentication = authenticationManager.authenticate(
                new UsernamePasswordAuthenticationToken(
                      request.getUsername(),
                      request.getPassword()));
-
          User user = (User) authentication.getPrincipal();
          String accessToken = jwtService.generateAccessToken(user);
          String refreshToken = jwtService.generateRefreshToken(user);
-
          Instant expiresAt = Instant.now().plus(jwtService.getAccessTokenExpiration(), ChronoUnit.MILLIS);
-
          userService.updateLastAccess(user.getId());
-
          log.info("Login exitoso para usuario: {}", user.getUsername());
-
          return ResponseEntity.ok(AuthResponse.success(
                accessToken,
                refreshToken,
@@ -105,7 +91,6 @@ public class AuthController {
                user.getEmail(),
                user.getNombreCompleto(),
                user.getRole().name()));
-
       } catch (BadCredentialsException e) {
          log.warn("Credenciales inválidas para usuario: {}", request.getUsername());
          return ResponseEntity.badRequest().body(AuthResponse.error("Credenciales inválidas"));
@@ -123,12 +108,10 @@ public class AuthController {
       try {
          String username = jwtService.extractUsername(request.getRefreshToken());
          User user = (User) userService.loadUserByUsername(username);
-
          if (jwtService.isTokenValid(request.getRefreshToken(), user)) {
             String accessToken = jwtService.generateAccessToken(user);
             String refreshToken = jwtService.generateRefreshToken(user);
             Instant expiresAt = Instant.now().plus(jwtService.getAccessTokenExpiration(), ChronoUnit.MILLIS);
-
             return ResponseEntity.ok(AuthResponse.success(
                   accessToken,
                   refreshToken,
@@ -138,7 +121,6 @@ public class AuthController {
                   user.getNombreCompleto(),
                   user.getRole().name()));
          }
-
          return ResponseEntity.badRequest().body(AuthResponse.error("Token de refresco inválido"));
       } catch (Exception e) {
          log.error("Error al refrescar token", e);
@@ -152,11 +134,9 @@ public class AuthController {
          if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.badRequest().body(AuthResponse.error("Token no proporcionado"));
          }
-
          String token = authHeader.substring(7);
          String username = jwtService.extractUsername(token);
          User user = (User) userService.loadUserByUsername(username);
-
          if (jwtService.isTokenValid(token, user)) {
             return ResponseEntity.ok(AuthResponse.success(
                   null,
@@ -167,7 +147,6 @@ public class AuthController {
                   user.getNombreCompleto(),
                   user.getRole().name()));
          }
-
          return ResponseEntity.badRequest().body(AuthResponse.error("Token inválido"));
       } catch (Exception e) {
          log.error("Error al validar token", e);
@@ -177,9 +156,13 @@ public class AuthController {
 
    @PostMapping("/logout")
    public ResponseEntity<AuthResponse> logout() {
-      SecurityContextHolder.clearContext();
-      return ResponseEntity.ok(AuthResponse.builder()
-            .message("Sesión cerrada exitosamente")
-            .build());
+      try {
+         SecurityContextHolder.clearContext();
+         return ResponseEntity.ok(AuthResponse.builder()
+               .message("Sesión cerrada exitosamente")
+               .build());
+      } catch (Exception e) {
+         throw e;
+      }
    }
 }

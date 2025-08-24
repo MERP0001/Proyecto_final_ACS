@@ -41,6 +41,7 @@ WORKDIR /app
 
 # Copiar el JAR desde la etapa de build
 COPY --from=build /app/build/libs/*.jar app.jar
+COPY opentelemetry-javaagent.jar /app/opentelemetry-javaagent.jar
 
 # Cambiar propietario del archivo
 RUN chown appuser:appgroup app.jar
@@ -57,10 +58,10 @@ ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:8080/actuator/health || exit 1
+   CMD curl -f http://localhost:8080/actuator/health || exit 1
 
 # Comando de inicio
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -javaagent:/app/opentelemetry-javaagent.jar -jar app.jar"]
 
 # Metadatos adicionales
 LABEL org.opencontainers.image.title="Sistema de Gestión de Inventarios"

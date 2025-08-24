@@ -47,10 +47,10 @@ public class ProductoController {
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<ProductoDTO> crearProducto(@Valid @RequestBody ProductoDTO productoDTO) {
-        log.info("Creando producto: {}", productoDTO.getNombre());
-        Producto producto = productoMapper.toEntity(productoDTO);
-        Producto productoCreado = productoService.crearProducto(producto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(productoMapper.toDTO(productoCreado));
+                log.info("Creando producto: {}", productoDTO.getNombre());
+                Producto producto = productoMapper.toEntity(productoDTO);
+                Producto productoCreado = productoService.crearProducto(producto);
+                return ResponseEntity.status(HttpStatus.CREATED).body(productoMapper.toDTO(productoCreado));
     }
 
     @GetMapping("/{id}")

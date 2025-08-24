@@ -26,10 +26,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> {
-                    log.warn("Usuario no encontrado: {}", username);
-                    return new UsernameNotFoundException("Usuario no encontrado: " + username);
-                });
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
     }
     
     @Transactional
@@ -37,11 +34,9 @@ public class UserService implements UserDetailsService {
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("El nombre de usuario ya existe");
         }
-        
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("El email ya está registrado");
         }
-        
         User user = User.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
@@ -50,7 +45,6 @@ public class UserService implements UserDetailsService {
                 .role(role)
                 .activo(true)
                 .build();
-        
         User savedUser = userRepository.save(user);
         log.info("Usuario creado exitosamente: {}", username);
         return savedUser;
@@ -68,14 +62,11 @@ public class UserService implements UserDetailsService {
     public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con id: " + id));
-
         user.setUsername(userDetails.getUsername());
         user.setEmail(userDetails.getEmail());
         user.setNombreCompleto(userDetails.getNombreCompleto());
         user.setRole(userDetails.getRole());
         user.setActivo(userDetails.getActivo());
-
-        // No actualizamos la contraseña aquí, debería ser un método separado y más seguro
         return userRepository.save(user);
     }
 

@@ -47,18 +47,12 @@ public class ProductoService {
     @Transactional
     public Producto crearProducto(Producto producto) {
         log.info("Creando nuevo producto: {}", producto.getNombre());
-
         productoValidator.validar(producto);
-
         if (StringUtils.hasText(producto.getSku()) &&
             productoRepository.existsBySku(producto.getSku())) {
             throw ProductoAlreadyExistsException.porSku(producto.getSku());
         }
-
         Producto productoGuardado = productoRepository.save(producto);
-        
-        // Registrar movimiento de entrada inicial
-        // FIXME: Obtener el usuario autenticado desde el contexto de seguridad.
         User adminUser = userRepository.findByUsername("admin").orElseThrow(() -> new RuntimeException("Usuario admin no encontrado"));
         movimientoHistorialService.registrarMovimiento(
             productoGuardado, 
@@ -66,7 +60,6 @@ public class ProductoService {
             TipoMovimiento.ENTRADA, 
             productoGuardado.getCantidadActual()
         );
-
         log.info("Producto creado exitosamente con ID: {}", productoGuardado.getId());
         return productoGuardado;
     }
@@ -78,7 +71,6 @@ public class ProductoService {
      */
     public Producto obtenerProductoPorId(Long id) {
         log.debug("Buscando producto con ID: {}", id);
-
         return productoRepository.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException(id));
     }
@@ -90,7 +82,6 @@ public class ProductoService {
      */
     public Page<Producto> listarProductosActivos(Pageable pageable) {
         log.debug("Listando productos activos");
-
         return productoRepository.findByActivoTrue(pageable);
     }
 
@@ -115,70 +106,44 @@ public class ProductoService {
     @Transactional
     public Producto actualizarProducto(Long id, Producto productoActualizado) {
         log.info("Actualizando producto con ID: {}", id);
-
         Producto productoExistente = productoRepository.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException(id));
-
         productoValidator.validar(productoActualizado);
-
         if (StringUtils.hasText(productoActualizado.getSku()) &&
             !productoActualizado.getSku().equals(productoExistente.getSku()) &&
             productoRepository.existsBySkuAndIdNot(productoActualizado.getSku(), id)) {
             throw ProductoAlreadyExistsException.porSku(productoActualizado.getSku());
         }
-
-        // Mapeo manual de campos actualizables
         productoExistente.setSku(productoActualizado.getSku());
         productoExistente.setNombre(productoActualizado.getNombre());
         productoExistente.setDescripcion(productoActualizado.getDescripcion());
         productoExistente.setPrecio(productoActualizado.getPrecio());
         productoExistente.setCategoria(productoActualizado.getCategoria());
-        // La cantidad se maneja en su propio método (actualizarStock)
-        // El estado (activo) se maneja en eliminarProducto
-
         Producto productoGuardado = productoRepository.save(productoExistente);
-
         log.info("Producto actualizado exitosamente");
         return productoGuardado;
     }
-
-    /**
-     * Actualizar stock de un producto.
-     * @param id ID del producto
-     * @param nuevaCantidad nueva cantidad en stock
-     * @return Producto del producto actualizado
-     */
     @Transactional
     public Producto actualizarStock(Long id, Integer nuevaCantidad) {
         log.info("Actualizando stock del producto ID: {}", id);
-
         if (nuevaCantidad < 0) {
             throw new BusinessValidationException("La cantidad no puede ser negativa");
         }
-
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException(id));
-        
         if (!producto.getActivo()) {
             throw new BusinessValidationException("No se puede actualizar stock de un producto inactivo");
         }
-
         int cantidadAnterior = producto.getCantidadActual();
         int diferencia = nuevaCantidad - cantidadAnterior;
-
         if (diferencia == 0) {
             log.warn("La nueva cantidad es la misma que la actual. No se realiza ninguna operación.");
             return producto; // No hay cambios
         }
-
         TipoMovimiento tipo = diferencia > 0 ? TipoMovimiento.AJUSTE_POSITIVO : TipoMovimiento.AJUSTE_NEGATIVO;
         int cantidadMovimiento = Math.abs(diferencia);
-        
         producto.setCantidadActual(nuevaCantidad);
         Producto productoGuardado = productoRepository.save(producto);
-        
-        // Registrar el ajuste de stock
-        // FIXME: Obtener el usuario autenticado desde el contexto de seguridad.
         User adminUser = userRepository.findByUsername("admin").orElseThrow(() -> new RuntimeException("Usuario admin no encontrado"));
         movimientoHistorialService.registrarMovimiento(
             productoGuardado, 
@@ -186,7 +151,6 @@ public class ProductoService {
             tipo, 
             cantidadMovimiento
         );
-        
         return productoGuardado;
     }
 
@@ -197,13 +161,10 @@ public class ProductoService {
     @Transactional
     public void eliminarProducto(Long id) {
         log.info("Eliminando producto con ID: {}", id);
-
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException(id));
-
         producto.setActivo(false);
         productoRepository.save(producto);
-
         log.info("Producto eliminado exitosamente");
     }
 
