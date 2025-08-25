@@ -67,10 +67,17 @@ export const productosService = {
     return response.data;
   },
 
-  // Obtener categorías
+  // Obtener categorías - DEPRECADO: usar categoriasService en su lugar
   getCategorias: async (): Promise<string[]> => {
-    const response = await api.get('/productos/categorias');
-    return response.data;
+    try {
+      // Intentar obtener desde el endpoint correcto
+      const response = await api.get('/api/categorias');
+      return response.data.map((cat: any) => cat.nombre);
+    } catch (error) {
+      console.warn('Usando endpoint legacy para categorías');
+      const response = await api.get('/productos/categorias');
+      return response.data;
+    }
   },
 
   // Calcular valor total del inventario

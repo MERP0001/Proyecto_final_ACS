@@ -33,17 +33,7 @@ import {
 } from "@/components/ui/select";
 import { ArrowLeft, Save } from "lucide-react";
 import { RoleGuard } from "@/components/auth/role-guard";
-
-const categorias = [
-  "Electrónicos",
-  "Accesorios",
-  "Monitores",
-  "Smartphones",
-  "Laptops",
-  "Componentes PC",
-  "Audio",
-  "Gaming",
-];
+import { CategoriaSelect } from "@/components/categorias/categoria-select";
 
 const unidadesMedida = [
   "unidad",
@@ -166,20 +156,13 @@ export default function NuevoProductoPage() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Categoría</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecciona una categoría" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {categorias.map((categoria) => (
-                                <SelectItem key={categoria} value={categoria}>
-                                  {categoria}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <FormControl>
+                            <CategoriaSelect
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Selecciona una categoría"
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -197,8 +180,11 @@ export default function NuevoProductoPage() {
                               min="0.01"
                               step="0.01"
                               placeholder="0.00"
-                              onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                              value={field.value}
+                              onChange={(e) => {
+                                const value = e.target.valueAsNumber;
+                                field.onChange(isNaN(value) ? 0 : value);
+                              }}
+                              value={isNaN(field.value) ? "" : field.value.toString()}
                             />
                           </FormControl>
                           <FormDescription>
@@ -223,8 +209,11 @@ export default function NuevoProductoPage() {
                               min="0"
                               step="1"
                               placeholder="0"
-                              onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                              value={field.value}
+                              onChange={(e) => {
+                                const value = e.target.valueAsNumber;
+                                field.onChange(isNaN(value) ? 0 : value);
+                              }}
+                              value={isNaN(field.value) ? "" : field.value.toString()}
                             />
                           </FormControl>
                           <FormDescription>

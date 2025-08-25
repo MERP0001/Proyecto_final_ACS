@@ -55,4 +55,12 @@ public class OpenApiConfig {
                 .pathsToMatch("/api/historial/**")
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi categoriasApi() {
+        return GroupedOpenApi.builder()
+                .group("privado-categorias")
+                .pathsToMatch("/api/categorias/**")
+                .build();
+    }
 } 

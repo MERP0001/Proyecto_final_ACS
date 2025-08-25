@@ -3,10 +3,12 @@ package org.example.proyectofinal.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.proyectofinal.dto.ProductoDTO;
+import org.example.proyectofinal.entity.Categoria;
 import org.example.proyectofinal.entity.Producto;
 import org.example.proyectofinal.entity.TipoMovimiento;
 import org.example.proyectofinal.entity.User;
 import org.example.proyectofinal.exception.BusinessValidationException;
+import org.example.proyectofinal.exception.CategoriaNotFoundException;
 import org.example.proyectofinal.exception.ProductoAlreadyExistsException;
 import org.example.proyectofinal.exception.ProductoNotFoundException;
 import org.example.proyectofinal.filter.ProductoFilter;
@@ -38,6 +40,7 @@ public class ProductoService {
     private final ProductoValidator productoValidator;
     private final MovimientoHistorialService movimientoHistorialService;
     private final UserRepository userRepository;
+    private final CategoriaService categoriaService;
 
     /**
      * Crear un nuevo producto.
@@ -52,6 +55,19 @@ public class ProductoService {
             productoRepository.existsBySku(producto.getSku())) {
             throw ProductoAlreadyExistsException.porSku(producto.getSku());
         }
+        
+        // Si tiene categoriaLegacy pero no categoria, intentar resolver
+        if (producto.getCategoria() == null && StringUtils.hasText(producto.getCategoriaLegacy())) {
+            try {
+                Categoria categoria = categoriaService.obtenerCategoriaPorNombre(producto.getCategoriaLegacy());
+                producto.setCategoria(categoria);
+            } catch (CategoriaNotFoundException e) {
+                log.warn("No se encontró categoría '{}' para producto {}", 
+                        producto.getCategoriaLegacy(), producto.getNombre());
+                // Mantener categoriaLegacy para referencia
+            }
+        }
+        
         Producto productoGuardado = productoRepository.save(producto);
         User adminUser = userRepository.findByUsername("admin").orElseThrow(() -> new RuntimeException("Usuario admin no encontrado"));
         movimientoHistorialService.registrarMovimiento(
@@ -178,11 +194,113 @@ public class ProductoService {
     }
 
     /**
-     * Obtener todas las categorías únicas.
+     * Obtener todas las categorías únicas (método legacy).
      * @return lista de categorías
+     * @deprecated Usar categoriaService.obtenerCategoriasActivas() en su lugar
      */
+    @Deprecated
     public List<String> obtenerCategorias() {
         return productoRepository.findDistinctCategorias();
+    }
+
+    /**
+     * Asignar categoría a un producto por ID de categoría.
+     * @param productoId ID del producto
+     * @param categoriaId ID de la categoría
+     * @return producto actualizado
+     */
+    @Transactional
+    public Producto asignarCategoria(Long productoId, Long categoriaId) {
+        log.info("Asignando categoría ID: {} al producto ID: {}", categoriaId, productoId);
+        
+        Producto producto = productoRepository.findById(productoId)
+                .orElseThrow(() -> new ProductoNotFoundException(productoId));
+        
+        Categoria categoria = categoriaService.obtenerCategoriaPorId(categoriaId);
+        
+        producto.setCategoria(categoria);
+        Producto productoGuardado = productoRepository.save(producto);
+        
+        log.info("Categoría asignada exitosamente");
+        return productoGuardado;
+    }
+
+    /**
+     * Asignar categoría a un producto por nombre de categoría.
+     * @param productoId ID del producto
+     * @param nombreCategoria nombre de la categoría
+     * @return producto actualizado
+     */
+    @Transactional
+    public Producto asignarCategoriaPorNombre(Long productoId, String nombreCategoria) {
+        log.info("Asignando categoría '{}' al producto ID: {}", nombreCategoria, productoId);
+        
+        Producto producto = productoRepository.findById(productoId)
+                .orElseThrow(() -> new ProductoNotFoundException(productoId));
+        
+        Categoria categoria = categoriaService.obtenerCategoriaPorNombre(nombreCategoria);
+        
+        producto.setCategoria(categoria);
+        Producto productoGuardado = productoRepository.save(producto);
+        
+        log.info("Categoría asignada exitosamente");
+        return productoGuardado;
+    }
+
+    /**
+     * Crear producto con categoría por ID.
+     * @param producto datos del producto
+     * @param categoriaId ID de la categoría
+     * @return producto creado
+     */
+    @Transactional
+    public Producto crearProductoConCategoria(Producto producto, Long categoriaId) {
+        log.info("Creando producto con categoría ID: {}", categoriaId);
+        
+        // Validar producto
+        productoValidator.validar(producto);
+        
+        // Verificar SKU único
+        if (StringUtils.hasText(producto.getSku()) && 
+            productoRepository.existsBySku(producto.getSku())) {
+            throw ProductoAlreadyExistsException.porSku(producto.getSku());
+        }
+        
+        // Asignar categoría
+        if (categoriaId != null) {
+            Categoria categoria = categoriaService.obtenerCategoriaPorId(categoriaId);
+            producto.setCategoria(categoria);
+        }
+        
+        Producto productoGuardado = productoRepository.save(producto);
+        log.info("Producto creado exitosamente con ID: {}", productoGuardado.getId());
+        
+        return productoGuardado;
+    }
+
+    /**
+     * Migrar productos con categoría legacy a la nueva relación.
+     * Este método ayuda en la migración de datos.
+     */
+    @Transactional
+    public void migrarCategoriasLegacy() {
+        log.info("Iniciando migración de categorías legacy");
+        
+        List<Producto> productosConCategoriaLegacy = productoRepository.findByCategoriaIsNullAndCategoriaLegacyIsNotNull();
+        
+        for (Producto producto : productosConCategoriaLegacy) {
+            try {
+                Categoria categoria = categoriaService.obtenerCategoriaPorNombre(producto.getCategoriaLegacy());
+                producto.setCategoria(categoria);
+                productoRepository.save(producto);
+                log.debug("Producto ID: {} migrado a categoría: {}", producto.getId(), categoria.getNombre());
+            } catch (CategoriaNotFoundException e) {
+                log.warn("No se encontró categoría '{}' para producto ID: {}", 
+                        producto.getCategoriaLegacy(), producto.getId());
+            }
+        }
+        
+        log.info("Migración de categorías legacy completada");
     }
 
     /**

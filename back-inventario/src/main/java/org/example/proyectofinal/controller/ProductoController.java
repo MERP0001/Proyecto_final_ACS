@@ -53,6 +53,46 @@ public class ProductoController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(productoMapper.toDTO(productoCreado));
     }
 
+    @PostMapping("/con-categoria/{categoriaId}")
+    @Operation(summary = "Crear un nuevo producto con categoría", description = "Crea un nuevo producto asignándole una categoría específica.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Producto creado exitosamente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProductoDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos de entrada inválidos",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Categoría no encontrada",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<ProductoDTO> crearProductoConCategoria(
+            @Parameter(description = "ID de la categoría a asignar", required = true) @PathVariable Long categoriaId,
+            @Valid @RequestBody ProductoDTO productoDTO) {
+        log.info("Creando producto con categoría ID: {}", categoriaId);
+        Producto producto = productoMapper.toEntity(productoDTO);
+        Producto productoCreado = productoService.crearProductoConCategoria(producto, categoriaId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productoMapper.toDTO(productoCreado));
+    }
+
+    @PatchMapping("/{id}/categoria/{categoriaId}")
+    @Operation(summary = "Asignar categoría a producto", description = "Asigna una categoría específica a un producto existente.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Categoría asignada exitosamente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProductoDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Producto o categoría no encontrada",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<ProductoDTO> asignarCategoria(
+            @Parameter(description = "ID del producto", required = true) @PathVariable Long id,
+            @Parameter(description = "ID de la categoría a asignar", required = true) @PathVariable Long categoriaId) {
+        log.info("Asignando categoría ID: {} al producto ID: {}", categoriaId, id);
+        Producto productoActualizado = productoService.asignarCategoria(id, categoriaId);
+        return ResponseEntity.ok(productoMapper.toDTO(productoActualizado));
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Obtener un producto por ID", description = "Recupera los detalles de un producto específico mediante su ID.")
     @ApiResponses(value = {
@@ -152,9 +192,11 @@ public class ProductoController {
     }
 
     @GetMapping("/categorias")
-    @Operation(summary = "Obtener todas las categorías", description = "Devuelve una lista con todas las categorías de productos existentes.")
+    @Operation(summary = "Obtener todas las categorías (Legacy)", 
+               description = "Devuelve una lista con todas las categorías de productos existentes. DEPRECATED: Usar /api/categorias/activas")
+    @Deprecated
     public ResponseEntity<List<String>> obtenerCategorias() {
-        log.debug("Obteniendo categorías");
+        log.debug("Obteniendo categorías (método legacy)");
         List<String> categorias = productoService.obtenerCategorias();
         return ResponseEntity.ok(categorias);
     }

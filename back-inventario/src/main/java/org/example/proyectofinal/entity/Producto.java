@@ -40,10 +40,24 @@ public class Producto {
     @Column(name = "descripcion", length = 500)
     private String descripcion;
 
-    @NotBlank(message = "La categoría es obligatoria")
-    @Size(min = 2, max = 50, message = "La categoría debe tener entre 2 y 50 caracteres")
-    @Column(name = "categoria", nullable = false, length = 50)
-    private String categoria;
+    // MIGRACIÓN EN PROGRESO: Mantenemos ambas columnas durante la transición
+    
+    /**
+     * Relación con la entidad Categoria.
+     * Esta es la nueva forma de gestionar categorías.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_id", foreignKey = @ForeignKey(name = "fk_productos_categoria"))
+    private Categoria categoria;
+
+    /**
+     * Campo legacy de categoría como String.
+     * @deprecated Usar la relación {@link #categoria} en su lugar.
+     * Este campo se mantendrá temporalmente para la migración.
+     */
+    @Deprecated
+    @Column(name = "categoria", length = 50)
+    private String categoriaLegacy;
 
     @NotNull(message = "El precio es obligatorio")
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor que 0")
@@ -126,6 +140,35 @@ public class Producto {
     }
 
     /**
+     * Obtiene el nombre de la categoría, priorizando la nueva relación.
+     * @return nombre de la categoría
+     */
+    public String getNombreCategoria() {
+        if (categoria != null) {
+            return categoria.getNombre();
+        }
+        return categoriaLegacy;
+    }
+
+    /**
+     * Establece la categoría por nombre (método auxiliar para migración).
+     * @param nombreCategoria nombre de la categoría
+     * @deprecated Usar {@link #setCategoria(Categoria)} en su lugar
+     */
+    @Deprecated
+    public void setCategoriaLegacy(String nombreCategoria) {
+        this.categoriaLegacy = nombreCategoria;
+    }
+
+    /**
+     * Verifica si el producto tiene una categoría asignada.
+     * @return true si tiene categoría (nueva relación o legacy)
+     */
+    public boolean tieneCategoria() {
+        return categoria != null || (categoriaLegacy != null && !categoriaLegacy.trim().isEmpty());
+    }
+
+    /**
      * Método para generar el toString con información relevante.
      */
     @Override
@@ -133,7 +176,7 @@ public class Producto {
         return "Producto{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
-                ", categoria='" + categoria + '\'' +
+                ", categoria='" + getNombreCategoria() + '\'' +
                 ", precio=" + precio +
                 ", cantidadActual=" + cantidadActual +
                 ", activo=" + activo +

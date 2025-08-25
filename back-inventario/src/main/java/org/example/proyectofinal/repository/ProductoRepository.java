@@ -101,7 +101,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Long>, JpaSp
     @Query("SELECT p FROM Producto p WHERE " +
            "p.activo = true AND " +
            "(:nombre IS NULL OR p.nombre LIKE CONCAT('%', :nombre, '%')) AND " +
-           "(:categoria IS NULL OR p.categoria = :categoria) AND " +
+           "(:categoria IS NULL OR p.categoriaLegacy = :categoria OR " +
+           " (p.categoria IS NOT NULL AND p.categoria.nombre = :categoria)) AND " +
            "(:precioMin IS NULL OR p.precio >= :precioMin) AND " +
            "(:precioMax IS NULL OR p.precio <= :precioMax)")
     Page<Producto> findByMultiplesCriterios(
@@ -116,14 +117,32 @@ public interface ProductoRepository extends JpaRepository<Producto, Long>, JpaSp
      * Obtener todas las categorías únicas de productos activos.
      * @return lista de categorías únicas
      */
-    @Query("SELECT DISTINCT p.categoria FROM Producto p WHERE p.activo = true ORDER BY p.categoria")
+    @Query("SELECT DISTINCT " +
+           "CASE " +
+           "  WHEN p.categoria IS NOT NULL THEN p.categoria.nombre " +
+           "  ELSE p.categoriaLegacy " +
+           "END " +
+           "FROM Producto p WHERE p.activo = true ORDER BY " +
+           "CASE " +
+           "  WHEN p.categoria IS NOT NULL THEN p.categoria.nombre " +
+           "  ELSE p.categoriaLegacy " +
+           "END")
     List<String> findDistinctCategorias();
 
     /**
      * Contar productos por categoría.
      * @return lista de arrays con [categoria, cantidad]
      */
-    @Query("SELECT p.categoria, COUNT(p) FROM Producto p WHERE p.activo = true GROUP BY p.categoria")
+    @Query("SELECT " +
+           "CASE " +
+           "  WHEN p.categoria IS NOT NULL THEN p.categoria.nombre " +
+           "  ELSE p.categoriaLegacy " +
+           "END, COUNT(p) " +
+           "FROM Producto p WHERE p.activo = true GROUP BY " +
+           "CASE " +
+           "  WHEN p.categoria IS NOT NULL THEN p.categoria.nombre " +
+           "  ELSE p.categoriaLegacy " +
+           "END")
     List<Object[]> countProductosPorCategoria();
 
     /**
@@ -144,4 +163,29 @@ public interface ProductoRepository extends JpaRepository<Producto, Long>, JpaSp
 
     @Query("SELECT p FROM Producto p WHERE p.sku = :sku")
     Optional<Producto> findBySku(@Param("sku") String sku);
+
+    /**
+     * Buscar productos que tienen categoria null pero categoriaLegacy no null.
+     * Útil para migración de datos.
+     * @return lista de productos a migrar
+     */
+    @Query("SELECT p FROM Producto p WHERE p.categoria IS NULL AND p.categoriaLegacy IS NOT NULL")
+    List<Producto> findByCategoriaIsNullAndCategoriaLegacyIsNotNull();
+
+    /**
+     * Buscar productos por categoría (nueva relación).
+     * @param categoriaId ID de la categoría
+     * @param pageable información de paginación
+     * @return página de productos de esa categoría
+     */
+    @Query("SELECT p FROM Producto p WHERE p.categoria.id = :categoriaId AND p.activo = true")
+    Page<Producto> findByCategoriaIdAndActivoTrue(@Param("categoriaId") Long categoriaId, Pageable pageable);
+
+    /**
+     * Contar productos por categoría (nueva relación).
+     * @param categoriaId ID de la categoría
+     * @return cantidad de productos activos
+     */
+    @Query("SELECT COUNT(p) FROM Producto p WHERE p.categoria.id = :categoriaId AND p.activo = true")
+    Long countByCategoriaIdAndActivoTrue(@Param("categoriaId") Long categoriaId);
 } 

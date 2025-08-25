@@ -5,89 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="745be9ad-a91f-4cf2-9bca-bc430601695c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DOCKER_README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GenerateHash.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/avance-proyecto.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/plan-proyecto.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-inventario/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-inventario/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-inventario/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-inventario/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-inventario/src/components/layout/app-sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front-inventario/src/components/layout/app-sidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/init-db/01-init-database.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/instrucciones.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/instruciones_avance.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/login.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logsError.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/opentelemetry-javaagent.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/ProyectoFinalApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/config/JwtAuthenticationFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/config/JwtService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/config/OpenApiConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/config/PasswordConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/config/SecurityConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/config/WebConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/controller/AuthController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/controller/MovimientoHistorialController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/controller/ProductoController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/controller/UserController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/dto/AuthRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/dto/AuthResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/dto/ErrorResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/dto/ProductoDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/dto/RefreshTokenRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/dto/RegisterRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/entity/MovimientoHistorial.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/entity/Producto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/entity/TipoMovimiento.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/entity/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/exception/BusinessValidationException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/exception/GlobalExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/exception/ProductoAlreadyExistsException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/exception/ProductoNotFoundException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/filter/ProductoFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/mapper/ProductoMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/repository/MovimientoHistorialRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/repository/ProductoRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/repository/UserRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/response/ApiResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/service/MovimientoHistorialService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/service/ProductoService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/service/UserService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/specification/ProductoSpecification.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/proyectofinal/validator/ProductoValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-prod.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/h2/V1__Create_productos_table.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/h2/V2__Remove_audit_tables.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/h2/V3__Create_users_table.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/postgresql/V1__Create_productos_table.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/postgresql/V3__Create_users_table.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/postgresql/V4__Create_movimientos_historial_table.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/proyectofinal/ProyectoFinalApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/proyectofinal/cucumber/CucumberTestRunner.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/proyectofinal/cucumber/config/CucumberSpringConfiguration.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/proyectofinal/cucumber/config/TestConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/proyectofinal/cucumber/steps/ProductoSimpleSteps.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/proyectofinal/cucumber/steps/ProductoSteps.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/proyectofinal/service/ProductoServiceTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/proyectofinal/service/UserServiceTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/application-test.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/features/producto-simple.feature" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/cucumber-reports/Cucumber.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/cucumber-reports/Cucumber.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/config/OpenApiConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/config/OpenApiConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/controller/ProductoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/controller/ProductoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/entity/Producto.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/entity/Producto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/mapper/ProductoMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/mapper/ProductoMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/repository/ProductoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/repository/ProductoRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/service/ProductoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/service/ProductoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/specification/ProductoSpecification.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/specification/ProductoSpecification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/validator/ProductoValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-inventario/src/main/java/org/example/proyectofinal/validator/ProductoValidator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-inventario/src/test/java/org/example/proyectofinal/cucumber/steps/ProductoSteps.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-inventario/src/test/java/org/example/proyectofinal/cucumber/steps/ProductoSteps.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-inventario/src/test/java/org/example/proyectofinal/service/ProductoServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-inventario/src/test/java/org/example/proyectofinal/service/ProductoServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,37 +45,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.Build Proyecto_final_ACS.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.C:/Users/User/Documents/GitHub/Proyecto_final_ACS.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ProductoServiceTest.executor&quot;: &quot;Coverage&quot;,
-    &quot;Gradle.UserServiceTest.executor&quot;: &quot;Coverage&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Spring Boot.ProyectoFinalApplication.executor&quot;: &quot;Run&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;fetcht/newchanges&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/User/Documents/GitHub/Proyecto_final_ACS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build Proyecto_final_ACS.executor": "Run",
+    "Gradle.C:/Users/User/Documents/GitHub/Proyecto_final_ACS.executor": "Run",
+    "Gradle.ProductoServiceTest.executor": "Coverage",
+    "Gradle.UserServiceTest.executor": "Coverage",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.ProyectoFinalApplication.executor": "Run",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/User/Documents/GitHub/Proyecto_final_ACS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Spring Boot.ProyectoFinalApplication">
     <configuration name="ProductoServiceTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -231,6 +159,7 @@
       <workItem from="1752779044805" duration="9193000" />
       <workItem from="1753193538608" duration="3040000" />
       <workItem from="1753478243437" duration="2157000" />
+      <workItem from="1756091807471" duration="736000" />
     </task>
     <servers />
   </component>

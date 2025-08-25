@@ -47,11 +47,29 @@ export interface RefreshTokenRequest {
     refreshToken: string;
 }
 
+// Tipos para Categoria - Alineados con backend
+export interface Categoria {
+    id: number;
+    nombre: string;
+    descripcion?: string;
+    activo: boolean;
+    fechaCreacion?: string;
+    fechaActualizacion?: string;
+    version?: number;
+}
+
+export interface CategoriaForm {
+    nombre: string;
+    descripcion?: string;
+    activo?: boolean;
+}
+
 export interface ProductoDTO {
     id?: number;
     nombre: string;
     descripcion?: string;
-    categoria: string;
+    categoria: string; // TEMPORAL: Mantener string por compatibilidad
+    categoriaObj?: Categoria; // FUTURO: Objeto categoria completo
     precio: number;
     cantidadInicial: number;
     cantidadActual: number;
@@ -64,7 +82,8 @@ export interface ProductoDTO {
 export interface ProductoForm {
     nombre: string;
     descripcion: string;
-    categoria: string;
+    categoria: string; // TEMPORAL: Por ahora mantener como string
+    categoriaId?: number; // FUTURO: ID de categoria
     precio: number;
     cantidadInicial: number;
     unidadMedida: string;

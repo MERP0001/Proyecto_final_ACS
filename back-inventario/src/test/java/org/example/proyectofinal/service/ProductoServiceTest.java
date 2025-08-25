@@ -59,7 +59,7 @@ class ProductoServiceTest {
         producto = Producto.builder()
                 .id(1L)
                 .nombre("Laptop Test")
-                .categoria("Electrónicos")
+                .categoriaLegacy("Electrónicos")
                 .precio(new BigDecimal("1200.00"))
                 .cantidadInicial(10)
                 .cantidadActual(10)

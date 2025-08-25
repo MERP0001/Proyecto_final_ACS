@@ -75,6 +75,46 @@ public class GlobalExceptionHandler {
    }
 
    /**
+    * Maneja excepciones cuando una categoría no es encontrada.
+    */
+   @ExceptionHandler(CategoriaNotFoundException.class)
+   public ResponseEntity<ErrorResponse> handleCategoriaNotFound(
+         CategoriaNotFoundException ex, HttpServletRequest request) {
+
+      log.warn("Categoría no encontrada: {}", ex.getMessage());
+
+      ErrorResponse errorResponse = ErrorResponse.builder()
+            .status(HttpStatus.NOT_FOUND.value())
+            .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+            .message("Categoría no encontrada")
+            .details(ex.getMessage())
+            .path(request.getRequestURI())
+            .build();
+
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+   }
+
+   /**
+    * Maneja excepciones cuando una categoría ya existe.
+    */
+   @ExceptionHandler(CategoriaAlreadyExistsException.class)
+   public ResponseEntity<ErrorResponse> handleCategoriaAlreadyExists(
+         CategoriaAlreadyExistsException ex, HttpServletRequest request) {
+
+      log.warn("Categoría ya existe: {}", ex.getMessage());
+
+      ErrorResponse errorResponse = ErrorResponse.builder()
+            .status(HttpStatus.CONFLICT.value())
+            .error(HttpStatus.CONFLICT.getReasonPhrase())
+            .message("Categoría ya existe")
+            .details(ex.getMessage())
+            .path(request.getRequestURI())
+            .build();
+
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+   }
+
+   /**
     * Maneja excepciones de validación de reglas de negocio.
     */
    @ExceptionHandler(BusinessValidationException.class)

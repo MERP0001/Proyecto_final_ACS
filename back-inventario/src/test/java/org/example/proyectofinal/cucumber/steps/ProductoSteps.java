@@ -85,7 +85,7 @@ public class ProductoSteps {
     @Entonces("los datos del producto deben coincidir con los ingresados")
     public void losDatosDelProductoDebenCoincidirConLosIngresados() {
         assertEquals("Monitor Samsung 32\"", productoCreado.getNombre());
-        assertEquals("Monitores", productoCreado.getCategoria());
+        assertEquals("Monitores", productoCreado.getNombreCategoria());
         assertEquals(new BigDecimal("499.99"), productoCreado.getPrecio());
         assertEquals(15, productoCreado.getCantidadInicial());
         assertEquals("MON-SAM32-4K", productoCreado.getSku());

@@ -15,7 +15,9 @@ public class ProductoValidator {
         if (!StringUtils.hasText(producto.getNombre())) {
             throw new BusinessValidationException("El nombre del producto es obligatorio");
         }
-        if (!StringUtils.hasText(producto.getCategoria())) {
+        
+        // Validar categoría: debe tener al menos una categoría (nueva relación o legacy)
+        if (!producto.tieneCategoria()) {
             throw new BusinessValidationException("La categoría del producto es obligatoria");
         }
         if (producto.getPrecio() == null || producto.getPrecio().compareTo(BigDecimal.ZERO) <= 0) {

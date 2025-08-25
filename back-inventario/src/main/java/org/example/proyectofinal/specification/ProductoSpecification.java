@@ -16,7 +16,16 @@ public class ProductoSpecification {
                 predicates.add(cb.like(cb.lower(root.get("nombre")), "%" + filter.getNombre().toLowerCase() + "%"));
             }
             if (filter.getCategoria() != null && !filter.getCategoria().isBlank()) {
-                predicates.add(cb.equal(cb.lower(root.get("categoria")), filter.getCategoria().toLowerCase()));
+                // Buscar en ambos: nueva relación categoria.nombre Y categoriaLegacy
+                Predicate categoriaNueva = cb.equal(
+                    cb.lower(root.get("categoria").get("nombre")), 
+                    filter.getCategoria().toLowerCase()
+                );
+                Predicate categoriaLegacy = cb.equal(
+                    cb.lower(root.get("categoriaLegacy")), 
+                    filter.getCategoria().toLowerCase()
+                );
+                predicates.add(cb.or(categoriaNueva, categoriaLegacy));
             }
             if (filter.getPrecioMin() != null) {
                 predicates.add(cb.greaterThanOrEqualTo(root.get("precio"), filter.getPrecioMin()));
