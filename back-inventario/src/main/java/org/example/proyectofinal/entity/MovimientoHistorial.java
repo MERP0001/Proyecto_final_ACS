@@ -29,7 +29,7 @@ public class MovimientoHistorial {
     private Producto producto;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User usuario;
 
@@ -40,7 +40,13 @@ public class MovimientoHistorial {
     @Column(nullable = false)
     private int cantidad;
 
+    @Column(length = 500)
+    private String motivo;
+
     @CreationTimestamp
     @Column(name = "fecha", nullable = false, updatable = false)
     private LocalDateTime fecha;
+    
+    @Column(name = "fecha_movimiento")
+    private LocalDateTime fechaMovimiento;
 } 

@@ -3,9 +3,9 @@ package org.example.proyectofinal.service;
 import org.example.proyectofinal.entity.Categoria;
 import org.example.proyectofinal.exception.CategoriaAlreadyExistsException;
 import org.example.proyectofinal.exception.CategoriaNotFoundException;
+import org.example.proyectofinal.exception.BusinessValidationException;
 import org.example.proyectofinal.filter.CategoriaFilter;
 import org.example.proyectofinal.repository.CategoriaRepository;
-import org.example.proyectofinal.specification.CategoriaSpecification;
 import org.example.proyectofinal.validator.CategoriaValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -79,7 +79,8 @@ class CategoriaServiceTest {
         @DisplayName("Crear categoría - Éxito")
         void testCrearCategoria_Exitoso() {
             // Arrange
-            doNothing().when(categoriaValidator).validarCreacion(categoriaTest);
+            doNothing().when(categoriaValidator).validar(categoriaTest);
+            when(categoriaRepository.existsByNombreIgnoreCase(categoriaTest.getNombre())).thenReturn(false);
             when(categoriaRepository.save(categoriaTest)).thenReturn(categoriaTest);
 
             // Act
@@ -88,9 +89,10 @@ class CategoriaServiceTest {
             // Assert
             assertThat(resultado).isNotNull();
             assertThat(resultado.getNombre()).isEqualTo("Electrónicos");
-            assertThat(resultado.isActivo()).isTrue();
+            assertThat(resultado.getActivo()).isTrue();
 
-            verify(categoriaValidator, times(1)).validarCreacion(categoriaTest);
+            verify(categoriaValidator, times(1)).validar(categoriaTest);
+            verify(categoriaRepository, times(1)).existsByNombreIgnoreCase(categoriaTest.getNombre());
             verify(categoriaRepository, times(1)).save(categoriaTest);
         }
 
@@ -98,15 +100,16 @@ class CategoriaServiceTest {
         @DisplayName("Crear categoría - Nombre duplicado")
         void testCrearCategoria_NombreDuplicado() {
             // Arrange
-            doThrow(new CategoriaAlreadyExistsException("Categoría ya existe"))
-                    .when(categoriaValidator).validarCreacion(categoriaTest);
+            doNothing().when(categoriaValidator).validar(categoriaTest);
+            when(categoriaRepository.existsByNombreIgnoreCase(categoriaTest.getNombre())).thenReturn(true);
 
             // Act & Assert
             assertThatThrownBy(() -> categoriaService.crearCategoria(categoriaTest))
                     .isInstanceOf(CategoriaAlreadyExistsException.class)
-                    .hasMessage("Categoría ya existe");
+                    .hasMessageContaining("Ya existe una categoría con el nombre: Electrónicos");
 
-            verify(categoriaValidator, times(1)).validarCreacion(categoriaTest);
+            verify(categoriaValidator, times(1)).validar(categoriaTest);
+            verify(categoriaRepository, times(1)).existsByNombreIgnoreCase(categoriaTest.getNombre());
             verify(categoriaRepository, never()).save(any());
         }
 
@@ -136,7 +139,7 @@ class CategoriaServiceTest {
             // Act & Assert
             assertThatThrownBy(() -> categoriaService.obtenerCategoriaPorId(999L))
                     .isInstanceOf(CategoriaNotFoundException.class)
-                    .hasMessage("Categoría con ID 999 no encontrada");
+                    .hasMessageContaining("No se encontró la categoría con ID: 999");
 
             verify(categoriaRepository, times(1)).findById(999L);
         }
@@ -153,7 +156,8 @@ class CategoriaServiceTest {
                     .build();
 
             when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoriaTest));
-            doNothing().when(categoriaValidator).validarActualizacion(1L, categoriaActualizada);
+            doNothing().when(categoriaValidator).validar(categoriaActualizada);
+            when(categoriaRepository.existsByNombreIgnoreCaseAndIdNot("Electrónicos Actualizados", 1L)).thenReturn(false);
             when(categoriaRepository.save(any(Categoria.class))).thenReturn(categoriaActualizada);
 
             // Act
@@ -164,7 +168,7 @@ class CategoriaServiceTest {
             assertThat(resultado.getNombre()).isEqualTo("Electrónicos Actualizados");
 
             verify(categoriaRepository, times(1)).findById(1L);
-            verify(categoriaValidator, times(1)).validarActualizacion(1L, categoriaActualizada);
+            verify(categoriaValidator, times(1)).validar(categoriaActualizada);
             verify(categoriaRepository, times(1)).save(any(Categoria.class));
         }
 
@@ -173,7 +177,8 @@ class CategoriaServiceTest {
         void testEliminarCategoria_Exitoso() {
             // Arrange
             when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoriaTest));
-            doNothing().when(categoriaValidator).validarEliminacion(1L);
+            when(categoriaRepository.tieneProductosActivos(1L)).thenReturn(false);
+            doNothing().when(categoriaValidator).validarEliminacion(categoriaTest, false);
             when(categoriaRepository.save(any(Categoria.class))).thenReturn(categoriaTest);
 
             // Act
@@ -181,8 +186,9 @@ class CategoriaServiceTest {
 
             // Assert
             verify(categoriaRepository, times(1)).findById(1L);
-            verify(categoriaValidator, times(1)).validarEliminacion(1L);
-            verify(categoriaRepository, times(1)).save(argThat(categoria -> !categoria.isActivo()));
+            verify(categoriaRepository, times(1)).tieneProductosActivos(1L);
+            verify(categoriaValidator, times(1)).validarEliminacion(categoriaTest, false);
+            verify(categoriaRepository, times(1)).save(argThat(categoria -> !categoria.getActivo()));
         }
     }
 
@@ -192,13 +198,13 @@ class CategoriaServiceTest {
 
         @Test
         @DisplayName("Listar todas las categorías activas")
-        void testListarCategoriasActivas() {
+        void testObtenerCategoriasActivas() {
             // Arrange
             List<Categoria> categorias = Arrays.asList(categoriaTest, categoriaTest2);
             when(categoriaRepository.findByActivoTrueOrderByNombre()).thenReturn(categorias);
 
             // Act
-            List<Categoria> resultado = categoriaService.listarCategoriasActivas();
+            List<Categoria> resultado = categoriaService.obtenerCategoriasActivas();
 
             // Assert
             assertThat(resultado).hasSize(2);
@@ -209,7 +215,7 @@ class CategoriaServiceTest {
 
         @Test
         @DisplayName("Listar categorías con paginación")
-        void testListarCategoriasConPaginacion() {
+        void testListarCategoriasActivas() {
             // Arrange
             Pageable pageable = PageRequest.of(0, 10);
             List<Categoria> categorias = Arrays.asList(categoriaTest, categoriaTest2);
@@ -218,7 +224,7 @@ class CategoriaServiceTest {
             when(categoriaRepository.findByActivoTrue(pageable)).thenReturn(page);
 
             // Act
-            Page<Categoria> resultado = categoriaService.listarCategoriasConPaginacion(pageable);
+            Page<Categoria> resultado = categoriaService.listarCategoriasActivas(pageable);
 
             // Assert
             assertThat(resultado.getContent()).hasSize(2);
@@ -230,7 +236,7 @@ class CategoriaServiceTest {
 
         @Test
         @DisplayName("Buscar categorías con filtros")
-        void testBuscarCategoriasConFiltros() {
+        void testBuscarCategorias() {
             // Arrange
             CategoriaFilter filtro = CategoriaFilter.builder()
                     .nombre("Elect")
@@ -244,7 +250,7 @@ class CategoriaServiceTest {
             when(categoriaRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
 
             // Act
-            Page<Categoria> resultado = categoriaService.buscarCategoriasConFiltros(filtro, pageable);
+            Page<Categoria> resultado = categoriaService.buscarCategorias(filtro, pageable);
 
             // Assert
             assertThat(resultado.getContent()).hasSize(1);
@@ -255,33 +261,32 @@ class CategoriaServiceTest {
 
         @Test
         @DisplayName("Buscar categoría por nombre - Existente")
-        void testBuscarCategoriaPorNombre_Existente() {
+        void testObtenerCategoriaPorNombre_Existente() {
             // Arrange
             when(categoriaRepository.findByNombreIgnoreCaseAndActivoTrue("electrónicos"))
                     .thenReturn(Optional.of(categoriaTest));
 
             // Act
-            Optional<Categoria> resultado = categoriaService.buscarCategoriaPorNombre("electrónicos");
+            Categoria resultado = categoriaService.obtenerCategoriaPorNombre("electrónicos");
 
             // Assert
-            assertThat(resultado).isPresent();
-            assertThat(resultado.get().getNombre()).isEqualTo("Electrónicos");
+            assertThat(resultado).isNotNull();
+            assertThat(resultado.getNombre()).isEqualTo("Electrónicos");
 
             verify(categoriaRepository, times(1)).findByNombreIgnoreCaseAndActivoTrue("electrónicos");
         }
 
         @Test
         @DisplayName("Buscar categoría por nombre - No existente")
-        void testBuscarCategoriaPorNombre_NoExistente() {
+        void testObtenerCategoriaPorNombre_NoExistente() {
             // Arrange
             when(categoriaRepository.findByNombreIgnoreCaseAndActivoTrue("inexistente"))
                     .thenReturn(Optional.empty());
 
-            // Act
-            Optional<Categoria> resultado = categoriaService.buscarCategoriaPorNombre("inexistente");
-
-            // Assert
-            assertThat(resultado).isEmpty();
+            // Act & Assert
+            assertThatThrownBy(() -> categoriaService.obtenerCategoriaPorNombre("inexistente"))
+                    .isInstanceOf(CategoriaNotFoundException.class)
+                    .hasMessageContaining("No se encontró la categoría con nombre: inexistente");
 
             verify(categoriaRepository, times(1)).findByNombreIgnoreCaseAndActivoTrue("inexistente");
         }
@@ -295,47 +300,46 @@ class CategoriaServiceTest {
         @DisplayName("Verificar si categoría existe por nombre")
         void testExisteCategoriaPorNombre() {
             // Arrange
-            when(categoriaRepository.existsByNombreIgnoreCaseAndActivoTrue("Electrónicos"))
-                    .thenReturn(true);
-            when(categoriaRepository.existsByNombreIgnoreCaseAndActivoTrue("Inexistente"))
-                    .thenReturn(false);
+            when(categoriaRepository.existsByNombreIgnoreCase("Electrónicos")).thenReturn(true);
+            when(categoriaRepository.existsByNombreIgnoreCase("Inexistente")).thenReturn(false);
 
             // Act & Assert
             assertThat(categoriaService.existeCategoriaPorNombre("Electrónicos")).isTrue();
             assertThat(categoriaService.existeCategoriaPorNombre("Inexistente")).isFalse();
 
-            verify(categoriaRepository, times(1)).existsByNombreIgnoreCaseAndActivoTrue("Electrónicos");
-            verify(categoriaRepository, times(1)).existsByNombreIgnoreCaseAndActivoTrue("Inexistente");
+            verify(categoriaRepository, times(1)).existsByNombreIgnoreCase("Electrónicos");
+            verify(categoriaRepository, times(1)).existsByNombreIgnoreCase("Inexistente");
         }
 
         @Test
-        @DisplayName("Contar total de categorías activas")
-        void testContarCategoriasActivas() {
+        @DisplayName("Contar productos por categoría")
+        void testContarProductosPorCategoria() {
             // Arrange
-            when(categoriaRepository.countByActivoTrue()).thenReturn(5L);
+            when(categoriaRepository.countProductosActivosByCategoria(1L)).thenReturn(5L);
 
             // Act
-            Long resultado = categoriaService.contarCategoriasActivas();
+            Long resultado = categoriaService.contarProductosPorCategoria(1L);
 
             // Assert
             assertThat(resultado).isEqualTo(5L);
 
-            verify(categoriaRepository, times(1)).countByActivoTrue();
+            verify(categoriaRepository, times(1)).countProductosActivosByCategoria(1L);
         }
 
         @Test
-        @DisplayName("Verificar si categoría tiene productos")
-        void testTieneProductos() {
+        @DisplayName("Cambiar estado categoría - Desactivar con productos")
+        void testCambiarEstadoCategoria_DesactivarConProductos() {
             // Arrange
+            when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoriaTest));
             when(categoriaRepository.tieneProductosActivos(1L)).thenReturn(true);
-            when(categoriaRepository.tieneProductosActivos(2L)).thenReturn(false);
 
             // Act & Assert
-            assertThat(categoriaService.tieneProductos(1L)).isTrue();
-            assertThat(categoriaService.tieneProductos(2L)).isFalse();
+            assertThatThrownBy(() -> categoriaService.cambiarEstadoCategoria(1L, false))
+                    .isInstanceOf(BusinessValidationException.class)
+                    .hasMessageContaining("No se puede desactivar la categoría");
 
+            verify(categoriaRepository, times(1)).findById(1L);
             verify(categoriaRepository, times(1)).tieneProductosActivos(1L);
-            verify(categoriaRepository, times(1)).tieneProductosActivos(2L);
         }
     }
 
@@ -344,66 +348,37 @@ class CategoriaServiceTest {
     class OperacionesAvanzadas {
 
         @Test
-        @DisplayName("Activar categoría")
-        void testActivarCategoria() {
-            // Arrange
-            Categoria categoriaInactiva = Categoria.builder()
-                    .id(1L)
-                    .nombre("Electrónicos")
-                    .activo(false)
-                    .build();
-
-            when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoriaInactiva));
-            when(categoriaRepository.save(any(Categoria.class))).thenReturn(categoriaInactiva);
-
-            // Act
-            Categoria resultado = categoriaService.activarCategoria(1L);
-
-            // Assert
-            assertThat(resultado.isActivo()).isTrue();
-
-            verify(categoriaRepository, times(1)).findById(1L);
-            verify(categoriaRepository, times(1)).save(argThat(categoria -> categoria.isActivo()));
-        }
-
-        @Test
-        @DisplayName("Desactivar categoría")
-        void testDesactivarCategoria() {
-            // Arrange
-            when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoriaTest));
-            doNothing().when(categoriaValidator).validarEliminacion(1L);
-            when(categoriaRepository.save(any(Categoria.class))).thenReturn(categoriaTest);
-
-            // Act
-            Categoria resultado = categoriaService.desactivarCategoria(1L);
-
-            // Assert
-            assertThat(resultado.isActivo()).isFalse();
-
-            verify(categoriaRepository, times(1)).findById(1L);
-            verify(categoriaValidator, times(1)).validarEliminacion(1L);
-            verify(categoriaRepository, times(1)).save(argThat(categoria -> !categoria.isActivo()));
-        }
-
-        @Test
         @DisplayName("Obtener categorías más utilizadas")
         void testObtenerCategoriasMasUtilizadas() {
             // Arrange
-            Object[] categoria1 = {categoriaTest, 10L};
-            Object[] categoria2 = {categoriaTest2, 5L};
-            List<Object[]> resultados = Arrays.asList(categoria1, categoria2);
+            Pageable pageable = PageRequest.of(0, 5);
+            List<Categoria> categorias = Arrays.asList(categoriaTest, categoriaTest2);
+            Page<Categoria> page = new PageImpl<>(categorias, pageable, 2);
 
-            when(categoriaRepository.findCategoriasConConteoProductos()).thenReturn(resultados);
+            when(categoriaRepository.findCategoriasMasUtilizadas(pageable)).thenReturn(page);
 
             // Act
-            List<Object[]> resultado = categoriaService.obtenerCategoriasMasUtilizadas();
+            Page<Categoria> resultado = categoriaService.obtenerCategoriasMasUtilizadas(pageable);
 
             // Assert
-            assertThat(resultado).hasSize(2);
-            assertThat(resultado.get(0)[1]).isEqualTo(10L);
-            assertThat(resultado.get(1)[1]).isEqualTo(5L);
+            assertThat(resultado.getContent()).hasSize(2);
+            verify(categoriaRepository, times(1)).findCategoriasMasUtilizadas(pageable);
+        }
 
-            verify(categoriaRepository, times(1)).findCategoriasConConteoProductos();
+        @Test
+        @DisplayName("Obtener categorías sin productos")
+        void testObtenerCategoriasSinProductos() {
+            // Arrange
+            List<Categoria> categoriasSinProductos = Arrays.asList(categoriaTest2);
+            when(categoriaRepository.findCategoriasSinProductos()).thenReturn(categoriasSinProductos);
+
+            // Act
+            List<Categoria> resultado = categoriaService.obtenerCategoriasSinProductos();
+
+            // Assert
+            assertThat(resultado).hasSize(1);
+            assertThat(resultado.get(0).getNombre()).isEqualTo("Hogar");
+            verify(categoriaRepository, times(1)).findCategoriasSinProductos();
         }
     }
 
@@ -414,40 +389,35 @@ class CategoriaServiceTest {
         @Test
         @DisplayName("Crear categoría - Entrada nula")
         void testCrearCategoria_EntradaNula() {
+            // Arrange
+            doThrow(new BusinessValidationException("Los datos de la categoría no pueden ser nulos"))
+                    .when(categoriaValidator).validar(null);
+
             // Act & Assert
             assertThatThrownBy(() -> categoriaService.crearCategoria(null))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("La categoría no puede ser nula");
+                    .isInstanceOf(BusinessValidationException.class)
+                    .hasMessage("Los datos de la categoría no pueden ser nulos");
 
-            verify(categoriaValidator, never()).validarCreacion(any());
+            verify(categoriaValidator, times(1)).validar(null);
             verify(categoriaRepository, never()).save(any());
         }
 
         @Test
-        @DisplayName("Actualizar categoría - ID nulo")
-        void testActualizarCategoria_IdNulo() {
-            // Act & Assert
-            assertThatThrownBy(() -> categoriaService.actualizarCategoria(null, categoriaTest))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("El ID no puede ser nulo");
-
-            verify(categoriaRepository, never()).findById(any());
-            verify(categoriaValidator, never()).validarActualizacion(any(), any());
-        }
-
-        @Test
-        @DisplayName("Eliminar categoría - ID inexistente")
-        void testEliminarCategoria_IdInexistente() {
+        @DisplayName("Buscar categorías - Filtro nulo")
+        void testBuscarCategorias_FiltroNulo() {
             // Arrange
-            when(categoriaRepository.findById(999L)).thenReturn(Optional.empty());
+            Pageable pageable = PageRequest.of(0, 10);
+            List<Categoria> categorias = Arrays.asList(categoriaTest, categoriaTest2);
+            Page<Categoria> page = new PageImpl<>(categorias, pageable, 2);
 
-            // Act & Assert
-            assertThatThrownBy(() -> categoriaService.eliminarCategoria(999L))
-                    .isInstanceOf(CategoriaNotFoundException.class)
-                    .hasMessage("Categoría con ID 999 no encontrada");
+            when(categoriaRepository.findByActivoTrue(pageable)).thenReturn(page);
 
-            verify(categoriaRepository, times(1)).findById(999L);
-            verify(categoriaValidator, never()).validarEliminacion(any());
+            // Act
+            Page<Categoria> resultado = categoriaService.buscarCategorias(null, pageable);
+
+            // Assert
+            assertThat(resultado.getContent()).hasSize(2);
+            verify(categoriaRepository, times(1)).findByActivoTrue(pageable);
         }
     }
 }

@@ -1,14 +1,18 @@
 package org.example.proyectofinal.service;
 
-import org.example.proyectofinal.dto.ProductoDTO;
+import org.example.proyectofinal.entity.Categoria;
 import org.example.proyectofinal.entity.Producto;
+import org.example.proyectofinal.entity.User;
 import org.example.proyectofinal.exception.ProductoAlreadyExistsException;
 import org.example.proyectofinal.exception.ProductoNotFoundException;
 import org.example.proyectofinal.exception.BusinessValidationException;
-import org.example.proyectofinal.mapper.ProductoMapper;
+import org.example.proyectofinal.filter.ProductoFilter;
 import org.example.proyectofinal.repository.ProductoRepository;
+import org.example.proyectofinal.repository.UserRepository;
 import org.example.proyectofinal.validator.ProductoValidator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,301 +20,464 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Pruebas unitarias para ProductoService.
+ * Utiliza Mockito para simular dependencias y validar comportamientos.
+ */
 @ExtendWith(MockitoExtension.class)
+@DisplayName("ProductoService - Pruebas Unitarias")
 class ProductoServiceTest {
 
     @Mock
     private ProductoRepository productoRepository;
 
     @Mock
-    private ProductoMapper productoMapper;
+    private ProductoValidator productoValidator;
 
     @Mock
-    private ProductoValidator productoValidator;
+    private MovimientoHistorialService movimientoHistorialService;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private CategoriaService categoriaService;
 
     @InjectMocks
     private ProductoService productoService;
 
-    private ProductoDTO productoDTO;
-    private Producto producto;
+    private Producto productoTest;
+    private Producto productoTest2;
+    private Categoria categoriaTest;
+    private User usuarioTest;
 
     @BeforeEach
     void setUp() {
-        productoDTO = ProductoDTO.builder()
-                .nombre("Laptop Test")
-                .categoria("Electrónicos")
-                .precio(new BigDecimal("1200.00"))
-                .cantidadInicial(10)
-                .sku("LAP-TST-001")
+        categoriaTest = Categoria.builder()
+                .id(1L)
+                .nombre("Electrónicos")
+                .descripcion("Productos electrónicos")
+                .activo(true)
                 .build();
 
-        producto = Producto.builder()
+        usuarioTest = User.builder()
+                .id(1L)
+                .username("admin")
+                .email("admin@example.com")
+                .role(User.Role.ADMINISTRADOR)
+                .activo(true)
+                .build();
+
+        productoTest = Producto.builder()
                 .id(1L)
                 .nombre("Laptop Test")
-                .categoriaLegacy("Electrónicos")
+                .descripcion("Laptop para pruebas")
                 .precio(new BigDecimal("1200.00"))
                 .cantidadInicial(10)
                 .cantidadActual(10)
+                .stockMinimo(5)
                 .sku("LAP-TST-001")
                 .activo(true)
+                .categoria(categoriaTest)
+                .categoriaLegacy("Electrónicos")
+                .fechaCreacion(LocalDateTime.now())
+                .version(0L)
+                .build();
+
+        productoTest2 = Producto.builder()
+                .id(2L)
+                .nombre("Mouse Test")
+                .descripcion("Mouse para pruebas")
+                .precio(new BigDecimal("50.00"))
+                .cantidadInicial(20)
+                .cantidadActual(15)
+                .stockMinimo(10)
+                .sku("MOU-TST-002")
+                .activo(true)
+                .categoria(categoriaTest)
+                .categoriaLegacy("Electrónicos")
+                .fechaCreacion(LocalDateTime.now())
+                .version(0L)
                 .build();
     }
 
-    @Test
-    void testCrearProducto_Exitoso() {
-        // Arrange
-        when(productoMapper.toEntity(any(ProductoDTO.class))).thenReturn(producto);
-        when(productoRepository.save(any(Producto.class))).thenReturn(producto);
-        when(productoMapper.toDTO(any(Producto.class))).thenReturn(productoDTO);
-        when(productoRepository.existsBySku(anyString())).thenReturn(false);
-        doNothing().when(productoValidator).validar(any(ProductoDTO.class));
+    @Nested
+    @DisplayName("Operaciones CRUD Básicas")
+    class OperacionesCRUD {
 
-        productoDTO.setId(1L); // Simular que el DTO de respuesta tiene el ID
+        @Test
+        @DisplayName("Crear producto - Éxito")
+        void testCrearProducto_Exitoso() {
+            // Arrange
+            doNothing().when(productoValidator).validar(productoTest);
+            when(productoRepository.existsBySku(productoTest.getSku())).thenReturn(false);
+            when(productoRepository.save(productoTest)).thenReturn(productoTest);
 
-        // Act
-        ProductoDTO resultado = productoService.crearProducto(this.productoDTO);
-        System.out.println("Resultado de testCrearProducto_Exitoso: " + resultado);
+            // Act
+            Producto resultado = productoService.crearProducto(productoTest);
 
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(producto.getId(), resultado.getId());
-        assertEquals(producto.getNombre(), resultado.getNombre());
+            // Assert
+            assertThat(resultado).isNotNull();
+            assertThat(resultado.getNombre()).isEqualTo("Laptop Test");
+            assertThat(resultado.getSku()).isEqualTo("LAP-TST-001");
+            assertThat(resultado.getActivo()).isTrue();
 
-        verify(productoValidator, times(1)).validar(any(ProductoDTO.class));
-        verify(productoRepository, times(1)).existsBySku(productoDTO.getSku());
-        verify(productoRepository, times(1)).save(any(Producto.class));
-    }
-    
-    @Test
-    void testCrearProducto_Falla_SkuDuplicado() {
-        // Arrange
-        when(productoRepository.existsBySku(productoDTO.getSku())).thenReturn(true);
-        doNothing().when(productoValidator).validar(any(ProductoDTO.class));
+            verify(productoValidator, times(1)).validar(productoTest);
+            verify(productoRepository, times(1)).existsBySku(productoTest.getSku());
+            verify(productoRepository, times(1)).save(productoTest);
+        }
 
-        // Act & Assert
-        Exception exception = assertThrows(ProductoAlreadyExistsException.class, () -> {
-            productoService.crearProducto(productoDTO);
-        });
-        System.out.println("Resultado de testCrearProducto_Falla_SkuDuplicado: " + exception.getMessage());
-        
-        verify(productoValidator, times(1)).validar(any(ProductoDTO.class));
-        verify(productoRepository, times(1)).existsBySku(productoDTO.getSku());
-        verify(productoRepository, never()).save(any(Producto.class));
-    }
-    
-    @Test
-    void testObtenerProductoPorId_Exitoso() {
-        // Arrange
-        when(productoRepository.findById(1L)).thenReturn(Optional.of(producto));
-        when(productoMapper.toDTO(producto)).thenReturn(productoDTO);
+        @Test
+        @DisplayName("Crear producto - SKU duplicado")
+        void testCrearProducto_SkuDuplicado() {
+            // Arrange
+            doNothing().when(productoValidator).validar(productoTest);
+            when(productoRepository.existsBySku(productoTest.getSku())).thenReturn(true);
 
-        // Act
-        ProductoDTO resultado = productoService.obtenerProductoPorId(1L);
-        System.out.println("Resultado de testObtenerProductoPorId_Exitoso: " + resultado);
+            // Act & Assert
+            assertThatThrownBy(() -> productoService.crearProducto(productoTest))
+                    .isInstanceOf(ProductoAlreadyExistsException.class)
+                    .hasMessageContaining("Ya existe un producto con el SKU: LAP-TST-001");
 
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(productoDTO.getNombre(), resultado.getNombre());
-        verify(productoRepository, times(1)).findById(1L);
-    }
+            verify(productoValidator, times(1)).validar(productoTest);
+            verify(productoRepository, times(1)).existsBySku(productoTest.getSku());
+            verify(productoRepository, never()).save(any());
+        }
 
-    @Test
-    void testActualizarProducto_Exitoso() {
-        // Arrange
-        ProductoDTO datosActualizados = ProductoDTO.builder()
-                .nombre("Laptop Test Actualizada")
-                .precio(new BigDecimal("1250.00"))
-                .sku("LAP-TST-001")
-                .build();
+        @Test
+        @DisplayName("Obtener producto por ID - Éxito")
+        void testObtenerProductoPorId_Exitoso() {
+            // Arrange
+            when(productoRepository.findById(1L)).thenReturn(Optional.of(productoTest));
 
-        when(productoRepository.findById(1L)).thenReturn(Optional.of(producto));
-        when(productoRepository.save(any(Producto.class))).thenReturn(producto);
-        when(productoMapper.toDTO(any(Producto.class))).thenReturn(datosActualizados);
-        doNothing().when(productoValidator).validar(any(ProductoDTO.class));
+            // Act
+            Producto resultado = productoService.obtenerProductoPorId(1L);
 
-        // Act
-        ProductoDTO resultado = productoService.actualizarProducto(1L, datosActualizados);
-        System.out.println("Resultado de testActualizarProducto_Exitoso: " + resultado);
+            // Assert
+            assertThat(resultado).isNotNull();
+            assertThat(resultado.getId()).isEqualTo(1L);
+            assertThat(resultado.getNombre()).isEqualTo("Laptop Test");
 
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("Laptop Test Actualizada", resultado.getNombre());
-        assertEquals(0, new BigDecimal("1250.00").compareTo(resultado.getPrecio()));
-        verify(productoRepository, times(1)).findById(1L);
-        verify(productoRepository, times(1)).save(producto);
-    }
+            verify(productoRepository, times(1)).findById(1L);
+        }
 
-    @Test
-    void testActualizarStock_Exitoso() {
-        // Arrange
-        int nuevaCantidad = 25;
-        when(productoRepository.findById(1L)).thenReturn(Optional.of(producto));
-        when(productoRepository.save(any(Producto.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(productoMapper.toDTO(any(Producto.class))).thenAnswer(invocation -> {
-            Producto p = invocation.getArgument(0);
-            return ProductoDTO.builder().cantidadActual(p.getCantidadActual()).build();
-        });
+        @Test
+        @DisplayName("Obtener producto por ID - No encontrado")
+        void testObtenerProductoPorId_NoEncontrado() {
+            // Arrange
+            when(productoRepository.findById(999L)).thenReturn(Optional.empty());
 
+            // Act & Assert
+            assertThatThrownBy(() -> productoService.obtenerProductoPorId(999L))
+                    .isInstanceOf(ProductoNotFoundException.class)
+                    .hasMessageContaining("No se encontró el producto con ID: 999");
 
-        // Act
-        ProductoDTO resultado = productoService.actualizarStock(1L, nuevaCantidad);
-        System.out.println("Resultado de testActualizarStock_Exitoso: " + resultado);
+            verify(productoRepository, times(1)).findById(999L);
+        }
 
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(nuevaCantidad, resultado.getCantidadActual());
-        verify(productoRepository, times(1)).findById(1L);
-        verify(productoRepository, times(1)).save(producto);
-    }
+        @Test
+        @DisplayName("Actualizar producto - Éxito")
+        void testActualizarProducto_Exitoso() {
+            // Arrange
+            Producto productoActualizado = Producto.builder()
+                    .id(1L)
+                    .nombre("Laptop Test Actualizada")
+                    .descripcion("Nueva descripción")
+                    .precio(new BigDecimal("1300.00"))
+                    .sku("LAP-TST-001")
+                    .activo(true)
+                    .build();
 
-    @Test
-    void testEliminarProducto_Exitoso() {
-        // Arrange
-        when(productoRepository.findById(1L)).thenReturn(Optional.of(producto));
-        
-        // Act
-        productoService.eliminarProducto(1L);
-        System.out.println("Resultado de testEliminarProducto_Exitoso: Producto con ID 1 marcado como inactivo.");
+            when(productoRepository.findById(1L)).thenReturn(Optional.of(productoTest));
+            doNothing().when(productoValidator).validar(productoActualizado);
+            when(productoRepository.save(any(Producto.class))).thenReturn(productoActualizado);
 
-        // Assert
-        verify(productoRepository, times(1)).findById(1L);
-        verify(productoRepository, times(1)).save(producto);
-        assertFalse(producto.getActivo()); // Verificar que el estado del producto cambió
+            // Act
+            Producto resultado = productoService.actualizarProducto(1L, productoActualizado);
+
+            // Assert
+            assertThat(resultado).isNotNull();
+            assertThat(resultado.getNombre()).isEqualTo("Laptop Test Actualizada");
+
+            verify(productoRepository, times(1)).findById(1L);
+            verify(productoValidator, times(1)).validar(productoActualizado);
+            verify(productoRepository, times(1)).save(any(Producto.class));
+        }
+
+        @Test
+        @DisplayName("Eliminar producto (soft delete) - Éxito")
+        void testEliminarProducto_Exitoso() {
+            // Arrange
+            when(productoRepository.findById(1L)).thenReturn(Optional.of(productoTest));
+            when(productoRepository.save(any(Producto.class))).thenReturn(productoTest);
+
+            // Act
+            productoService.eliminarProducto(1L);
+
+            // Assert
+            verify(productoRepository, times(1)).findById(1L);
+            verify(productoRepository, times(1)).save(argThat(producto -> !producto.getActivo()));
+        }
     }
 
-    @Test
-    void testBuscarProductos_Exitoso() {
-        // Arrange
-        Page<Producto> paginaProductos = new PageImpl<>(Collections.singletonList(producto));
-        when(productoRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(paginaProductos);
-        when(productoMapper.toDTO(any(Producto.class))).thenReturn(productoDTO);
+    @Nested
+    @DisplayName("Operaciones de Consulta")
+    class OperacionesConsulta {
 
-        // Act
-        Page<ProductoDTO> resultado = productoService.buscarProductos(null, Pageable.unpaged());
-        System.out.println("Resultado de testBuscarProductos_Exitoso: " + resultado.getContent());
+        @Test
+        @DisplayName("Listar productos activos")
+        void testListarProductosActivos() {
+            // Arrange
+            Pageable pageable = PageRequest.of(0, 10);
+            List<Producto> productos = Arrays.asList(productoTest, productoTest2);
+            Page<Producto> page = new PageImpl<>(productos, pageable, 2);
 
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(1, resultado.getTotalElements());
-        assertEquals(productoDTO.getNombre(), resultado.getContent().get(0).getNombre());
-        verify(productoRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
+            when(productoRepository.findByActivoTrue(pageable)).thenReturn(page);
+
+            // Act
+            Page<Producto> resultado = productoService.listarProductosActivos(pageable);
+
+            // Assert
+            assertThat(resultado.getContent()).hasSize(2);
+            assertThat(resultado.getTotalElements()).isEqualTo(2);
+            assertThat(resultado.getNumber()).isEqualTo(0);
+
+            verify(productoRepository, times(1)).findByActivoTrue(pageable);
+        }
+
+        @Test
+        @DisplayName("Buscar productos con filtros")
+        void testBuscarProductos() {
+            // Arrange
+            ProductoFilter filtro = ProductoFilter.builder()
+                    .nombre("Laptop")
+                    .activo(true)
+                    .build();
+
+            Pageable pageable = PageRequest.of(0, 10);
+            List<Producto> productos = Arrays.asList(productoTest);
+            Page<Producto> page = new PageImpl<>(productos, pageable, 1);
+
+            when(productoRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
+
+            // Act
+            Page<Producto> resultado = productoService.buscarProductos(filtro, pageable);
+
+            // Assert
+            assertThat(resultado.getContent()).hasSize(1);
+            assertThat(resultado.getContent().get(0).getNombre()).contains("Laptop");
+
+            verify(productoRepository, times(1)).findAll(any(Specification.class), eq(pageable));
+        }
+
+        @Test
+        @DisplayName("Obtener productos con stock bajo")
+        void testObtenerProductosConStockBajo() {
+            // Arrange
+            List<Producto> productosStockBajo = Arrays.asList(productoTest2);
+            when(productoRepository.findProductosConStockBajo(15)).thenReturn(productosStockBajo);
+
+            // Act
+            List<Producto> resultado = productoService.obtenerProductosConStockBajo(15);
+
+            // Assert
+            assertThat(resultado).hasSize(1);
+            assertThat(resultado.get(0).getCantidadActual()).isLessThan(16);
+            verify(productoRepository, times(1)).findProductosConStockBajo(15);
+        }
+
+        @Test
+        @DisplayName("Obtener producto por SKU")
+        void testObtenerProductoPorSku() {
+            // Arrange
+            when(productoRepository.findBySku("LAP-TST-001")).thenReturn(Optional.of(productoTest));
+
+            // Act
+            Producto resultado = productoService.obtenerProductoPorSku("LAP-TST-001");
+
+            // Assert
+            assertThat(resultado).isNotNull();
+            assertThat(resultado.getSku()).isEqualTo("LAP-TST-001");
+
+            verify(productoRepository, times(1)).findBySku("LAP-TST-001");
+        }
     }
 
-    // --- Pruebas de casos de error y métodos no cubiertos ---
+    @Nested
+    @DisplayName("Operaciones de Stock")
+    class OperacionesStock {
 
-    @Test
-    void testObtenerProductoPorId_NoEncontrado() {
-        // Arrange
-        when(productoRepository.findById(99L)).thenReturn(Optional.empty());
+        @Test
+        @DisplayName("Actualizar stock - Éxito")
+        void testActualizarStock_Exitoso() {
+            // Arrange
+            Integer nuevaCantidad = 25;
+            when(productoRepository.findById(1L)).thenReturn(Optional.of(productoTest));
+            when(productoRepository.save(any(Producto.class))).thenReturn(productoTest);
+            when(userRepository.findByUsername("admin")).thenReturn(Optional.of(usuarioTest));
 
-        // Act & Assert
-        Exception exception = assertThrows(ProductoNotFoundException.class, () -> {
-            productoService.obtenerProductoPorId(99L);
-        });
-        System.out.println("Resultado de testObtenerProductoPorId_NoEncontrado: " + exception.getMessage());
-        assertEquals("No se encontró el producto con ID: 99", exception.getMessage());
+            // Act
+            Producto resultado = productoService.actualizarStock(1L, nuevaCantidad, "admin");
+
+            // Assert
+            assertThat(resultado).isNotNull();
+            assertThat(resultado.getCantidadActual()).isEqualTo(nuevaCantidad);
+
+            verify(productoRepository, times(1)).findById(1L);
+            verify(productoRepository, times(1)).save(any(Producto.class));
+            verify(userRepository, times(1)).findByUsername("admin");
+        }
+
+        @Test
+        @DisplayName("Actualizar stock - Producto inactivo")
+        void testActualizarStock_ProductoInactivo() {
+            // Arrange
+            productoTest.setActivo(false);
+            when(productoRepository.findById(1L)).thenReturn(Optional.of(productoTest));
+
+            // Act & Assert
+            assertThatThrownBy(() -> productoService.actualizarStock(1L, 25, "admin"))
+                    .isInstanceOf(BusinessValidationException.class)
+                    .hasMessageContaining("No se puede actualizar stock de un producto inactivo");
+
+            verify(productoRepository, times(1)).findById(1L);
+            verify(productoRepository, never()).save(any());
+        }
+
+        @Test
+        @DisplayName("Actualizar stock - Cantidad negativa")
+        void testActualizarStock_CantidadNegativa() {
+            // Act & Assert
+            assertThatThrownBy(() -> productoService.actualizarStock(1L, -5, "admin"))
+                    .isInstanceOf(BusinessValidationException.class)
+                    .hasMessageContaining("La cantidad no puede ser negativa");
+
+            verify(productoRepository, never()).findById(any());
+        }
     }
 
-    @Test
-    void testActualizarStock_Falla_ProductoInactivo() {
-        // Arrange
-        producto.setActivo(false);
-        when(productoRepository.findById(1L)).thenReturn(Optional.of(producto));
+    @Nested
+    @DisplayName("Operaciones Avanzadas")
+    class OperacionesAvanzadas {
 
-        // Act & Assert
-        Exception exception = assertThrows(BusinessValidationException.class, () -> {
-            productoService.actualizarStock(1L, 50);
-        });
-        System.out.println("Resultado de testActualizarStock_Falla_ProductoInactivo: " + exception.getMessage());
-        assertEquals("No se puede actualizar stock de un producto inactivo", exception.getMessage());
+        @Test
+        @DisplayName("Calcular valor total inventario")
+        void testCalcularValorTotalInventario() {
+            // Arrange
+            BigDecimal valorTotal = new BigDecimal("15000.75");
+            when(productoRepository.calcularValorTotalInventario()).thenReturn(valorTotal);
+
+            // Act
+            BigDecimal resultado = productoService.calcularValorTotalInventario();
+
+            // Assert
+            assertThat(resultado).isEqualByComparingTo(valorTotal);
+            verify(productoRepository, times(1)).calcularValorTotalInventario();
+        }
+
+        @Test
+        @DisplayName("Obtener categorías distintas")
+        void testObtenerCategorias() {
+            // Arrange
+            List<String> categorias = Arrays.asList("Electrónicos", "Hogar", "Deportes");
+            when(productoRepository.findDistinctCategorias()).thenReturn(categorias);
+
+            // Act
+            List<String> resultado = productoService.obtenerCategorias();
+
+            // Assert
+            assertThat(resultado).hasSize(3);
+            assertThat(resultado).contains("Electrónicos", "Hogar", "Deportes");
+            verify(productoRepository, times(1)).findDistinctCategorias();
+        }
+
+        @Test
+        @DisplayName("Crear producto con categoría")
+        void testCrearProductoConCategoria() {
+            // Arrange
+            when(categoriaService.obtenerCategoriaPorId(1L)).thenReturn(categoriaTest);
+            doNothing().when(productoValidator).validar(productoTest);
+            when(productoRepository.existsBySku(productoTest.getSku())).thenReturn(false);
+            when(productoRepository.save(productoTest)).thenReturn(productoTest);
+
+            // Act
+            Producto resultado = productoService.crearProductoConCategoria(productoTest, 1L);
+
+            // Assert
+            assertThat(resultado).isNotNull();
+            assertThat(resultado.getCategoria()).isEqualTo(categoriaTest);
+            assertThat(resultado.getCategoriaLegacy()).isEqualTo("Electrónicos");
+
+            verify(categoriaService, times(1)).obtenerCategoriaPorId(1L);
+            verify(productoRepository, times(1)).save(productoTest);
+        }
     }
 
-    @Test
-    void testActualizarStock_Falla_CantidadNegativa() {
-        // Arrange
-        // No es necesario el when() para findById porque la validación ocurre antes.
-        
-        // Act & Assert
-        Exception exception = assertThrows(BusinessValidationException.class, () -> {
-            productoService.actualizarStock(1L, -5);
-        });
-        System.out.println("Resultado de testActualizarStock_Falla_CantidadNegativa: " + exception.getMessage());
-        assertEquals("La cantidad no puede ser negativa", exception.getMessage());
-    }
+    @Nested
+    @DisplayName("Casos Edge y Errores")
+    class CasosEdgeYErrores {
 
-    @Test
-    void testListarProductosActivos() {
-        // Arrange
-        Page<Producto> paginaProductos = new PageImpl<>(Collections.singletonList(producto));
-        when(productoRepository.findByActivoTrue(any(Pageable.class))).thenReturn(paginaProductos);
-        when(productoMapper.toDTO(any(Producto.class))).thenReturn(productoDTO);
+        @Test
+        @DisplayName("Crear producto - Entrada nula")
+        void testCrearProducto_EntradaNula() {
+            // Arrange
+            doThrow(new BusinessValidationException("Los datos del producto no pueden ser nulos"))
+                    .when(productoValidator).validar(null);
 
-        // Act
-        Page<ProductoDTO> resultado = productoService.listarProductosActivos(Pageable.unpaged());
-        System.out.println("Resultado de testListarProductosActivos: " + resultado.getContent());
-        
-        // Assert
-        assertFalse(resultado.isEmpty());
-        assertEquals(1, resultado.getTotalElements());
-        verify(productoRepository, times(1)).findByActivoTrue(any(Pageable.class));
-    }
+            // Act & Assert
+            assertThatThrownBy(() -> productoService.crearProducto(null))
+                    .isInstanceOf(BusinessValidationException.class)
+                    .hasMessage("Los datos del producto no pueden ser nulos");
 
-    @Test
-    void testObtenerProductosConStockBajo() {
-        // Arrange
-        when(productoRepository.findProductosConStockBajo(15)).thenReturn(Collections.singletonList(producto));
-        when(productoMapper.toDTOList(anyList())).thenReturn(Collections.singletonList(productoDTO));
+            verify(productoValidator, times(1)).validar(null);
+            verify(productoRepository, never()).save(any());
+        }
 
-        // Act
-        List<ProductoDTO> resultado = productoService.obtenerProductosConStockBajo(15);
-        System.out.println("Resultado de testObtenerProductosConStockBajo: " + resultado);
+        @Test
+        @DisplayName("Buscar productos - Filtro nulo")
+        void testBuscarProductos_FiltroNulo() {
+            // Arrange
+            Pageable pageable = PageRequest.of(0, 10);
+            List<Producto> productos = Arrays.asList(productoTest, productoTest2);
+            Page<Producto> page = new PageImpl<>(productos, pageable, 2);
 
-        // Assert
-        assertFalse(resultado.isEmpty());
-        assertEquals(1, resultado.size());
-        verify(productoRepository, times(1)).findProductosConStockBajo(15);
-    }
+            when(productoRepository.findByActivoTrue(pageable)).thenReturn(page);
 
-    @Test
-    void testObtenerCategorias() {
-        // Arrange
-        List<String> categorias = List.of("Electrónicos", "Hogar");
-        when(productoRepository.findDistinctCategorias()).thenReturn(categorias);
+            // Act
+            Page<Producto> resultado = productoService.buscarProductos(null, pageable);
 
-        // Act
-        List<String> resultado = productoService.obtenerCategorias();
-        System.out.println("Resultado de testObtenerCategorias: " + resultado);
+            // Assert
+            assertThat(resultado.getContent()).hasSize(2);
+            verify(productoRepository, times(1)).findByActivoTrue(pageable);
+        }
 
-        // Assert
-        assertEquals(2, resultado.size());
-        assertEquals("Electrónicos", resultado.get(0));
-        verify(productoRepository, times(1)).findDistinctCategorias();
-    }
+        @Test
+        @DisplayName("Obtener producto por SKU - No encontrado")
+        void testObtenerProductoPorSku_NoEncontrado() {
+            // Arrange
+            when(productoRepository.findBySku("INEXISTENTE")).thenReturn(Optional.empty());
 
-    @Test
-    void testCalcularValorTotalInventario() {
-        // Arrange
-        BigDecimal valorTotal = new BigDecimal("15000.75");
-        when(productoRepository.calcularValorTotalInventario()).thenReturn(valorTotal);
+            // Act & Assert
+            assertThatThrownBy(() -> productoService.obtenerProductoPorSku("INEXISTENTE"))
+                    .isInstanceOf(ProductoNotFoundException.class)
+                    .hasMessageContaining("No se encontró el producto con SKU: INEXISTENTE");
 
-        // Act
-        BigDecimal resultado = productoService.calcularValorTotalInventario();
-        System.out.println("Resultado de testCalcularValorTotalInventario: " + resultado);
-        
-        // Assert
-        assertEquals(0, valorTotal.compareTo(resultado));
-        verify(productoRepository, times(1)).calcularValorTotalInventario();
+            verify(productoRepository, times(1)).findBySku("INEXISTENTE");
+        }
     }
 } 

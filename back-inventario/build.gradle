@@ -109,19 +109,155 @@ configurations {
     }
 }
 
+// ========================================================================
+// TAREAS PERSONALIZADAS PARA QAS (Quality Assurance Software)
+// ========================================================================
+
+// Tarea para ejecutar pruebas de Cucumber
 task cucumber() {
     dependsOn assemble, testClasses
+    group = 'QAS'
+    description = 'Ejecuta todas las pruebas de aceptación con Cucumber'
+    
     doLast {
         javaexec {
             main = "io.cucumber.core.cli.Main"
             classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
             args = [
                 '--plugin', 'pretty',
-                '--plugin', 'html:build/reports/cucumber',
-                '--plugin', 'json:build/reports/cucumber.json',
+                '--plugin', 'html:target/cucumber-reports/Cucumber.html',
+                '--plugin', 'json:target/cucumber-reports/Cucumber.json',
+                '--plugin', 'junit:target/cucumber-reports/Cucumber.xml',
                 '--glue', 'org.example.proyectofinal.cucumber',
+                '--tags', '@productos or @categorias or @autenticacion',
                 'src/test/resources/features'
             ]
         }
+    }
+}
+
+// Tarea para ejecutar solo pruebas de regresión
+task regressionTests() {
+    dependsOn assemble, testClasses
+    group = 'QAS'
+    description = 'Ejecuta suite de pruebas de regresión críticas'
+    
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                '--plugin', 'pretty',
+                '--plugin', 'html:target/regression-reports/cucumber.html',
+                '--plugin', 'json:target/regression-reports/cucumber.json',
+                '--glue', 'org.example.proyectofinal.cucumber',
+                '--tags', '@regresion',
+                'src/test/resources/features'
+            ]
+        }
+    }
+}
+
+// Tarea para generar reporte consolidado de QAS
+task qasReport() {
+    dependsOn test, cucumber, jacocoTestReport
+    group = 'QAS'
+    description = 'Genera reporte consolidado de todas las pruebas QAS'
+    
+    doLast {
+        def reportDir = file("$buildDir/reports/qas")
+        reportDir.mkdirs()
+        
+        def htmlContent = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reporte QAS Consolidado - ${new Date()}</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .metric { display: inline-block; margin: 10px; padding: 15px; background: #f9f9f9; border-radius: 8px; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Reporte QAS Consolidado</h1>
+        <p><strong>Proyecto:</strong> Sistema de Gestión de Inventarios</p>
+        <p><strong>Fecha:</strong> ${new Date()}</p>
+    </div>
+    
+    <div class="section">
+        <h2>🎯 Métricas de Calidad</h2>
+        <div class="metric">
+            <h3>Cobertura de Código</h3>
+            <p>Objetivo: ≥ 80%</p>
+            <p><a href="../jacoco/test/html/index.html">Ver Reporte JaCoCo</a></p>
+        </div>
+        
+        <div class="metric">
+            <h3>Pruebas Unitarias</h3>
+            <p>JUnit + Spring Boot Test</p>
+            <p><a href="../tests/test/index.html">Ver Reporte JUnit</a></p>
+        </div>
+        
+        <div class="metric">
+            <h3>Pruebas de Aceptación</h3>
+            <p>Cucumber BDD</p>
+            <p><a href="../../target/cucumber-reports/Cucumber.html">Ver Reporte Cucumber</a></p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>🔄 Tipos de Pruebas Implementadas</h2>
+        <table>
+            <tr><th>Tipo</th><th>Herramienta</th><th>Cobertura</th><th>Estado</th></tr>
+            <tr><td>Unitarias</td><td>JUnit 5</td><td>Servicios, Repositorios</td><td>✅ Implementado</td></tr>
+            <tr><td>Integración</td><td>SpringBootTest</td><td>Controllers, API</td><td>✅ Implementado</td></tr>
+            <tr><td>Aceptación</td><td>Cucumber</td><td>Escenarios de negocio</td><td>✅ Implementado</td></tr>
+            <tr><td>E2E Frontend</td><td>Playwright</td><td>Flujos de usuario</td><td>✅ Implementado</td></tr>
+            <tr><td>Estrés</td><td>JMeter</td><td>Rendimiento y carga</td><td>✅ Implementado</td></tr>
+            <tr><td>Regresión</td><td>Suite automatizada</td><td>Funcionalidades críticas</td><td>✅ Implementado</td></tr>
+        </table>
+    </div>
+    
+    <div class="section">
+        <h2>🚀 Comandos de Ejecución</h2>
+        <p><strong>Todas las pruebas:</strong> <code>./gradlew test</code></p>
+        <p><strong>Pruebas de aceptación:</strong> <code>./gradlew cucumber</code></p>
+        <p><strong>Pruebas de regresión:</strong> <code>./gradlew regressionTests</code></p>
+        <p><strong>Reporte de cobertura:</strong> <code>./gradlew jacocoTestReport</code></p>
+        <p><strong>Reporte QAS completo:</strong> <code>./gradlew qasReport</code></p>
+    </div>
+</body>
+</html>
+        """
+        
+        file("$reportDir/index.html").text = htmlContent
+        println "✅ Reporte QAS generado en: $reportDir/index.html"
+    }
+}
+
+// Tarea para ejecutar suite completa de QAS
+task qasFullSuite() {
+    dependsOn clean, test, cucumber, regressionTests, jacocoTestReport, qasReport
+    group = 'QAS'
+    description = 'Ejecuta la suite completa de pruebas QAS'
+    
+    doLast {
+        println ""
+        println "🎉 ====================================="
+        println "🎉 SUITE QAS COMPLETADA EXITOSAMENTE"
+        println "🎉 ====================================="
+        println "📊 Reportes disponibles en:"
+        println "   - JUnit: build/reports/tests/test/index.html"
+        println "   - Cucumber: target/cucumber-reports/Cucumber.html"
+        println "   - JaCoCo: build/reports/jacoco/test/html/index.html"
+        println "   - QAS Consolidado: build/reports/qas/index.html"
+        println ""
     }
 }

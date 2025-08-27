@@ -5,7 +5,7 @@
 
 -- Crear tabla productos
 CREATE TABLE productos (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT IDENTITY PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     descripcion VARCHAR(500),
     categoria VARCHAR(50) NOT NULL,
