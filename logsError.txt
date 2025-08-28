@@ -1,0 +1,511 @@
+2025-08-27 07:37:22.459 | [otel.javaagent 2025-08-27 11:37:22:456 +0000] [OkHttp http://jaeger:4317/...] ERROR io.opentelemetry.exporter.internal.http.HttpExporter - Failed to export spans. The request could not be executed. Full error message: Connection reset by peer
+2025-08-27 07:37:22.463 | java.net.SocketException: Connection reset by peer
+2025-08-27 07:37:22.464 | 	at java.base/sun.nio.ch.SocketDispatcher.write0(Native Method)
+2025-08-27 07:37:22.464 | 	at java.base/sun.nio.ch.SocketDispatcher.write(Unknown Source)
+2025-08-27 07:37:22.464 | 	at java.base/sun.nio.ch.NioSocketImpl.tryWrite(Unknown Source)
+2025-08-27 07:37:22.464 | 	at java.base/sun.nio.ch.NioSocketImpl.implWrite(Unknown Source)
+2025-08-27 07:37:22.464 | 	at java.base/sun.nio.ch.NioSocketImpl.write(Unknown Source)
+2025-08-27 07:37:22.464 | 	at java.base/sun.nio.ch.NioSocketImpl$2.write(Unknown Source)
+2025-08-27 07:37:22.464 | 	at java.base/java.net.Socket$SocketOutputStream.write(Unknown Source)
+2025-08-27 07:37:22.464 | 	at okio.OutputStreamSink.write(JvmOkio.kt:57)
+2025-08-27 07:37:22.464 | 	at okio.AsyncTimeout$sink$1.write(AsyncTimeout.kt:127)
+2025-08-27 07:37:22.464 | 	at okio.RealBufferedSink.flush(RealBufferedSink.kt:268)
+2025-08-27 07:37:22.464 | 	at okhttp3.internal.http1.Http1ExchangeCodec.finishRequest(Http1ExchangeCodec.kt:165)
+2025-08-27 07:37:22.464 | 	at okhttp3.internal.connection.Exchange.finishRequest(Exchange.kt:99)
+2025-08-27 07:37:22.464 | 	at okhttp3.internal.http.CallServerInterceptor.intercept(CallServerInterceptor.kt:84)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:34)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:101)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:85)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:74)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:22.465 | 	at io.opentelemetry.exporter.sender.okhttp.internal.RetryInterceptor.intercept(RetryInterceptor.java:96)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:208)
+2025-08-27 07:37:22.465 | 	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:530)
+2025-08-27 07:37:22.465 | 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+2025-08-27 07:37:22.465 | 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+2025-08-27 07:37:22.465 | 	at java.base/java.lang.Thread.run(Unknown Source)
+2025-08-27 07:37:22.465 | 	Suppressed: java.io.IOException: unexpected end of stream on http://jaeger:4317/...
+2025-08-27 07:37:22.465 | 		at okhttp3.internal.http1.Http1ExchangeCodec.readResponseHeaders(Http1ExchangeCodec.kt:231)
+2025-08-27 07:37:22.465 | 		at okhttp3.internal.connection.Exchange.readResponseHeaders(Exchange.kt:114)
+2025-08-27 07:37:22.465 | 		at okhttp3.internal.http.CallServerInterceptor.intercept(CallServerInterceptor.kt:98)
+2025-08-27 07:37:22.465 | 		... 16 more
+2025-08-27 07:37:22.467 | 	Caused by: java.io.EOFException: \n not found: limit=15 content=000006040000000000000500004000…
+2025-08-27 07:37:22.467 | 		at okio.RealBufferedSource.readUtf8LineStrict(RealBufferedSource.kt:362)
+2025-08-27 07:37:22.467 | 		at okhttp3.internal.http1.HeadersReader.readLine(HeadersReader.kt:31)
+2025-08-27 07:37:22.467 | 		at okhttp3.internal.http1.Http1ExchangeCodec.readResponseHeaders(Http1ExchangeCodec.kt:197)
+2025-08-27 07:37:22.469 | 		... 18 more
+2025-08-27 07:37:23.060 | Picked up JAVA_TOOL_OPTIONS: -javaagent:/app/opentelemetry-javaagent.jar
+2025-08-27 07:37:23.224 | OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2025-08-27 07:37:23.338 | [otel.javaagent 2025-08-27 11:37:23:337 +0000] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 2.18.1
+2025-08-27 07:37:23.755 | [otel.javaagent 2025-08-27 11:37:23:755 +0000] [main] WARN io.opentelemetry.exporter.otlp.internal.OtlpConfigUtil - OTLP exporter endpoint port is likely incorrect for protocol version "http/protobuf". The endpoint http://jaeger:4317 has port 4317. Typically, the "http/protobuf" version of OTLP uses port 4318.
+2025-08-27 07:37:24.877 | OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2025-08-27 07:37:25.743 |   .   ____          _            __ _ _
+2025-08-27 07:37:25.743 |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2025-08-27 07:37:25.743 | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2025-08-27 07:37:25.743 |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2025-08-27 07:37:25.743 |   '  |____| .__|_| |_|_| |_\__, | / / / /
+2025-08-27 07:37:25.743 |  =========|_|==============|___/=/_/_/_/
+2025-08-27 07:37:25.743 | 
+2025-08-27 07:37:25.747 |  :: Spring Boot ::                (v3.3.0)
+2025-08-27 07:37:25.747 | 
+2025-08-27 07:37:26.031 | 2025-08-27T11:37:26.005Z INFO 'Starting ProyectoFinalApplication v0.0.1-SNAPSHOT using Java 21.0.8 with PID 7 (/app/app.jar started by appuser in /app)' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.example.proyectofinal.ProyectoFinalApplication:] {}
+2025-08-27 07:37:26.035 | 2025-08-27T11:37:26.005Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.e.p.ProyectoFinalApplication           : Starting ProyectoFinalApplication v0.0.1-SNAPSHOT using Java 21.0.8 with PID 7 (/app/app.jar started by appuser in /app)
+2025-08-27 07:37:26.036 | 2025-08-27T11:37:26.036Z INFO 'The following 1 profile is active: "prod"' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.example.proyectofinal.ProyectoFinalApplication:] {}
+2025-08-27 07:37:26.036 | 2025-08-27T11:37:26.036Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.e.p.ProyectoFinalApplication           : The following 1 profile is active: "prod"
+2025-08-27 07:37:27.491 | 2025-08-27T11:37:27.489Z INFO 'Bootstrapping Spring Data JPA repositories in DEFAULT mode.' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.springframework.data.repository.config.RepositoryConfigurationDelegate:] {}
+2025-08-27 07:37:27.492 | 2025-08-27T11:37:27.489Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-27 07:37:27.593 | 2025-08-27T11:37:27.591Z INFO 'Finished Spring Data repository scanning in 88 ms. Found 4 JPA repository interfaces.' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.springframework.data.repository.config.RepositoryConfigurationDelegate:] {}
+2025-08-27 07:37:27.595 | 2025-08-27T11:37:27.591Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 88 ms. Found 4 JPA repository interfaces.
+2025-08-27 07:37:29.338 | 2025-08-27T11:37:29.332Z INFO 'Tomcat initialized with port 8080 (http)' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.springframework.boot.web.embedded.tomcat.TomcatWebServer:] {}
+2025-08-27 07:37:29.339 | 2025-08-27T11:37:29.332Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-08-27 07:37:29.462 | 2025-08-27T11:37:29.462Z INFO 'Starting service [Tomcat]' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.apache.catalina.core.StandardService:] {}
+2025-08-27 07:37:29.463 | 2025-08-27T11:37:29.462Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-08-27 07:37:29.463 | 2025-08-27T11:37:29.463Z INFO 'Starting Servlet engine: [Apache Tomcat/10.1.24]' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.apache.catalina.core.StandardEngine:] {}
+2025-08-27 07:37:29.463 | 2025-08-27T11:37:29.463Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.24]
+2025-08-27 07:37:29.541 | 2025-08-27T11:37:29.54Z INFO 'Initializing Spring embedded WebApplicationContext' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/api]:] {}
+2025-08-27 07:37:29.541 | 2025-08-27T11:37:29.540Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2025-08-27 07:37:29.544 | 2025-08-27T11:37:29.543Z INFO 'Root WebApplicationContext: initialization completed in 3361 ms' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext:] {}
+2025-08-27 07:37:29.544 | 2025-08-27T11:37:29.543Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3361 ms
+2025-08-27 07:37:30.333 | 2025-08-27T11:37:30.33Z INFO 'HikariPool-1 - Starting...' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: com.zaxxer.hikari.HikariDataSource:] {}
+2025-08-27 07:37:30.333 | 2025-08-27T11:37:30.330Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-08-27 07:37:30.777 | 2025-08-27T11:37:30.775Z INFO 'HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7b4e5982' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: com.zaxxer.hikari.pool.HikariPool:] {}
+2025-08-27 07:37:30.778 | 2025-08-27T11:37:30.775Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7b4e5982
+2025-08-27 07:37:30.807 | 2025-08-27T11:37:30.806Z INFO 'HikariPool-1 - Start completed.' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: com.zaxxer.hikari.HikariDataSource:] {}
+2025-08-27 07:37:30.808 | 2025-08-27T11:37:30.806Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-08-27 07:37:31.022 | 2025-08-27T11:37:31.022Z INFO 'Database: jdbc:postgresql://postgres:5432/inventario_db (PostgreSQL 16.9)' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.flywaydb.core.FlywayExecutor:] {}
+2025-08-27 07:37:31.022 | 2025-08-27T11:37:31.022Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://postgres:5432/inventario_db (PostgreSQL 16.9)
+2025-08-27 07:37:31.202 | 2025-08-27T11:37:31.198Z INFO 'Successfully validated 7 migrations (execution time 00:00.080s)' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.flywaydb.core.internal.command.DbValidate:] {}
+2025-08-27 07:37:31.202 | 2025-08-27T11:37:31.198Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 7 migrations (execution time 00:00.080s)
+2025-08-27 07:37:31.256 | 2025-08-27T11:37:31.254Z INFO 'Current version of schema "public": 8' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.flywaydb.core.internal.command.DbMigrate:] {}
+2025-08-27 07:37:31.256 | 2025-08-27T11:37:31.254Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": 8
+2025-08-27 07:37:31.263 | 2025-08-27T11:37:31.263Z INFO 'Schema "public" is up to date. No migration necessary.' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.flywaydb.core.internal.command.DbMigrate:] {}
+2025-08-27 07:37:31.263 | 2025-08-27T11:37:31.263Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.f.core.internal.command.DbMigrate      : Schema "public" is up to date. No migration necessary.
+2025-08-27 07:37:31.520 | 2025-08-27T11:37:31.52Z INFO 'HHH000204: Processing PersistenceUnitInfo [name: default]' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.hibernate.jpa.internal.util.LogHelper:] {}
+2025-08-27 07:37:31.521 | 2025-08-27T11:37:31.520Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-27 07:37:31.689 | 2025-08-27T11:37:31.687Z INFO 'HHH000412: Hibernate ORM core version 6.5.2.Final' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.hibernate.Version:] {}
+2025-08-27 07:37:31.689 | 2025-08-27T11:37:31.687Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2025-08-27 07:37:31.764 | 2025-08-27T11:37:31.763Z INFO 'HHH000026: Second-level cache disabled' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.hibernate.cache.internal.RegionFactoryInitiator:] {}
+2025-08-27 07:37:31.764 | 2025-08-27T11:37:31.763Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-08-27 07:37:32.059 | 2025-08-27T11:37:32.057Z INFO 'Envers integration enabled? : true' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.hibernate.envers.boot.internal.EnversServiceImpl:] {}
+2025-08-27 07:37:32.060 | 2025-08-27T11:37:32.057Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.h.e.boot.internal.EnversServiceImpl    : Envers integration enabled? : true
+2025-08-27 07:37:32.518 | 2025-08-27T11:37:32.512Z INFO 'No LoadTimeWeaver setup: ignoring JPA class transformer' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo:] {}
+2025-08-27 07:37:32.520 | 2025-08-27T11:37:32.512Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-27 07:37:32.654 | 2025-08-27T11:37:32.652Z WARN 'HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.hibernate.orm.deprecation:] {}
+2025-08-27 07:37:32.654 | 2025-08-27T11:37:32.652Z  WARN 7 --- [Sistema-Gestion-Inventarios] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-27 07:37:34.713 | 2025-08-27T11:37:34.711Z INFO 'HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator:] {}
+2025-08-27 07:37:34.713 | 2025-08-27T11:37:34.711Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-27 07:37:34.879 | 2025-08-27T11:37:34.878Z ERROR 'Failed to initialize JPA EntityManagerFactory: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [motivo] in table [movimientos_historial]' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:] {}
+2025-08-27 07:37:34.879 | 2025-08-27T11:37:34.878Z ERROR 7 --- [Sistema-Gestion-Inventarios] [           main] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [motivo] in table [movimientos_historial]
+2025-08-27 07:37:34.885 | 2025-08-27T11:37:34.884Z ERROR 'Error starting Tomcat context. Exception: org.springframework.beans.factory.UnsatisfiedDependencyException. Message: Error creating bean with name 'jwtAuthenticationFilter' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/org/example/proyectofinal/config/JwtAuthenticationFilter.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'userService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/org/example/proyectofinal/service/UserService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'userRepository' defined in org.example.proyectofinal.repository.UserRepository defined in @EnableJpaRepositories declared on EnversRevisionRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.springframework.boot.web.embedded.tomcat.TomcatStarter:] {}
+2025-08-27 07:37:34.885 | 2025-08-27T11:37:34.884Z ERROR 7 --- [Sistema-Gestion-Inventarios] [           main] o.s.b.web.embedded.tomcat.TomcatStarter  : Error starting Tomcat context. Exception: org.springframework.beans.factory.UnsatisfiedDependencyException. Message: Error creating bean with name 'jwtAuthenticationFilter' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/org/example/proyectofinal/config/JwtAuthenticationFilter.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'userService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/org/example/proyectofinal/service/UserService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'userRepository' defined in org.example.proyectofinal.repository.UserRepository defined in @EnableJpaRepositories declared on EnversRevisionRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+2025-08-27 07:37:35.056 | 2025-08-27T11:37:35.054Z INFO 'Stopping service [Tomcat]' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.apache.catalina.core.StandardService:] {}
+2025-08-27 07:37:35.056 | 2025-08-27T11:37:35.054Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2025-08-27 07:37:35.064 | 2025-08-27T11:37:35.063Z WARN 'The web application [api] appears to have started a thread named [HikariPool-1 housekeeper] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+2025-08-27 07:37:35.064 |  java.base/jdk.internal.misc.Unsafe.park(Native Method)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.lang.Thread.run(Unknown Source)' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.apache.catalina.loader.WebappClassLoaderBase:] {}
+2025-08-27 07:37:35.064 | 2025-08-27T11:37:35.063Z  WARN 7 --- [Sistema-Gestion-Inventarios] [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [api] appears to have started a thread named [HikariPool-1 housekeeper] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+2025-08-27 07:37:35.064 |  java.base/jdk.internal.misc.Unsafe.park(Native Method)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.lang.Thread.run(Unknown Source)
+2025-08-27 07:37:35.064 | 2025-08-27T11:37:35.063Z WARN 'The web application [api] appears to have started a thread named [HikariPool-1 connection adder] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+2025-08-27 07:37:35.064 |  java.base/jdk.internal.misc.Unsafe.park(Native Method)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.LinkedBlockingQueue.poll(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.lang.Thread.run(Unknown Source)' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.apache.catalina.loader.WebappClassLoaderBase:] {}
+2025-08-27 07:37:35.064 | 2025-08-27T11:37:35.063Z  WARN 7 --- [Sistema-Gestion-Inventarios] [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [api] appears to have started a thread named [HikariPool-1 connection adder] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+2025-08-27 07:37:35.064 |  java.base/jdk.internal.misc.Unsafe.park(Native Method)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.LinkedBlockingQueue.poll(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+2025-08-27 07:37:35.064 |  java.base/java.lang.Thread.run(Unknown Source)
+2025-08-27 07:37:35.072 | 2025-08-27T11:37:35.071Z WARN 'Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext:] {}
+2025-08-27 07:37:35.072 | 2025-08-27T11:37:35.071Z  WARN 7 --- [Sistema-Gestion-Inventarios] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server
+2025-08-27 07:37:35.073 | 2025-08-27T11:37:35.072Z INFO 'HikariPool-1 - Shutdown initiated...' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: com.zaxxer.hikari.HikariDataSource:] {}
+2025-08-27 07:37:35.073 | 2025-08-27T11:37:35.072Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-08-27 07:37:35.091 | 2025-08-27T11:37:35.089Z INFO 'HikariPool-1 - Shutdown completed.' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: com.zaxxer.hikari.HikariDataSource:] {}
+2025-08-27 07:37:35.091 | 2025-08-27T11:37:35.089Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-08-27 07:37:35.154 | 2025-08-27T11:37:35.153Z INFO '
+2025-08-27 07:37:35.154 | 
+2025-08-27 07:37:35.154 | Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLogger:] {}
+2025-08-27 07:37:35.157 | 2025-08-27T11:37:35.153Z  INFO 7 --- [Sistema-Gestion-Inventarios] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2025-08-27 07:37:35.158 | 
+2025-08-27 07:37:35.158 | Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-08-27 07:37:35.223 | 2025-08-27T11:37:35.214Z ERROR 'Application run failed' : 00000000000000000000000000000000 0000000000000000 [scopeInfo: org.springframework.boot.SpringApplication:] {exception.message="Unable to start web server", exception.stacktrace="org.springframework.context.ApplicationContextException: Unable to start web server
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:165)
+2025-08-27 07:37:35.223 | 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:618)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+2025-08-27 07:37:35.223 | 	at org.example.proyectofinal.ProyectoFinalApplication.main(ProyectoFinalApplication.java:14)
+2025-08-27 07:37:35.223 | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+2025-08-27 07:37:35.223 | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58)
+2025-08-27 07:37:35.223 | Caused by: org.springframework.boot.web.server.WebServerException: Unable to start embedded Tomcat
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:147)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:107)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:516)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:222)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:188)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162)
+2025-08-27 07:37:35.223 | 	... 13 more
+2025-08-27 07:37:35.223 | Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'jwtAuthenticationFilter' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/org/example/proyectofinal/config/JwtAuthenticationFilter.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'userService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/org/example/proyectofinal/service/UserService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'userRepository' defined in org.example.proyectofinal.repository.UserRepository defined in @EnableJpaRepositories declared on EnversRevisionRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+2025-08-27 07:37:35.223 | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+2025-08-27 07:37:35.223 | 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237)
+2025-08-27 07:37:35.223 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1357)
+2025-08-27 07:37:35.223 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+2025-08-27 07:37:35.223 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+2025-08-27 07:37:35.223 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+2025-08-27 07:37:35.223 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+2025-08-27 07:37:35.223 | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+2025-08-27 07:37:35.223 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+2025-08-27 07:37:35.223 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:211)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:174)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:169)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:154)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:87)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:266)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:240)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:52)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4414)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+2025-08-27 07:37:35.223 | 	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+2025-08-27 07:37:35.223 | 	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+2025-08-27 07:37:35.223 | 	at java.base/java.util.concurrent.AbstractExecutorService.submit(Unknown Source)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+2025-08-27 07:37:35.223 | 	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+2025-08-27 07:37:35.223 | 	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+2025-08-27 07:37:35.223 | 	at java.base/java.util.concurrent.AbstractExecutorService.submit(Unknown Source)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:874)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+2025-08-27 07:37:35.223 | 	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:437)
+2025-08-27 07:37:35.223 | 	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:128)
+2025-08-27 07:37:35.223 | 	... 18 more
+2025-08-27 07:37:35.223 | Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'userService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/org/example/proyectofinal/service/UserService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'userRepository' defined in org.example.proyectofinal.repository.UserRepository defined in @EnableJpaRepositories declared on EnversRevisionRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1357)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+2025-08-27 07:37:35.224 | 	... 59 more
+2025-08-27 07:37:35.224 | Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'userRepository' defined in org.example.proyectofinal.repository.UserRepository defined in @EnableJpaRepositories declared on EnversRevisionRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1687)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1436)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:599)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+2025-08-27 07:37:35.224 | 	... 73 more
+2025-08-27 07:37:35.224 | Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jpaSharedEM_entityManagerFactory': Cannot resolve reference to bean 'entityManagerFactory' while setting constructor argument
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:682)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:509)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1337)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1167)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365)
+2025-08-27 07:37:35.224 | 	... 87 more
+2025-08-27 07:37:35.224 | Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [motivo] in table [movimientos_historial]
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1788)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365)
+2025-08-27 07:37:35.224 | 	... 99 more
+2025-08-27 07:37:35.224 | Caused by: jakarta.persistence.PersistenceException: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [motivo] in table [movimientos_historial]
+2025-08-27 07:37:35.224 | 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:421)
+2025-08-27 07:37:35.224 | 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
+2025-08-27 07:37:35.224 | 	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1835)
+2025-08-27 07:37:35.224 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1784)
+2025-08-27 07:37:35.224 | 	... 106 more
+2025-08-27 07:37:35.224 | Caused by: org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [motivo] in table [movimientos_historial]
+2025-08-27 07:37:35.224 | 	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.validateTable(AbstractSchemaValidator.java:148)
+2025-08-27 07:37:35.224 | 	at org.hibernate.tool.schema.internal.GroupedSchemaValidatorImpl.validateTables(GroupedSchemaValidatorImpl.java:46)
+2025-08-27 07:37:35.224 | 	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.performValidation(AbstractSchemaValidator.java:98)
+2025-08-27 07:37:35.224 | 	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.doValidation(AbstractSchemaValidator.java:76)
+2025-08-27 07:37:35.224 | 	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:289)
+2025-08-27 07:37:35.224 | 	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144)
+2025-08-27 07:37:35.224 | 	at java.base/java.util.HashMap.forEach(Unknown Source)
+2025-08-27 07:37:35.224 | 	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141)
+2025-08-27 07:37:35.224 | 	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
+2025-08-27 07:37:35.224 | 	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
+2025-08-27 07:37:35.224 | 	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:322)
+2025-08-27 07:37:35.224 | 	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:457)
+2025-08-27 07:37:35.224 | 	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1506)
+2025-08-27 07:37:35.224 | 	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75)
+2025-08-27 07:37:35.224 | 	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390)
+2025-08-27 07:37:35.224 | 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
+2025-08-27 07:37:35.224 | 	... 110 more
+2025-08-27 07:37:35.224 | ", exception.type="org.springframework.context.ApplicationContextException"}
+2025-08-27 07:37:35.226 | 2025-08-27T11:37:35.214Z ERROR 7 --- [Sistema-Gestion-Inventarios] [           main] o.s.boot.SpringApplication               : Application run failed
+2025-08-27 07:37:35.226 | 
+2025-08-27 07:37:35.226 | org.springframework.context.ApplicationContextException: Unable to start web server
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:165) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:618) ~[spring-context-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.example.proyectofinal.ProyectoFinalApplication.main(ProyectoFinalApplication.java:14) ~[!/:0.0.1-SNAPSHOT]
+2025-08-27 07:37:35.226 | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+2025-08-27 07:37:35.226 | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91) ~[app.jar:0.0.1-SNAPSHOT]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53) ~[app.jar:0.0.1-SNAPSHOT]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58) ~[app.jar:0.0.1-SNAPSHOT]
+2025-08-27 07:37:35.226 | Caused by: org.springframework.boot.web.server.WebServerException: Unable to start embedded Tomcat
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:147) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:107) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:516) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:222) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:188) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	... 13 common frames omitted
+2025-08-27 07:37:35.226 | Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'jwtAuthenticationFilter' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/org/example/proyectofinal/config/JwtAuthenticationFilter.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'userService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/org/example/proyectofinal/service/UserService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'userRepository' defined in org.example.proyectofinal.repository.UserRepository defined in @EnableJpaRepositories declared on EnversRevisionRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1357) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:211) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:174) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:169) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:154) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:87) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:266) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:240) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:52) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4414) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at java.base/java.util.concurrent.FutureTask.run(Unknown Source) ~[na:na]
+2025-08-27 07:37:35.226 | 	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at java.base/java.util.concurrent.AbstractExecutorService.submit(Unknown Source) ~[na:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at java.base/java.util.concurrent.FutureTask.run(Unknown Source) ~[na:na]
+2025-08-27 07:37:35.226 | 	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at java.base/java.util.concurrent.AbstractExecutorService.submit(Unknown Source) ~[na:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:874) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:437) ~[tomcat-embed-core-10.1.24.jar!/:na]
+2025-08-27 07:37:35.226 | 	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:128) ~[spring-boot-3.3.0.jar!/:3.3.0]
+2025-08-27 07:37:35.226 | 	... 18 common frames omitted
+2025-08-27 07:37:35.226 | Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'userService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/org/example/proyectofinal/service/UserService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'userRepository' defined in org.example.proyectofinal.repository.UserRepository defined in @EnableJpaRepositories declared on EnversRevisionRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1357) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.226 | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	... 59 common frames omitted
+2025-08-27 07:37:35.227 | Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'userRepository' defined in org.example.proyectofinal.repository.UserRepository defined in @EnableJpaRepositories declared on EnversRevisionRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1687) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1436) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:599) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	... 73 common frames omitted
+2025-08-27 07:37:35.227 | Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jpaSharedEM_entityManagerFactory': Cannot resolve reference to bean 'entityManagerFactory' while setting constructor argument
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:682) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:509) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1337) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1167) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	... 87 common frames omitted
+2025-08-27 07:37:35.227 | Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [motivo] in table [movimientos_historial]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1788) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	... 99 common frames omitted
+2025-08-27 07:37:35.227 | Caused by: jakarta.persistence.PersistenceException: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [motivo] in table [movimientos_historial]
+2025-08-27 07:37:35.227 | 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:421) ~[spring-orm-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396) ~[spring-orm-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1835) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1784) ~[spring-beans-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	... 106 common frames omitted
+2025-08-27 07:37:35.227 | Caused by: org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [motivo] in table [movimientos_historial]
+2025-08-27 07:37:35.227 | 	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.validateTable(AbstractSchemaValidator.java:148) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at org.hibernate.tool.schema.internal.GroupedSchemaValidatorImpl.validateTables(GroupedSchemaValidatorImpl.java:46) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.performValidation(AbstractSchemaValidator.java:98) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.doValidation(AbstractSchemaValidator.java:76) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:289) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at java.base/java.util.HashMap.forEach(Unknown Source) ~[na:na]
+2025-08-27 07:37:35.227 | 	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:322) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:457) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1506) ~[hibernate-core-6.5.2.Final.jar!/:6.5.2.Final]
+2025-08-27 07:37:35.227 | 	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75) ~[spring-orm-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409) ~[spring-orm-6.1.8.jar!/:6.1.8]
+2025-08-27 07:37:35.227 | 	... 110 common frames omitted
+2025-08-27 07:37:35.227 | 
+2025-08-27 07:37:35.259 | [otel.javaagent 2025-08-27 11:37:35:258 +0000] [Thread-0] INFO io.opentelemetry.exporter.logging.LoggingMetricExporter - Received a collection of 6 metrics for export.
+2025-08-27 07:37:35.261 | [otel.javaagent 2025-08-27 11:37:35:261 +0000] [Thread-0] INFO io.opentelemetry.exporter.logging.LoggingMetricExporter - metric: ImmutableMetricData{resource=Resource{schemaUrl=https://opentelemetry.io/schemas/1.24.0, attributes={container.id="ec82fcc9c3c564ca72a8dba91ce7b69385c2a5a555313d8c69dd86e262cd199b", host.arch="aarch64", host.name="ec82fcc9c3c5", os.description="Linux 6.10.14-linuxkit", os.type="linux", process.command_args=[/opt/java/openjdk/bin/java, -Xmx1024m, -Xms512m, -XX:+UseG1GC, -XX:MaxGCPauseMillis=200, -javaagent:/app/opentelemetry-javaagent.jar, -jar, app.jar], process.executable.path="/opt/java/openjdk/bin/java", process.pid=7, process.runtime.description="Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.8+9-LTS", process.runtime.name="OpenJDK Runtime Environment", process.runtime.version="21.0.8+9-LTS", service.instance.id="b82826b5-b24c-4a04-9dc6-c9375946c8bc", service.name="back-inventario", service.version="0.0.1-SNAPSHOT", telemetry.distro.name="opentelemetry-java-instrumentation", telemetry.distro.version="2.18.1", telemetry.sdk.language="java", telemetry.sdk.name="opentelemetry", telemetry.sdk.version="1.52.0"}}, instrumentationScopeInfo=InstrumentationScopeInfo{name=io.opentelemetry.hikaricp-3.0, version=2.18.1-alpha, schemaUrl=null, attributes={}}, name=db.client.connections.wait_time, description=The time it took to obtain an open connection from the pool., unit=ms, type=HISTOGRAM, data=ImmutableHistogramData{aggregationTemporality=CUMULATIVE, points=[ImmutableHistogramPointData{getStartEpochNanos=1756294643723981005, getEpochNanos=1756294655239459885, getAttributes={pool.name="HikariPool-1"}, getSum=9.582332000000001, getCount=5, hasMin=true, getMin=0.014416, hasMax=true, getMax=6.071458, getBoundaries=[0.0, 5.0, 10.0, 25.0, 50.0, 75.0, 100.0, 250.0, 500.0, 750.0, 1000.0, 2500.0, 5000.0, 7500.0, 10000.0], getCounts=[0, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], getExemplars=[]}]}}
+2025-08-27 07:37:35.262 | [otel.javaagent 2025-08-27 11:37:35:261 +0000] [Thread-0] INFO io.opentelemetry.exporter.logging.LoggingMetricExporter - metric: ImmutableMetricData{resource=Resource{schemaUrl=https://opentelemetry.io/schemas/1.24.0, attributes={container.id="ec82fcc9c3c564ca72a8dba91ce7b69385c2a5a555313d8c69dd86e262cd199b", host.arch="aarch64", host.name="ec82fcc9c3c5", os.description="Linux 6.10.14-linuxkit", os.type="linux", process.command_args=[/opt/java/openjdk/bin/java, -Xmx1024m, -Xms512m, -XX:+UseG1GC, -XX:MaxGCPauseMillis=200, -javaagent:/app/opentelemetry-javaagent.jar, -jar, app.jar], process.executable.path="/opt/java/openjdk/bin/java", process.pid=7, process.runtime.description="Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.8+9-LTS", process.runtime.name="OpenJDK Runtime Environment", process.runtime.version="21.0.8+9-LTS", service.instance.id="b82826b5-b24c-4a04-9dc6-c9375946c8bc", service.name="back-inventario", service.version="0.0.1-SNAPSHOT", telemetry.distro.name="opentelemetry-java-instrumentation", telemetry.distro.version="2.18.1", telemetry.sdk.language="java", telemetry.sdk.name="opentelemetry", telemetry.sdk.version="1.52.0"}}, instrumentationScopeInfo=InstrumentationScopeInfo{name=io.opentelemetry.hikaricp-3.0, version=2.18.1-alpha, schemaUrl=null, attributes={}}, name=db.client.connections.create_time, description=The time it took to create a new connection., unit=ms, type=HISTOGRAM, data=ImmutableHistogramData{aggregationTemporality=CUMULATIVE, points=[ImmutableHistogramPointData{getStartEpochNanos=1756294643723981005, getEpochNanos=1756294655239459885, getAttributes={pool.name="HikariPool-1"}, getSum=222.0, getCount=5, hasMin=true, getMin=26.0, hasMax=true, getMax=68.0, getBoundaries=[0.0, 5.0, 10.0, 25.0, 50.0, 75.0, 100.0, 250.0, 500.0, 750.0, 1000.0, 2500.0, 5000.0, 7500.0, 10000.0], getCounts=[0, 0, 0, 0, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], getExemplars=[]}]}}
+2025-08-27 07:37:35.263 | [otel.javaagent 2025-08-27 11:37:35:262 +0000] [Thread-0] INFO io.opentelemetry.exporter.logging.LoggingMetricExporter - metric: ImmutableMetricData{resource=Resource{schemaUrl=https://opentelemetry.io/schemas/1.24.0, attributes={container.id="ec82fcc9c3c564ca72a8dba91ce7b69385c2a5a555313d8c69dd86e262cd199b", host.arch="aarch64", host.name="ec82fcc9c3c5", os.description="Linux 6.10.14-linuxkit", os.type="linux", process.command_args=[/opt/java/openjdk/bin/java, -Xmx1024m, -Xms512m, -XX:+UseG1GC, -XX:MaxGCPauseMillis=200, -javaagent:/app/opentelemetry-javaagent.jar, -jar, app.jar], process.executable.path="/opt/java/openjdk/bin/java", process.pid=7, process.runtime.description="Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.8+9-LTS", process.runtime.name="OpenJDK Runtime Environment", process.runtime.version="21.0.8+9-LTS", service.instance.id="b82826b5-b24c-4a04-9dc6-c9375946c8bc", service.name="back-inventario", service.version="0.0.1-SNAPSHOT", telemetry.distro.name="opentelemetry-java-instrumentation", telemetry.distro.version="2.18.1", telemetry.sdk.language="java", telemetry.sdk.name="opentelemetry", telemetry.sdk.version="1.52.0"}}, instrumentationScopeInfo=InstrumentationScopeInfo{name=io.opentelemetry.hikaricp-3.0, version=2.18.1-alpha, schemaUrl=null, attributes={}}, name=db.client.connections.use_time, description=The time between borrowing a connection and returning it to the pool., unit=ms, type=HISTOGRAM, data=ImmutableHistogramData{aggregationTemporality=CUMULATIVE, points=[ImmutableHistogramPointData{getStartEpochNanos=1756294643723981005, getEpochNanos=1756294655239459885, getAttributes={pool.name="HikariPool-1"}, getSum=711.0, getCount=5, hasMin=true, getMin=56.0, hasMax=true, getMax=270.0, getBoundaries=[0.0, 5.0, 10.0, 25.0, 50.0, 75.0, 100.0, 250.0, 500.0, 750.0, 1000.0, 2500.0, 5000.0, 7500.0, 10000.0], getCounts=[0, 0, 0, 0, 0, 1, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0], getExemplars=[]}]}}
+2025-08-27 07:37:35.263 | [otel.javaagent 2025-08-27 11:37:35:263 +0000] [Thread-0] INFO io.opentelemetry.exporter.logging.LoggingMetricExporter - metric: ImmutableMetricData{resource=Resource{schemaUrl=https://opentelemetry.io/schemas/1.24.0, attributes={container.id="ec82fcc9c3c564ca72a8dba91ce7b69385c2a5a555313d8c69dd86e262cd199b", host.arch="aarch64", host.name="ec82fcc9c3c5", os.description="Linux 6.10.14-linuxkit", os.type="linux", process.command_args=[/opt/java/openjdk/bin/java, -Xmx1024m, -Xms512m, -XX:+UseG1GC, -XX:MaxGCPauseMillis=200, -javaagent:/app/opentelemetry-javaagent.jar, -jar, app.jar], process.executable.path="/opt/java/openjdk/bin/java", process.pid=7, process.runtime.description="Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.8+9-LTS", process.runtime.name="OpenJDK Runtime Environment", process.runtime.version="21.0.8+9-LTS", service.instance.id="b82826b5-b24c-4a04-9dc6-c9375946c8bc", service.name="back-inventario", service.version="0.0.1-SNAPSHOT", telemetry.distro.name="opentelemetry-java-instrumentation", telemetry.distro.version="2.18.1", telemetry.sdk.language="java", telemetry.sdk.name="opentelemetry", telemetry.sdk.version="1.52.0"}}, instrumentationScopeInfo=InstrumentationScopeInfo{name=io.opentelemetry.sdk.trace, version=null, schemaUrl=null, attributes={}}, name=queueSize, description=The number of items queued, unit=1, type=LONG_GAUGE, data=ImmutableGaugeData{points=[ImmutableLongPointData{startEpochNanos=1756294643723981005, epochNanos=1756294655239459885, attributes={processorType="BatchSpanProcessor"}, value=4, exemplars=[]}]}}
+2025-08-27 07:37:35.264 | [otel.javaagent 2025-08-27 11:37:35:263 +0000] [Thread-0] INFO io.opentelemetry.exporter.logging.LoggingMetricExporter - metric: ImmutableMetricData{resource=Resource{schemaUrl=https://opentelemetry.io/schemas/1.24.0, attributes={container.id="ec82fcc9c3c564ca72a8dba91ce7b69385c2a5a555313d8c69dd86e262cd199b", host.arch="aarch64", host.name="ec82fcc9c3c5", os.description="Linux 6.10.14-linuxkit", os.type="linux", process.command_args=[/opt/java/openjdk/bin/java, -Xmx1024m, -Xms512m, -XX:+UseG1GC, -XX:MaxGCPauseMillis=200, -javaagent:/app/opentelemetry-javaagent.jar, -jar, app.jar], process.executable.path="/opt/java/openjdk/bin/java", process.pid=7, process.runtime.description="Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.8+9-LTS", process.runtime.name="OpenJDK Runtime Environment", process.runtime.version="21.0.8+9-LTS", service.instance.id="b82826b5-b24c-4a04-9dc6-c9375946c8bc", service.name="back-inventario", service.version="0.0.1-SNAPSHOT", telemetry.distro.name="opentelemetry-java-instrumentation", telemetry.distro.version="2.18.1", telemetry.sdk.language="java", telemetry.sdk.name="opentelemetry", telemetry.sdk.version="1.52.0"}}, instrumentationScopeInfo=InstrumentationScopeInfo{name=io.opentelemetry.exporters.otlp-http, version=null, schemaUrl=null, attributes={}}, name=otlp.exporter.seen, description=, unit=, type=LONG_SUM, data=ImmutableSumData{points=[ImmutableLongPointData{startEpochNanos=1756294643723981005, epochNanos=1756294655239459885, attributes={type="span"}, value=33, exemplars=[]}], monotonic=true, aggregationTemporality=CUMULATIVE}}
+2025-08-27 07:37:35.265 | [otel.javaagent 2025-08-27 11:37:35:264 +0000] [Thread-0] INFO io.opentelemetry.exporter.logging.LoggingMetricExporter - metric: ImmutableMetricData{resource=Resource{schemaUrl=https://opentelemetry.io/schemas/1.24.0, attributes={container.id="ec82fcc9c3c564ca72a8dba91ce7b69385c2a5a555313d8c69dd86e262cd199b", host.arch="aarch64", host.name="ec82fcc9c3c5", os.description="Linux 6.10.14-linuxkit", os.type="linux", process.command_args=[/opt/java/openjdk/bin/java, -Xmx1024m, -Xms512m, -XX:+UseG1GC, -XX:MaxGCPauseMillis=200, -javaagent:/app/opentelemetry-javaagent.jar, -jar, app.jar], process.executable.path="/opt/java/openjdk/bin/java", process.pid=7, process.runtime.description="Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.8+9-LTS", process.runtime.name="OpenJDK Runtime Environment", process.runtime.version="21.0.8+9-LTS", service.instance.id="b82826b5-b24c-4a04-9dc6-c9375946c8bc", service.name="back-inventario", service.version="0.0.1-SNAPSHOT", telemetry.distro.name="opentelemetry-java-instrumentation", telemetry.distro.version="2.18.1", telemetry.sdk.language="java", telemetry.sdk.name="opentelemetry", telemetry.sdk.version="1.52.0"}}, instrumentationScopeInfo=InstrumentationScopeInfo{name=io.opentelemetry.runtime-telemetry-java8, version=2.18.1-alpha, schemaUrl=null, attributes={}}, name=jvm.gc.duration, description=Duration of JVM garbage collection actions., unit=s, type=HISTOGRAM, data=ImmutableHistogramData{aggregationTemporality=CUMULATIVE, points=[ImmutableHistogramPointData{getStartEpochNanos=1756294643723981005, getEpochNanos=1756294655239459885, getAttributes={jvm.gc.action="end of concurrent GC pause", jvm.gc.name="G1 Concurrent GC"}, getSum=0.012, getCount=4, hasMin=true, getMin=0.0, hasMax=true, getMax=0.008, getBoundaries=[0.01, 0.1, 1.0, 10.0], getCounts=[4, 0, 0, 0, 0], getExemplars=[]}, ImmutableHistogramPointData{getStartEpochNanos=1756294643723981005, getEpochNanos=1756294655239459885, getAttributes={jvm.gc.action="end of minor GC", jvm.gc.name="G1 Young Generation"}, getSum=0.265, getCount=5, hasMin=true, getMin=0.016, hasMax=true, getMax=0.085, getBoundaries=[0.01, 0.1, 1.0, 10.0], getCounts=[0, 5, 0, 0, 0], getExemplars=[]}]}}
+2025-08-27 07:37:42.483 | [otel.javaagent 2025-08-27 11:37:42:480 +0000] [OkHttp http://jaeger:4317/...] ERROR io.opentelemetry.exporter.internal.http.HttpExporter - Failed to export spans. The request could not be executed. Full error message: Connection reset by peer
+2025-08-27 07:37:42.486 | java.net.SocketException: Connection reset by peer
+2025-08-27 07:37:42.486 | 	at java.base/sun.nio.ch.SocketDispatcher.write0(Native Method)
+2025-08-27 07:37:42.486 | 	at java.base/sun.nio.ch.SocketDispatcher.write(Unknown Source)
+2025-08-27 07:37:42.486 | 	at java.base/sun.nio.ch.NioSocketImpl.tryWrite(Unknown Source)
+2025-08-27 07:37:42.486 | 	at java.base/sun.nio.ch.NioSocketImpl.implWrite(Unknown Source)
+2025-08-27 07:37:42.486 | 	at java.base/sun.nio.ch.NioSocketImpl.write(Unknown Source)
+2025-08-27 07:37:42.487 | 	at java.base/sun.nio.ch.NioSocketImpl$2.write(Unknown Source)
+2025-08-27 07:37:42.487 | 	at java.base/java.net.Socket$SocketOutputStream.write(Unknown Source)
+2025-08-27 07:37:42.487 | 	at okio.OutputStreamSink.write(JvmOkio.kt:57)
+2025-08-27 07:37:42.487 | 	at okio.AsyncTimeout$sink$1.write(AsyncTimeout.kt:127)
+2025-08-27 07:37:42.487 | 	at okio.RealBufferedSink.flush(RealBufferedSink.kt:268)
+2025-08-27 07:37:42.487 | 	at okhttp3.internal.http1.Http1ExchangeCodec.finishRequest(Http1ExchangeCodec.kt:165)
+2025-08-27 07:37:42.487 | 	at okhttp3.internal.connection.Exchange.finishRequest(Exchange.kt:99)
+2025-08-27 07:37:42.487 | 	at okhttp3.internal.http.CallServerInterceptor.intercept(CallServerInterceptor.kt:84)
+2025-08-27 07:37:42.487 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:42.487 | 	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:34)
+2025-08-27 07:37:42.488 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:42.488 | 	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:101)
+2025-08-27 07:37:42.488 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:42.488 | 	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:85)
+2025-08-27 07:37:42.488 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:42.488 | 	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:74)
+2025-08-27 07:37:42.488 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:42.488 | 	at io.opentelemetry.exporter.sender.okhttp.internal.RetryInterceptor.intercept(RetryInterceptor.java:96)
+2025-08-27 07:37:42.488 | 	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:126)
+2025-08-27 07:37:42.488 | 	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:208)
+2025-08-27 07:37:42.488 | 	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:530)
+2025-08-27 07:37:42.488 | 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+2025-08-27 07:37:42.488 | 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+2025-08-27 07:37:42.488 | 	at java.base/java.lang.Thread.run(Unknown Source)
+2025-08-27 07:37:42.489 | 	Suppressed: java.io.IOException: unexpected end of stream on http://jaeger:4317/...
+2025-08-27 07:37:42.489 | 		at okhttp3.internal.http1.Http1ExchangeCodec.readResponseHeaders(Http1ExchangeCodec.kt:231)
+2025-08-27 07:37:42.489 | 		at okhttp3.internal.connection.Exchange.readResponseHeaders(Exchange.kt:114)
+2025-08-27 07:37:42.489 | 		at okhttp3.internal.http.CallServerInterceptor.intercept(CallServerInterceptor.kt:98)
+2025-08-27 07:37:42.489 | 		... 16 more
+2025-08-27 07:37:42.490 | 	Caused by: java.io.EOFException: \n not found: limit=15 content=000006040000000000000500004000…
+2025-08-27 07:37:42.491 | 		at okio.RealBufferedSource.readUtf8LineStrict(RealBufferedSource.kt:362)
+2025-08-27 07:37:42.493 | 		at okhttp3.internal.http1.HeadersReader.readLine(HeadersReader.kt:31)
+2025-08-27 07:37:42.493 | 		at okhttp3.internal.http1.Http1ExchangeCodec.readResponseHeaders(Http1ExchangeCodec.kt:197)
+2025-08-27 07:37:42.493 | 		... 18 more

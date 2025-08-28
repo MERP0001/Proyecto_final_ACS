@@ -1,285 +1,290 @@
-<testsuites id="" name="" tests="6" failures="3" skipped="0" errors="0" time="29.733880999999997">
-<testsuite name="login.spec.ts" timestamp="2025-07-22T19:25:16.126Z" hostname="chromium" tests="1" failures="0" skipped="0" time="3.034" errors="0">
-<testcase name="Un usuario administrador debería poder iniciar sesión correctamente" classname="login.spec.ts" time="3.034">
+<testsuites id="" name="" tests="6" failures="3" skipped="0" errors="0" time="65.097806">
+<testsuite name="login.spec.ts" timestamp="2025-08-27T15:20:41.435Z" hostname="chromium" tests="1" failures="0" skipped="0" time="6.69" errors="0">
+<testcase name="Un usuario administrador debería poder iniciar sesión correctamente" classname="login.spec.ts" time="6.69">
 </testcase>
 </testsuite>
-<testsuite name="logout.spec.ts" timestamp="2025-07-22T19:25:16.126Z" hostname="chromium" tests="1" failures="0" skipped="0" time="3.041" errors="0">
-<testcase name="Un usuario debería poder cerrar sesión correctamente" classname="logout.spec.ts" time="3.041">
+<testsuite name="logout.spec.ts" timestamp="2025-08-27T15:20:41.435Z" hostname="chromium" tests="1" failures="0" skipped="0" time="6.869" errors="0">
+<testcase name="Un usuario debería poder cerrar sesión correctamente" classname="logout.spec.ts" time="6.869">
 </testcase>
 </testsuite>
-<testsuite name="productos.spec.ts" timestamp="2025-07-22T19:25:16.126Z" hostname="chromium" tests="4" failures="3" skipped="0" time="63.903" errors="0">
-<testcase name="Un usuario administrador debería poder crear un nuevo producto" classname="productos.spec.ts" time="19.633">
+<testsuite name="productos.spec.ts" timestamp="2025-08-27T15:20:41.435Z" hostname="chromium" tests="4" failures="3" skipped="0" time="138.006" errors="0">
+<testcase name="Un usuario administrador debería poder crear un nuevo producto" classname="productos.spec.ts" time="24.745">
 <failure message="productos.spec.ts:27:5 Un usuario administrador debería poder crear un nuevo producto" type="FAILURE">
 <![CDATA[  [chromium] › productos.spec.ts:27:5 › Un usuario administrador debería poder crear un nuevo producto 
 
     Error: Timed out 5000ms waiting for expect(locator).toBeVisible()
 
-    Locator: getByRole('cell', { name: 'Café de Origen Único 1753212321194' })
+    Locator: getByRole('cell', { name: 'Café de Origen Único 1756308050166' })
     Expected: visible
     Received: <element(s) not found>
     Call log:
       - Expect "toBeVisible" with timeout 5000ms
-      - waiting for getByRole('cell', { name: 'Café de Origen Único 1753212321194' })
+      - waiting for getByRole('cell', { name: 'Café de Origen Único 1756308050166' })
 
 
-      61 |   // Esperar a que la tabla cargue y luego buscar el producto
-      62 |   await page.waitForSelector('tbody tr', { timeout: 10000 });
-    > 63 |   await expect(page.getByRole('cell', { name: nombreProducto })).toBeVisible();
+      73 |   await page.waitForURL('**/productos');
+      74 |   await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
+    > 75 |   await expect(page.getByRole('cell', { name: nombreProducto })).toBeVisible();
          |                                                                  ^
-      64 | });
-      65 |
-      66 | test('Un usuario debería poder editar un producto existente', async ({ page }) => {
-        at C:\Users\User\Documents\GitHub\Proyecto_final_ACS\front-inventario\tests\productos.spec.ts:63:66
+      76 | });
+      77 |
+      78 | test('Un usuario debería poder editar un producto existente', async ({ page }) => {
+        at /Users/moisesrodriguezpena/Documents/GitHub/Proyecto_final_ACS/front-inventario/tests/productos.spec.ts:75:66
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium\test-failed-1.png
+    ../test-results/productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium/test-failed-1.png
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
     attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium\video.webm
+    ../test-results/productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium/video.webm
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-    Error Context: ..\test-results\productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium\error-context.md
+    Error Context: ../test-results/productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium/error-context.md
 
     Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
 
     Error: Timed out 5000ms waiting for expect(locator).toBeVisible()
 
-    Locator: getByRole('cell', { name: 'Café de Origen Único 1753212332268' })
+    Locator: getByRole('cell', { name: 'Café de Origen Único 1756308061434' })
     Expected: visible
     Received: <element(s) not found>
     Call log:
       - Expect "toBeVisible" with timeout 5000ms
-      - waiting for getByRole('cell', { name: 'Café de Origen Único 1753212332268' })
+      - waiting for getByRole('cell', { name: 'Café de Origen Único 1756308061434' })
 
 
-      61 |   // Esperar a que la tabla cargue y luego buscar el producto
-      62 |   await page.waitForSelector('tbody tr', { timeout: 10000 });
-    > 63 |   await expect(page.getByRole('cell', { name: nombreProducto })).toBeVisible();
+      73 |   await page.waitForURL('**/productos');
+      74 |   await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
+    > 75 |   await expect(page.getByRole('cell', { name: nombreProducto })).toBeVisible();
          |                                                                  ^
-      64 | });
-      65 |
-      66 | test('Un usuario debería poder editar un producto existente', async ({ page }) => {
-        at C:\Users\User\Documents\GitHub\Proyecto_final_ACS\front-inventario\tests\productos.spec.ts:63:66
+      76 | });
+      77 |
+      78 | test('Un usuario debería poder editar un producto existente', async ({ page }) => {
+        at /Users/moisesrodriguezpena/Documents/GitHub/Proyecto_final_ACS/front-inventario/tests/productos.spec.ts:75:66
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1\test-failed-1.png
+    ../test-results/productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1/test-failed-1.png
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
     attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1\video.webm
+    ../test-results/productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1/video.webm
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-    Error Context: ..\test-results\productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1\error-context.md
+    Error Context: ../test-results/productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1/error-context.md
 
     attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1\trace.zip
+    ../test-results/productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1/trace.zip
     Usage:
 
-        npx playwright show-trace test-results\productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1\trace.zip
+        npx playwright show-trace ../test-results/productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1/trace.zip
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 ]]>
 </failure>
 <system-out>
 <![CDATA[
-[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium\test-failed-1.png]]
+[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium/test-failed-1.png]]
 
-[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium\video.webm]]
+[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium/video.webm]]
 
-[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium\error-context.md]]
+[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium/error-context.md]]
 
-[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1\test-failed-1.png]]
+[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1/test-failed-1.png]]
 
-[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1\video.webm]]
+[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1/video.webm]]
 
-[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1\error-context.md]]
+[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1/error-context.md]]
 
-[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1\trace.zip]]
+[[ATTACHMENT|productos-Un-usuario-admin-a7e3d-der-crear-un-nuevo-producto-chromium-retry1/trace.zip]]
 ]]>
 </system-out>
 </testcase>
-<testcase name="Un usuario debería poder editar un producto existente" classname="productos.spec.ts" time="19.647">
-<failure message="productos.spec.ts:66:5 Un usuario debería poder editar un producto existente" type="FAILURE">
-<![CDATA[  [chromium] › productos.spec.ts:66:5 › Un usuario debería poder editar un producto existente ──────
+<testcase name="Un usuario debería poder editar un producto existente" classname="productos.spec.ts" time="61.65">
+<failure message="productos.spec.ts:78:5 Un usuario debería poder editar un producto existente" type="FAILURE">
+<![CDATA[  [chromium] › productos.spec.ts:78:5 › Un usuario debería poder editar un producto existente ──────
 
-    Error: Timed out 5000ms waiting for expect(locator).toBeVisible()
+    Test timeout of 30000ms exceeded.
 
-    Locator: getByRole('cell', { name: 'Producto Editado 1753212321827' })
-    Expected: visible
-    Received: <element(s) not found>
-    Call log:
-      - Expect "toBeVisible" with timeout 5000ms
-      - waiting for getByRole('cell', { name: 'Producto Editado 1753212321827' })
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/productos" until "load"
+    ============================================================
 
-
-      93 |   // 7. Verificar redirección y cambios guardados
-      94 |   await page.waitForURL('**/productos');
-    > 95 |   await expect(page.getByRole('cell', { name: nombreActualizado })).toBeVisible();
-         |                                                                     ^
-      96 |   await expect(page.getByText('$25.99')).toBeVisible();
-      97 | });
-      98 |
-        at C:\Users\User\Documents\GitHub\Proyecto_final_ACS\front-inventario\tests\productos.spec.ts:95:69
+      104 |   
+      105 |   // 7. Verificar redirección y cambios guardados
+    > 106 |   await page.waitForURL('**/productos', { timeout: 45000 });
+          |              ^
+      107 |   await page.waitForLoadState('networkidle');
+      108 |   await expect(page.getByRole('cell', { name: nombreActualizado })).toBeVisible();
+      109 |   // Verificar el precio en la misma fila del producto editado
+        at /Users/moisesrodriguezpena/Documents/GitHub/Proyecto_final_ACS/front-inventario/tests/productos.spec.ts:106:14
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium\test-failed-1.png
+    ../test-results/productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium/test-failed-1.png
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
     attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium\video.webm
+    ../test-results/productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium/video.webm
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-    Error Context: ..\test-results\productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium\error-context.md
+    Error Context: ../test-results/productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium/error-context.md
 
     Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
 
-    Error: Timed out 5000ms waiting for expect(locator).toBeVisible()
+    Test timeout of 30000ms exceeded.
 
-    Locator: getByRole('cell', { name: 'Producto Editado 1753212332526' })
-    Expected: visible
-    Received: <element(s) not found>
-    Call log:
-      - Expect "toBeVisible" with timeout 5000ms
-      - waiting for getByRole('cell', { name: 'Producto Editado 1753212332526' })
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/productos" until "load"
+    ============================================================
 
-
-      93 |   // 7. Verificar redirección y cambios guardados
-      94 |   await page.waitForURL('**/productos');
-    > 95 |   await expect(page.getByRole('cell', { name: nombreActualizado })).toBeVisible();
-         |                                                                     ^
-      96 |   await expect(page.getByText('$25.99')).toBeVisible();
-      97 | });
-      98 |
-        at C:\Users\User\Documents\GitHub\Proyecto_final_ACS\front-inventario\tests\productos.spec.ts:95:69
+      104 |   
+      105 |   // 7. Verificar redirección y cambios guardados
+    > 106 |   await page.waitForURL('**/productos', { timeout: 45000 });
+          |              ^
+      107 |   await page.waitForLoadState('networkidle');
+      108 |   await expect(page.getByRole('cell', { name: nombreActualizado })).toBeVisible();
+      109 |   // Verificar el precio en la misma fila del producto editado
+        at /Users/moisesrodriguezpena/Documents/GitHub/Proyecto_final_ACS/front-inventario/tests/productos.spec.ts:106:14
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1\test-failed-1.png
+    ../test-results/productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1/test-failed-1.png
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
     attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1\video.webm
+    ../test-results/productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1/video.webm
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-    Error Context: ..\test-results\productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1\error-context.md
+    Error Context: ../test-results/productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1/error-context.md
 
     attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1\trace.zip
+    ../test-results/productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1/trace.zip
     Usage:
 
-        npx playwright show-trace test-results\productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1\trace.zip
+        npx playwright show-trace ../test-results/productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1/trace.zip
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 ]]>
 </failure>
 <system-out>
 <![CDATA[
-[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium\test-failed-1.png]]
+[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium/test-failed-1.png]]
 
-[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium\video.webm]]
+[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium/video.webm]]
 
-[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium\error-context.md]]
+[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium/error-context.md]]
 
-[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1\test-failed-1.png]]
+[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1/test-failed-1.png]]
 
-[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1\video.webm]]
+[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1/video.webm]]
 
-[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1\error-context.md]]
+[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1/error-context.md]]
 
-[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1\trace.zip]]
+[[ATTACHMENT|productos-Un-usuario-deber-9d4c6-ditar-un-producto-existente-chromium-retry1/trace.zip]]
 ]]>
 </system-out>
 </testcase>
-<testcase name="Un usuario debería poder actualizar el stock de un producto" classname="productos.spec.ts" time="4.416">
+<testcase name="Un usuario debería poder actualizar el stock de un producto" classname="productos.spec.ts" time="32.833">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|productos-Un-usuario-deber-1281a-zar-el-stock-de-un-producto-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|productos-Un-usuario-deber-1281a-zar-el-stock-de-un-producto-chromium/video.webm]]
+
+[[ATTACHMENT|productos-Un-usuario-deber-1281a-zar-el-stock-de-un-producto-chromium/error-context.md]]
+
+[[ATTACHMENT|productos-Un-usuario-deber-1281a-zar-el-stock-de-un-producto-chromium-retry1/trace.zip]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Un usuario debería poder eliminar un producto" classname="productos.spec.ts" time="20.207">
-<failure message="productos.spec.ts:134:5 Un usuario debería poder eliminar un producto" type="FAILURE">
-<![CDATA[  [chromium] › productos.spec.ts:134:5 › Un usuario debería poder eliminar un producto ─────────────
+<testcase name="Un usuario debería poder eliminar un producto" classname="productos.spec.ts" time="18.778">
+<failure message="productos.spec.ts:147:5 Un usuario debería poder eliminar un producto" type="FAILURE">
+<![CDATA[  [chromium] › productos.spec.ts:147:5 › Un usuario debería poder eliminar un producto ─────────────
 
     Error: Timed out 5000ms waiting for expect(locator).toBeVisible()
 
-    Locator: getByRole('cell', { name: 'Producto a Eliminar 1753212325562' })
+    Locator: getByRole('cell', { name: 'Producto a Eliminar 1756308051814' })
     Expected: visible
     Received: <element(s) not found>
     Call log:
       - Expect "toBeVisible" with timeout 5000ms
-      - waiting for getByRole('cell', { name: 'Producto a Eliminar 1753212325562' })
+      - waiting for getByRole('cell', { name: 'Producto a Eliminar 1756308051814' })
 
 
-      151 |   await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
-      152 |   await page.waitForSelector('tbody tr', { timeout: 10000 });
-    > 153 |   await expect(page.getByRole('cell', { name: nombreTemporal })).toBeVisible();
+      179 |   await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
+      180 |   await page.waitForSelector('tbody tr', { timeout: 10000 });
+    > 181 |   await expect(page.getByRole('cell', { name: nombreTemporal })).toBeVisible();
           |                                                                  ^
-      154 |   
-      155 |   // 4. Buscar el producto específico y eliminarlo
-      156 |   const filaProducto = page.locator('tr', { hasText: nombreTemporal });
-        at C:\Users\User\Documents\GitHub\Proyecto_final_ACS\front-inventario\tests\productos.spec.ts:153:66
+      182 |   
+      183 |   // 4. Buscar el producto específico y eliminarlo
+      184 |   const filaProducto = page.locator('tr', { hasText: nombreTemporal });
+        at /Users/moisesrodriguezpena/Documents/GitHub/Proyecto_final_ACS/front-inventario/tests/productos.spec.ts:181:66
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-debería-poder-eliminar-un-producto-chromium\test-failed-1.png
+    ../test-results/productos-Un-usuario-debería-poder-eliminar-un-producto-chromium/test-failed-1.png
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
     attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-debería-poder-eliminar-un-producto-chromium\video.webm
+    ../test-results/productos-Un-usuario-debería-poder-eliminar-un-producto-chromium/video.webm
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-    Error Context: ..\test-results\productos-Un-usuario-debería-poder-eliminar-un-producto-chromium\error-context.md
+    Error Context: ../test-results/productos-Un-usuario-debería-poder-eliminar-un-producto-chromium/error-context.md
 
     Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
 
     Error: Timed out 5000ms waiting for expect(locator).toBeVisible()
 
-    Locator: getByRole('cell', { name: 'Producto a Eliminar 1753212338130' })
+    Locator: getByRole('cell', { name: 'Producto a Eliminar 1756308062852' })
     Expected: visible
     Received: <element(s) not found>
     Call log:
       - Expect "toBeVisible" with timeout 5000ms
-      - waiting for getByRole('cell', { name: 'Producto a Eliminar 1753212338130' })
+      - waiting for getByRole('cell', { name: 'Producto a Eliminar 1756308062852' })
 
 
-      151 |   await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
-      152 |   await page.waitForSelector('tbody tr', { timeout: 10000 });
-    > 153 |   await expect(page.getByRole('cell', { name: nombreTemporal })).toBeVisible();
+      179 |   await expect(page.getByRole('heading', { name: 'Productos' })).toBeVisible();
+      180 |   await page.waitForSelector('tbody tr', { timeout: 10000 });
+    > 181 |   await expect(page.getByRole('cell', { name: nombreTemporal })).toBeVisible();
           |                                                                  ^
-      154 |   
-      155 |   // 4. Buscar el producto específico y eliminarlo
-      156 |   const filaProducto = page.locator('tr', { hasText: nombreTemporal });
-        at C:\Users\User\Documents\GitHub\Proyecto_final_ACS\front-inventario\tests\productos.spec.ts:153:66
+      182 |   
+      183 |   // 4. Buscar el producto específico y eliminarlo
+      184 |   const filaProducto = page.locator('tr', { hasText: nombreTemporal });
+        at /Users/moisesrodriguezpena/Documents/GitHub/Proyecto_final_ACS/front-inventario/tests/productos.spec.ts:181:66
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1\test-failed-1.png
+    ../test-results/productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1/test-failed-1.png
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
     attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1\video.webm
+    ../test-results/productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1/video.webm
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-    Error Context: ..\test-results\productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1\error-context.md
+    Error Context: ../test-results/productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1/error-context.md
 
     attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
-    test-results\productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1\trace.zip
+    ../test-results/productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1/trace.zip
     Usage:
 
-        npx playwright show-trace test-results\productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1\trace.zip
+        npx playwright show-trace ../test-results/productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1/trace.zip
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 ]]>
 </failure>
 <system-out>
 <![CDATA[
-[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium\test-failed-1.png]]
+[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium/test-failed-1.png]]
 
-[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium\video.webm]]
+[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium/video.webm]]
 
-[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium\error-context.md]]
+[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium/error-context.md]]
 
-[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1\test-failed-1.png]]
+[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1/test-failed-1.png]]
 
-[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1\video.webm]]
+[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1/video.webm]]
 
-[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1\error-context.md]]
+[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1/error-context.md]]
 
-[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1\trace.zip]]
+[[ATTACHMENT|productos-Un-usuario-debería-poder-eliminar-un-producto-chromium-retry1/trace.zip]]
 ]]>
 </system-out>
 </testcase>

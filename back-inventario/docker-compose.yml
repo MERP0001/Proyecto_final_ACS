@@ -11,6 +11,8 @@ services:
     ports:
       - "16686:16686"   # UI Web
       - "14250:14250"   # Collector gRPC
+      - "4317:4317"     # OTLP gRPC
+      - "4318:4318"     # OTLP HTTP
       - "6831:6831/udp" # Agent UDP
       - "6832:6832/udp"
       - "5778:5778"
@@ -68,10 +70,10 @@ services:
       JWT_EXPIRATION: 3600000
       JWT_REFRESH_EXPIRATION: 86400000
       JAVA_OPTS: -Xmx1024m -Xms512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200
-      OTEL_EXPORTER_JAEGER_ENDPOINT: "http://jaeger:14250"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4318"
       OTEL_SERVICE_NAME: "back-inventario"
       JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
-      OTEL_TRACES_EXPORTER: "jaeger"
+      OTEL_TRACES_EXPORTER: "otlp"
       OTEL_METRICS_EXPORTER: "logging"
       OTEL_LOGS_EXPORTER: "logging"
       OTEL_METRIC_EXPORT_INTERVAL: "15000"
@@ -127,7 +129,7 @@ services:
     container_name: inventario-grafana
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       GF_SECURITY_ADMIN_PASSWORD: admin123
     volumes:

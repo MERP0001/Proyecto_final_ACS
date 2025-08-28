@@ -116,10 +116,18 @@ export interface ErrorResponse {
 // other type exports
 
 export interface MovementHistory {
-  // Define the properties according to your API response
   id: number;
-  date: string;
-  action: string;
-  user: string;
-  // Add other relevant fields here
+  fecha: string;
+  tipoMovimiento: 'ENTRADA' | 'SALIDA';
+  cantidad: number;
+  producto: {
+    id: number;
+    nombre: string;
+    descripcion?: string;
+  };
+  usuario: {
+    id: number;
+    nombreCompleto: string;
+    username: string;
+  };
 }

@@ -28,10 +28,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, Search, MoreHorizontal, Edit, Trash2, Package } from "lucide-react";
+import { Plus, Search, MoreHorizontal, Edit, Trash2, Package, Clock, TrendingUp, TrendingDown } from "lucide-react";
 import { productosService } from "@/services/productos";
-import { ProductoDTO, PaginatedResponse, ProductoFilters } from "@/types";
+import { ProductoDTO, PaginatedResponse, ProductoFilters, MovementHistory } from "@/types";
 import { PaginationControls } from "@/components/ui/pagination-controls";
+import { useGetHistorial } from "@/services/historial";
 
 export default function ProductosPage() {
   const router = useRouter();
@@ -56,6 +57,13 @@ export default function ProductosPage() {
 
   // Estado para categorías disponibles
   const [categorias, setCategorias] = useState<string[]>([]);
+
+  // Hook para obtener actividad reciente (últimos 5 movimientos)
+  const { data: historialData, isLoading: isHistorialLoading } = useGetHistorial({ 
+    page: 0, 
+    size: 5, 
+    sort: "fecha,desc" 
+  });
 
   // Debouncing para el filtro de nombre (500ms de retraso)
   useEffect(() => {
@@ -141,8 +149,8 @@ export default function ProductosPage() {
   };
 
   const getStockBadge = (cantidad: number) => {
-    if (cantidad <= 5) return <Badge variant="destructive">Stock Bajo</Badge>;
-    if (cantidad <= 15) return <Badge variant="secondary">Stock Medio</Badge>;
+    if (cantidad < 10) return <Badge variant="destructive">Stock Bajo</Badge>;
+    if (cantidad <= 20) return <Badge variant="secondary">Stock Medio</Badge>;
     return <Badge variant="default">Stock Alto</Badge>;
   };
 
@@ -161,6 +169,116 @@ export default function ProductosPage() {
         setError("Error al eliminar el producto");
       }
     }
+  };
+
+  // Función para formatear fechas
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  // Componente de actividad reciente
+  const ActividadReciente = () => {
+    const movimientos = historialData?.content || [];
+    
+    if (isHistorialLoading) {
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              Actividad Reciente
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-center h-20">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    if (movimientos.length === 0) {
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              Actividad Reciente
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-center py-4">
+              No hay movimientos recientes
+            </p>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Clock className="h-5 w-5" />
+            Actividad Reciente
+          </CardTitle>
+          <CardDescription>
+            Últimos movimientos de inventario
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {movimientos.map((movimiento: MovementHistory) => (
+              <div key={movimiento.id} className="flex items-center justify-between p-3 rounded-lg border">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-full ${
+                    movimiento.tipoMovimiento === 'ENTRADA' 
+                      ? 'bg-green-100 text-green-600' 
+                      : 'bg-red-100 text-red-600'
+                  }`}>
+                    {movimiento.tipoMovimiento === 'ENTRADA' ? 
+                      <TrendingUp className="h-4 w-4" /> : 
+                      <TrendingDown className="h-4 w-4" />
+                    }
+                  </div>
+                  <div>
+                    <div className="font-medium text-sm">{movimiento.producto.nombre}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {movimiento.tipoMovimiento} • {movimiento.cantidad} unidades
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-muted-foreground">
+                    {formatDate(movimiento.fecha)}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    por {movimiento.usuario.nombreCompleto}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 text-center">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => router.push('/historial')}
+            >
+              Ver todo el historial
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
   };
 
   if (isLoading) {
@@ -191,6 +309,9 @@ export default function ProductosPage() {
           Agregar Producto
         </Button>
       </div>
+
+      {/* Actividad Reciente */}
+      <ActividadReciente />
 
       {/* Filtros y búsqueda */}
       <Card>

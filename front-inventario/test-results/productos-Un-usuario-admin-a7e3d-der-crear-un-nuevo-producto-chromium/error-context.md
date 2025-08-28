@@ -7,6 +7,9 @@
     - link "Dashboard":
       - /url: /dashboard
   - listitem: Productos
+  - listitem:
+    - link "Historial":
+      - /url: /historial
   - listitem: Reportes
   - listitem:
     - link "Usuarios":
@@ -26,13 +29,16 @@
   - heading "Productos" [level=2]
   - paragraph: Gestiona el inventario de productos
   - button "Agregar Producto"
+  - text: Actividad Reciente Últimos movimientos de inventario producto generico 2 ENTRADA • 5 unidades 27/08/2025, 15:17 por Administrador del Sistema equipo generico 1 ENTRADA • 100 unidades 27/08/2025, 15:15 por Administrador del Sistema Producto a Eliminar 1756303355558 ENTRADA • 1 unidades 27/08/2025, 14:02 por Administrador del Sistema Café de Origen Único 1756303353933 ENTRADA • 100 unidades 27/08/2025, 14:02 por Administrador del Sistema Producto a Eliminar 1756303310342 ENTRADA • 1 unidades 27/08/2025, 14:01 por Administrador del Sistema
+  - button "Ver todo el historial"
   - text: Filtros Busca y filtra productos por nombre y categoría
   - textbox "Buscar por nombre..."
   - combobox "Filtrar por categoría":
     - option "Todas las categorías" [selected]
-    - option "Almacenamiento"
+    - option "Electrónicos"
     - option "Gaming"
-  - text: Lista de Productos (10)
+    - option "Monitores"
+  - text: Lista de Productos (12)
   - table:
     - rowgroup:
       - row "Producto Categoría Precio Stock Unidad Estado Fecha Creación Acciones":
@@ -45,105 +51,125 @@
         - cell "Fecha Creación"
         - cell "Acciones"
     - rowgroup:
-      - row "SSD Samsung 970 EVO 1TB Disco sólido NVMe M.2 de 1TB con alta velocidad Almacenamiento $149.99 18 UNIDAD Stock Alto UNIDAD Activo 7/15/2025 Abrir menú":
-        - cell "SSD Samsung 970 EVO 1TB Disco sólido NVMe M.2 de 1TB con alta velocidad"
-        - cell "Almacenamiento"
-        - cell "$149.99"
-        - cell "18 UNIDAD Stock Alto"
+      - row "Producto Editado 1756302857894 Laptop Dell Inspiron 15 con procesador Intel Core i5, 8GB RAM, 256GB SSD $25.99 10 UNIDAD Stock Medio UNIDAD Activo 7/29/2025 Abrir menú":
+        - cell "Producto Editado 1756302857894 Laptop Dell Inspiron 15 con procesador Intel Core i5, 8GB RAM, 256GB SSD"
+        - cell
+        - cell "$25.99"
+        - cell "10 UNIDAD Stock Medio"
         - cell "UNIDAD"
         - cell "Activo"
-        - cell "7/15/2025"
+        - cell "7/29/2025"
         - cell "Abrir menú":
           - button "Abrir menú"
-      - row "Café de Origen Único 1753203769206 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 7/22/2025 Abrir menú":
-        - cell "Café de Origen Único 1753203769206 Un café excepcional de las montañas de Colombia."
+      - row "Producto Editado 1756303184465 Mouse inalámbrico ergonómico para productividad $25.99 23 UNIDAD Stock Alto UNIDAD Activo 7/29/2025 Abrir menú":
+        - cell "Producto Editado 1756303184465 Mouse inalámbrico ergonómico para productividad"
+        - cell
+        - cell "$25.99"
+        - cell "23 UNIDAD Stock Alto"
+        - cell "UNIDAD"
+        - cell "Activo"
+        - cell "7/29/2025"
+        - cell "Abrir menú":
+          - button "Abrir menú"
+      - row "Monitor Samsung 27\" 4K Monitor Samsung de 27 pulgadas con resolución 4K UHD Monitores $299.99 10 UNIDAD Stock Medio UNIDAD Activo 7/29/2025 Abrir menú":
+        - cell "Monitor Samsung 27\" 4K Monitor Samsung de 27 pulgadas con resolución 4K UHD"
+        - cell "Monitores"
+        - cell "$299.99"
+        - cell "10 UNIDAD Stock Medio"
+        - cell "UNIDAD"
+        - cell "Activo"
+        - cell "7/29/2025"
+        - cell "Abrir menú":
+          - button "Abrir menú"
+      - row "Producto Editado 1756303188719 Teclado mecánico gaming con switches Cherry MX $25.99 12 UNIDAD Stock Medio UNIDAD Activo 7/29/2025 Abrir menú":
+        - cell "Producto Editado 1756303188719 Teclado mecánico gaming con switches Cherry MX"
+        - cell
+        - cell "$25.99"
+        - cell "12 UNIDAD Stock Medio"
+        - cell "UNIDAD"
+        - cell "Activo"
+        - cell "7/29/2025"
+        - cell "Abrir menú":
+          - button "Abrir menú"
+      - row "Producto Editado 1756303308693 Disco sólido NVMe M.2 de 1TB con alta velocidad $25.99 18 UNIDAD Stock Medio UNIDAD Activo 7/29/2025 Abrir menú":
+        - cell "Producto Editado 1756303308693 Disco sólido NVMe M.2 de 1TB con alta velocidad"
+        - cell
+        - cell "$25.99"
+        - cell "18 UNIDAD Stock Medio"
+        - cell "UNIDAD"
+        - cell "Activo"
+        - cell "7/29/2025"
+        - cell "Abrir menú":
+          - button "Abrir menú"
+      - row "Café de Origen Único 1756303308388 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 8/27/2025 Abrir menú":
+        - cell "Café de Origen Único 1756303308388 Un café excepcional de las montañas de Colombia."
         - cell "Gaming"
         - cell "$15.99"
         - cell "100 unidad Stock Alto"
         - cell "unidad"
         - cell "Activo"
-        - cell "7/22/2025"
+        - cell "8/27/2025"
         - cell "Abrir menú":
           - button "Abrir menú"
-      - row "Café de Origen Único 1753205031815 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 7/22/2025 Abrir menú":
-        - cell "Café de Origen Único 1753205031815 Un café excepcional de las montañas de Colombia."
+      - row "Producto Editado 1756303313701 Laptop Dell Inspiron 15 con procesador Intel Core i5, 8GB RAM, 256GB SSD $25.99 10 UNIDAD Stock Medio UNIDAD Activo 7/29/2025 Abrir menú":
+        - cell "Producto Editado 1756303313701 Laptop Dell Inspiron 15 con procesador Intel Core i5, 8GB RAM, 256GB SSD"
+        - cell
+        - cell "$25.99"
+        - cell "10 UNIDAD Stock Medio"
+        - cell "UNIDAD"
+        - cell "Activo"
+        - cell "7/29/2025"
+        - cell "Abrir menú":
+          - button "Abrir menú"
+      - row "Producto Editado 1756303338946 8gb de ram, 256gb $25.99 2 unidad Stock Bajo unidad Activo 7/30/2025 Abrir menú":
+        - cell "Producto Editado 1756303338946 8gb de ram, 256gb"
+        - cell
+        - cell "$25.99"
+        - cell "2 unidad Stock Bajo"
+        - cell "unidad"
+        - cell "Activo"
+        - cell "7/30/2025"
+        - cell "Abrir menú":
+          - button "Abrir menú"
+      - row "Café de Origen Único 1756303353933 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 8/27/2025 Abrir menú":
+        - cell "Café de Origen Único 1756303353933 Un café excepcional de las montañas de Colombia."
         - cell "Gaming"
         - cell "$15.99"
         - cell "100 unidad Stock Alto"
         - cell "unidad"
         - cell "Activo"
-        - cell "7/22/2025"
+        - cell "8/27/2025"
         - cell "Abrir menú":
           - button "Abrir menú"
-      - row "Café de Origen Único 1753210868727 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 7/22/2025 Abrir menú":
-        - cell "Café de Origen Único 1753210868727 Un café excepcional de las montañas de Colombia."
-        - cell "Gaming"
-        - cell "$15.99"
+      - row "equipo generico 1 un equipo generico Electrónicos $100.00 100 unidad Stock Alto unidad Activo 8/27/2025 Abrir menú":
+        - cell "equipo generico 1 un equipo generico"
+        - cell "Electrónicos"
+        - cell "$100.00"
         - cell "100 unidad Stock Alto"
         - cell "unidad"
         - cell "Activo"
-        - cell "7/22/2025"
+        - cell "8/27/2025"
         - cell "Abrir menú":
           - button "Abrir menú"
-      - row "Producto a Eliminar 1753210869866 Producto temporal para test de eliminación Gaming $99.99 1 unidad Stock Bajo unidad Activo 7/22/2025 Abrir menú":
-        - cell "Producto a Eliminar 1753210869866 Producto temporal para test de eliminación"
-        - cell "Gaming"
-        - cell "$99.99"
-        - cell "1 unidad Stock Bajo"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Producto a Eliminar 1753210873556 Producto temporal para test de eliminación Gaming $99.99 1 unidad Stock Bajo unidad Activo 7/22/2025 Abrir menú":
-        - cell "Producto a Eliminar 1753210873556 Producto temporal para test de eliminación"
-        - cell "Gaming"
-        - cell "$99.99"
-        - cell "1 unidad Stock Bajo"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Café de Origen Único 1753211147207 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 7/22/2025 Abrir menú":
-        - cell "Café de Origen Único 1753211147207 Un café excepcional de las montañas de Colombia."
-        - cell "Gaming"
-        - cell "$15.99"
-        - cell "100 unidad Stock Alto"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Producto a Eliminar 1753211149222 Producto temporal para test de eliminación Gaming $99.99 1 unidad Stock Bajo unidad Activo 7/22/2025 Abrir menú":
-        - cell "Producto a Eliminar 1753211149222 Producto temporal para test de eliminación"
-        - cell "Gaming"
-        - cell "$99.99"
-        - cell "1 unidad Stock Bajo"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Café de Origen Único 1753211156694 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 7/22/2025 Abrir menú":
-        - cell "Café de Origen Único 1753211156694 Un café excepcional de las montañas de Colombia."
-        - cell "Gaming"
-        - cell "$15.99"
-        - cell "100 unidad Stock Alto"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Producto a Eliminar 1753211159148 Producto temporal para test de eliminación Gaming $99.99 1 unidad Stock Bajo unidad Activo 7/22/2025 Abrir menú":
-        - cell "Producto a Eliminar 1753211159148 Producto temporal para test de eliminación"
-        - cell "Gaming"
-        - cell "$99.99"
-        - cell "1 unidad Stock Bajo"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
+  - paragraph: Mostrando 1 a 10 de 12 resultados
+  - text: Mostrar
+  - combobox: "10"
+  - text: por página
+  - navigation "pagination":
+    - list:
+      - listitem:
+        - link "Go to previous page":
+          - /url: "#"
+          - text: Anterior
+      - listitem:
+        - link "1":
+          - /url: "#"
+      - listitem:
+        - link "2":
+          - /url: "#"
+      - listitem:
+        - link "Go to next page":
+          - /url: "#"
+          - text: Siguiente
 - alert
 ```

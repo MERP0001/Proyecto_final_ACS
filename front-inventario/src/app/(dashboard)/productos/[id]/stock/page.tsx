@@ -99,8 +99,8 @@ export default function ActualizarStockPage({ params }: Props) {
   };
 
   const getStockBadge = (cantidad: number) => {
-    if (cantidad <= 5) return <Badge variant="destructive">Stock Bajo</Badge>;
-    if (cantidad <= 15) return <Badge variant="secondary">Stock Medio</Badge>;
+    if (cantidad < 10) return <Badge variant="destructive">Stock Bajo</Badge>;
+    if (cantidad <= 20) return <Badge variant="secondary">Stock Medio</Badge>;
     return <Badge variant="default">Stock Alto</Badge>;
   };
 

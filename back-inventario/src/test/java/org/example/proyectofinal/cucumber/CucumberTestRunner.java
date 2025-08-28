@@ -16,7 +16,7 @@ import org.junit.platform.suite.api.Suite;
 @ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME, value = "org.example.proyectofinal.cucumber")
 @ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, 
         value = "pretty, html:target/cucumber-reports/cucumber.html, json:target/cucumber-reports/cucumber.json, junit:target/cucumber-reports/cucumber.xml")
-@ConfigurationParameter(key = Constants.FILTER_TAGS_PROPERTY_NAME, value = "not @ignore")
+
 public class CucumberTestRunner {
     // Esta clase actúa como punto de entrada para las pruebas de Cucumber
     // No necesita implementación, las anotaciones configuran todo

@@ -141,6 +141,11 @@ public class ProductoService {
     }
     @Transactional
     public Producto actualizarStock(Long id, Integer nuevaCantidad) {
+        return actualizarStock(id, nuevaCantidad, "admin");
+    }
+
+    @Transactional
+    public Producto actualizarStock(Long id, Integer nuevaCantidad, String username) {
         log.info("Actualizando stock del producto ID: {}", id);
         if (nuevaCantidad < 0) {
             throw new BusinessValidationException("La cantidad no puede ser negativa");
@@ -160,10 +165,10 @@ public class ProductoService {
         int cantidadMovimiento = Math.abs(diferencia);
         producto.setCantidadActual(nuevaCantidad);
         Producto productoGuardado = productoRepository.save(producto);
-        User adminUser = userRepository.findByUsername("admin").orElseThrow(() -> new RuntimeException("Usuario admin no encontrado"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + username));
         movimientoHistorialService.registrarMovimiento(
             productoGuardado, 
-            adminUser,
+            user,
             tipo, 
             cantidadMovimiento
         );
@@ -301,6 +306,17 @@ public class ProductoService {
         }
         
         log.info("Migración de categorías legacy completada");
+    }
+
+    /**
+     * Obtener producto por SKU.
+     * @param sku SKU del producto
+     * @return Producto del producto encontrado
+     */
+    public Producto obtenerProductoPorSku(String sku) {
+        log.debug("Buscando producto con SKU: {}", sku);
+        return productoRepository.findBySku(sku)
+                .orElseThrow(() -> ProductoNotFoundException.porSku(sku));
     }
 
     /**

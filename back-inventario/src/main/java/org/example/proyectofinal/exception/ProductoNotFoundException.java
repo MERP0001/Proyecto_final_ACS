@@ -20,4 +20,8 @@ public class ProductoNotFoundException extends RuntimeException {
     public ProductoNotFoundException(String campo, String valor) {
         super("Producto no encontrado con " + campo + ": " + valor);
     }
+
+    public static ProductoNotFoundException porSku(String sku) {
+        return new ProductoNotFoundException("No se encontró el producto con SKU: " + sku);
+    }
 } 

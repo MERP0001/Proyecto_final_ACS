@@ -7,6 +7,9 @@
     - link "Dashboard":
       - /url: /dashboard
   - listitem: Productos
+  - listitem:
+    - link "Historial":
+      - /url: /historial
   - listitem: Reportes
   - listitem:
     - link "Usuarios":
@@ -23,126 +26,26 @@
   - heading "Sistema de Gestión de Inventarios" [level=1]
   - button "AD"
   - button "Cerrar Sesión"
-  - heading "Productos" [level=2]
-  - paragraph: Gestiona el inventario de productos
-  - button "Agregar Producto"
-  - text: Filtros Busca y filtra productos por nombre y categoría
-  - textbox "Buscar por nombre..."
-  - combobox "Filtrar por categoría":
-    - option "Todas las categorías" [selected]
-    - option "Gaming"
-  - text: Lista de Productos (10)
-  - table:
-    - rowgroup:
-      - row "Producto Categoría Precio Stock Unidad Estado Fecha Creación Acciones":
-        - cell "Producto"
-        - cell "Categoría"
-        - cell "Precio"
-        - cell "Stock"
-        - cell "Unidad"
-        - cell "Estado"
-        - cell "Fecha Creación"
-        - cell "Acciones"
-    - rowgroup:
-      - row "Café de Origen Único 1753205031815 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 7/22/2025 Abrir menú":
-        - cell "Café de Origen Único 1753205031815 Un café excepcional de las montañas de Colombia."
-        - cell "Gaming"
-        - cell "$15.99"
-        - cell "100 unidad Stock Alto"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Café de Origen Único 1753210868727 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 7/22/2025 Abrir menú":
-        - cell "Café de Origen Único 1753210868727 Un café excepcional de las montañas de Colombia."
-        - cell "Gaming"
-        - cell "$15.99"
-        - cell "100 unidad Stock Alto"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Producto a Eliminar 1753210869866 Producto temporal para test de eliminación Gaming $99.99 1 unidad Stock Bajo unidad Activo 7/22/2025 Abrir menú":
-        - cell "Producto a Eliminar 1753210869866 Producto temporal para test de eliminación"
-        - cell "Gaming"
-        - cell "$99.99"
-        - cell "1 unidad Stock Bajo"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Producto a Eliminar 1753210873556 Producto temporal para test de eliminación Gaming $99.99 1 unidad Stock Bajo unidad Activo 7/22/2025 Abrir menú":
-        - cell "Producto a Eliminar 1753210873556 Producto temporal para test de eliminación"
-        - cell "Gaming"
-        - cell "$99.99"
-        - cell "1 unidad Stock Bajo"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Café de Origen Único 1753211147207 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 7/22/2025 Abrir menú":
-        - cell "Café de Origen Único 1753211147207 Un café excepcional de las montañas de Colombia."
-        - cell "Gaming"
-        - cell "$15.99"
-        - cell "100 unidad Stock Alto"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Producto a Eliminar 1753211149222 Producto temporal para test de eliminación Gaming $99.99 1 unidad Stock Bajo unidad Activo 7/22/2025 Abrir menú":
-        - cell "Producto a Eliminar 1753211149222 Producto temporal para test de eliminación"
-        - cell "Gaming"
-        - cell "$99.99"
-        - cell "1 unidad Stock Bajo"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Café de Origen Único 1753211156694 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 7/22/2025 Abrir menú":
-        - cell "Café de Origen Único 1753211156694 Un café excepcional de las montañas de Colombia."
-        - cell "Gaming"
-        - cell "$15.99"
-        - cell "100 unidad Stock Alto"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Producto a Eliminar 1753211159148 Producto temporal para test de eliminación Gaming $99.99 1 unidad Stock Bajo unidad Activo 7/22/2025 Abrir menú":
-        - cell "Producto a Eliminar 1753211159148 Producto temporal para test de eliminación"
-        - cell "Gaming"
-        - cell "$99.99"
-        - cell "1 unidad Stock Bajo"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Café de Origen Único 1753211386795 Un café excepcional de las montañas de Colombia. Gaming $15.99 100 unidad Stock Alto unidad Activo 7/22/2025 Abrir menú":
-        - cell "Café de Origen Único 1753211386795 Un café excepcional de las montañas de Colombia."
-        - cell "Gaming"
-        - cell "$15.99"
-        - cell "100 unidad Stock Alto"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
-      - row "Producto a Eliminar 1753211388558 Producto temporal para test de eliminación Gaming $99.99 1 unidad Stock Bajo unidad Activo 7/22/2025 Abrir menú":
-        - cell "Producto a Eliminar 1753211388558 Producto temporal para test de eliminación"
-        - cell "Gaming"
-        - cell "$99.99"
-        - cell "1 unidad Stock Bajo"
-        - cell "unidad"
-        - cell "Activo"
-        - cell "7/22/2025"
-        - cell "Abrir menú":
-          - button "Abrir menú"
+  - text: Error al actualizar el producto. Por favor, intente nuevamente.
+  - button
+  - heading "Editar Producto" [level=2]
+  - paragraph: Modifica la información del producto
+  - text: Información del Producto Actualiza los campos que deseas modificar Nombre del Producto
+  - textbox "Nombre del Producto": Producto Editado 1756308076523
+  - paragraph: Nombre descriptivo y único del producto
+  - text: Descripción
+  - textbox "Descripción": Laptop Dell Inspiron 15 con procesador Intel Core i5, 8GB RAM, 256GB SSD
+  - paragraph: Descripción detallada del producto y sus características
+  - text: Categoría
+  - combobox "Categoría"
+  - text: Precio
+  - spinbutton "Precio": "25.99"
+  - paragraph: Precio unitario del producto
+  - text: Cantidad Inicial
+  - spinbutton "Cantidad Inicial": "10"
+  - paragraph: Cantidad inicial en inventario
+  - text: Unidad de Medida
+  - combobox "Unidad de Medida"
+  - button "Guardar Cambios"
 - alert
 ```

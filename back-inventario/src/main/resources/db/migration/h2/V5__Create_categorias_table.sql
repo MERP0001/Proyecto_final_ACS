@@ -5,7 +5,7 @@
 
 -- Crear tabla categorias
 CREATE TABLE categorias (
-    id BIGINT IDENTITY PRIMARY KEY,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL UNIQUE,
     descripcion VARCHAR(200),
     activo BOOLEAN NOT NULL DEFAULT TRUE,

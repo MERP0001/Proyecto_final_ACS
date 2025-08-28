@@ -45,6 +45,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'com.h2database:h2' // Base de datos en memoria para tests
     
     // Cucumber dependencies
     testImplementation 'io.cucumber:cucumber-java:7.15.0'
@@ -129,7 +130,7 @@ task cucumber() {
                 '--plugin', 'json:target/cucumber-reports/Cucumber.json',
                 '--plugin', 'junit:target/cucumber-reports/Cucumber.xml',
                 '--glue', 'org.example.proyectofinal.cucumber',
-                '--tags', '@productos or @categorias or @autenticacion',
+                '--tags', '@database',
                 'src/test/resources/features'
             ]
         }

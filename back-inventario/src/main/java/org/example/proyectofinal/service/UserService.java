@@ -3,6 +3,8 @@ package org.example.proyectofinal.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.proyectofinal.entity.User;
+import org.example.proyectofinal.exception.UserAlreadyExistsException;
+import org.example.proyectofinal.exception.UserNotFoundException;
 import org.example.proyectofinal.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,10 +34,10 @@ public class UserService implements UserDetailsService {
     @Transactional
     public User createUser(String username, String password, String email, String nombreCompleto, User.Role role) {
         if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("El nombre de usuario ya existe");
+            throw UserAlreadyExistsException.porUsername(username);
         }
         if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("El email ya está registrado");
+            throw UserAlreadyExistsException.porEmail(email);
         }
         User user = User.builder()
                 .username(username)
@@ -88,6 +90,70 @@ public class UserService implements UserDetailsService {
     }
     
     public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    /**
+     * Obtener usuario por ID.
+     * @param id ID del usuario
+     * @return Usuario encontrado
+     */
+    public User obtenerUsuarioPorId(Long id) {
+        log.debug("Buscando usuario con ID: {}", id);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    /**
+     * Obtener usuario por username.
+     * @param username Username del usuario
+     * @return Usuario encontrado
+     */
+    public User obtenerUsuarioPorUsername(String username) {
+        log.debug("Buscando usuario con username: {}", username);
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> UserNotFoundException.porUsername(username));
+    }
+
+    /**
+     * Listar usuarios activos.
+     * @return Lista de usuarios activos
+     */
+    public List<User> listarUsuariosActivos() {
+        log.debug("Listando usuarios activos");
+        return userRepository.findAll().stream()
+                .filter(User::getActivo)
+                .sorted((u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername()))
+                .toList();
+    }
+
+    /**
+     * Buscar usuarios por rol.
+     * @param role Rol a buscar
+     * @return Lista de usuarios con el rol especificado
+     */
+    public List<User> buscarUsuariosPorRol(User.Role role) {
+        log.debug("Buscando usuarios con rol: {}", role);
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRole() == role && user.getActivo())
+                .toList();
+    }
+
+    /**
+     * Verificar si existe usuario por username.
+     * @param username Username a verificar
+     * @return true si existe, false caso contrario
+     */
+    public boolean existeUsuarioPorUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    /**
+     * Verificar si existe usuario por email.
+     * @param email Email a verificar
+     * @return true si existe, false caso contrario
+     */
+    public boolean existeUsuarioPorEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 } 
